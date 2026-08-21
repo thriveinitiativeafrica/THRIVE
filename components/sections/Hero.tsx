@@ -52,12 +52,12 @@ export function Hero() {
               <div className="absolute top-0 right-0 w-3/4 h-3/4 bg-thrive-purple-800/80 border border-thrive-purple-700 rounded-tr-full rounded-tl-3xl rounded-br-3xl -z-0" />
               <div className="absolute bottom-0 left-0 w-3/4 h-3/4 bg-thrive-purple-700/60 border border-thrive-purple-600 rounded-bl-full rounded-br-3xl rounded-tl-3xl -z-0" />
 
-              {/* 5-Photo Mosaic with 100% Black / West African Subjects (No shadows) */}
+              {/* 5-Photo Mosaic with 100% Black African Subjects */}
               <div className="relative z-10 w-full h-full p-2 grid grid-cols-2 gap-3">
-                {/* Photo 1: Top Left - Black African woman smiling */}
+                {/* Photo 1: Top Left - Black African woman */}
                 <div className="relative rounded-2xl overflow-hidden aspect-square border-2 border-white/20">
                   <Image
-                    src="https://images.unsplash.com/photo-1531123897727-8f129e1688ce?auto=format&fit=crop&w=500&q=80"
+                    src="https://images.pexels.com/photos/3184418/pexels-photo-3184418.jpeg?auto=compress&cs=tinysrgb&w=600"
                     alt="African woman smiling"
                     fill
                     sizes="220px"
@@ -66,11 +66,11 @@ export function Hero() {
                   />
                 </div>
 
-                {/* Photo 2: Top Right - Black African student smiling */}
+                {/* Photo 2: Top Right - Black children in school classroom */}
                 <div className="relative rounded-2xl overflow-hidden aspect-square border-2 border-white/20">
                   <Image
-                    src="https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&w=500&q=80"
-                    alt="African school child smiling"
+                    src="https://images.pexels.com/photos/5905497/pexels-photo-5905497.jpeg?auto=compress&cs=tinysrgb&w=600"
+                    alt="Black children learning in classroom"
                     fill
                     sizes="220px"
                     className="object-cover"
@@ -78,11 +78,11 @@ export function Hero() {
                   />
                 </div>
 
-                {/* Photo 3: Center Highlight - Young Black child with bright smile */}
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-44 h-44 rounded-2xl overflow-hidden border-2 border-white z-20">
+                {/* Photo 3: Center Highlight - Smiling Black children with food at school */}
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-44 h-44 rounded-2xl overflow-hidden border-2 border-white z-20 shadow-md">
                   <Image
-                    src="https://images.unsplash.com/photo-1516627145497-ae6968895b74?auto=format&fit=crop&w=500&q=80"
-                    alt="Young Black child smiling happily"
+                    src="https://images.pexels.com/photos/19800837/pexels-photo-19800837.jpeg?auto=compress&cs=tinysrgb&w=600"
+                    alt="Smiling Black children sitting together at school"
                     fill
                     sizes="180px"
                     className="object-cover"
@@ -90,22 +90,22 @@ export function Hero() {
                   />
                 </div>
 
-                {/* Photo 4: Bottom Left - Black community member */}
+                {/* Photo 4: Bottom Left - Happy Black volunteers carrying aid boxes */}
                 <div className="relative rounded-2xl overflow-hidden aspect-square border-2 border-white/20">
                   <Image
-                    src="https://images.unsplash.com/photo-1522529599102-193c0d76b5b6?auto=format&fit=crop&w=500&q=80"
-                    alt="African man smiling"
+                    src="https://images.pexels.com/photos/8061641/pexels-photo-8061641.jpeg?auto=compress&cs=tinysrgb&w=600"
+                    alt="Happy Black volunteers carrying food boxes"
                     fill
                     sizes="220px"
                     className="object-cover"
                   />
                 </div>
 
-                {/* Photo 5: Bottom Right - African woman with headwrap */}
+                {/* Photo 5: Bottom Right - Black woman and child */}
                 <div className="relative rounded-2xl overflow-hidden aspect-square border-2 border-white/20">
                   <Image
-                    src="https://images.unsplash.com/photo-1589156280159-27698a70f29e?auto=format&fit=crop&w=500&q=80"
-                    alt="African woman in traditional headwrap smiling"
+                    src="https://images.pexels.com/photos/7849435/pexels-photo-7849435.jpeg?auto=compress&cs=tinysrgb&w=600"
+                    alt="Black woman caring for young boy"
                     fill
                     sizes="220px"
                     className="object-cover"

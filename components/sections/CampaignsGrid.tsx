@@ -16,7 +16,7 @@ export function CampaignsGrid() {
       title: "Clean Water Well Installation",
       dateLocation: "Lagos & Ogun Rural Hubs",
       desc: "Help us drill and install new solar-powered water boreholes to provide clean drinking water for over 2,500 people in rural communities.",
-      image: "https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&w=600&q=80",
+      image: "https://images.pexels.com/photos/8061641/pexels-photo-8061641.jpeg?auto=compress&cs=tinysrgb&w=800",
       tag1: "800+ Families Benefited",
       tag2: "20 Volunteers Needed",
     },
@@ -24,7 +24,7 @@ export function CampaignsGrid() {
       title: "Hunger Relief & Food Distribution",
       dateLocation: "Urban Slum Settlements, Lagos",
       desc: "Join us in packaging and distributing nutritious staple food parcels for vulnerable families and nursing mothers.",
-      image: "https://images.unsplash.com/photo-1516627145497-ae6968895b74?auto=format&fit=crop&w=600&q=80",
+      image: "https://images.pexels.com/photos/19800837/pexels-photo-19800837.jpeg?auto=compress&cs=tinysrgb&w=800",
       tag1: "1,200+ Meals Goal",
       tag2: "15 Volunteers Needed",
     },
@@ -32,7 +32,7 @@ export function CampaignsGrid() {
       title: "Back-to-School Scholastic Kit Drive",
       dateLocation: "Public Primary Schools, Oyo & Osun",
       desc: "Support our mission to provide backpacks, notebooks, uniform vouchers, and learning materials to 800+ out-of-school children.",
-      image: "https://images.unsplash.com/photo-1531123897727-8f129e1688ce?auto=format&fit=crop&w=600&q=80",
+      image: "https://images.pexels.com/photos/5905497/pexels-photo-5905497.jpeg?auto=compress&cs=tinysrgb&w=800",
       tag1: "800+ Children Benefited",
       tag2: "25 Volunteers Needed",
     },
@@ -54,7 +54,7 @@ export function CampaignsGrid() {
           </h2>
         </div>
 
-        {/* 3 Flat Clean Cards with 100% Black African Imagery */}
+        {/* 3 Flat Clean Cards with 100% Black African Imagery from Pexels */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 text-left">
           {campaignItems.map((item) => (
             <div

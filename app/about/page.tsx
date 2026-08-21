@@ -83,8 +83,8 @@ export default function AboutPage() {
 
             <div className="lg:col-span-6 flex justify-center">
               <BlobImageFrame
-                src="https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&w=800&q=80"
-                alt="Community members in an empowerment session"
+                src="https://images.pexels.com/photos/8061641/pexels-photo-8061641.jpeg?auto=compress&cs=tinysrgb&w=800"
+                alt="Community members and volunteers in an empowerment session"
                 width={540}
                 height={500}
                 shape="quarter-tr"

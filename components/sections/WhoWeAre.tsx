@@ -22,18 +22,18 @@ export function WhoWeAre() {
     <section className="py-20 lg:py-28 bg-white overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
-          {/* Left Column: Asymmetric Arch Photo (5 cols) */}
+          {/* Left Column: Asymmetric Arch Photo (5 cols) with 100% Black African Child from Pexels */}
           <div className="lg:col-span-5 flex justify-center order-2 lg:order-1">
             <div className="relative w-full max-w-sm aspect-[4/5] isolate group">
-              {/* Flat Split Arch Background Geometry (Neutral borders, No yellow) */}
+              {/* Flat Split Arch Background Geometry */}
               <div className="absolute top-0 left-0 w-1/2 h-full bg-gray-100 border-l border-t border-b border-gray-200 rounded-tl-full rounded-bl-full -z-10 transition-transform duration-500 group-hover:-translate-x-1" />
               <div className="absolute top-0 right-0 w-1/2 h-full bg-thrive-purple-100 border-r border-t border-b border-thrive-purple-200 rounded-tr-full rounded-br-full -z-10 transition-transform duration-500 group-hover:translate-x-1" />
 
-              {/* Central Arch Frame with Black child portrait */}
+              {/* Central Arch Frame with Black child portrait from Pexels */}
               <div className="relative w-full h-full rounded-t-full rounded-b-3xl overflow-hidden border-2 border-white bg-thrive-cream">
                 <Image
-                  src="https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&w=800&q=80"
-                  alt="Smiling young African boy representing hope and transformation"
+                  src="https://images.pexels.com/photos/19800837/pexels-photo-19800837.jpeg?auto=compress&cs=tinysrgb&w=800"
+                  alt="Smiling young African children representing hope and transformation"
                   fill
                   sizes="(max-width: 768px) 100vw, 40vw"
                   className="object-cover transition-transform duration-700 group-hover:scale-105"
