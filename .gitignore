@@ -1,0 +1,45 @@
+# Dependencies
+node_modules/
+/.pnp
+.pnp.js
+
+# Production build artifacts
+.next/
+out/
+build/
+dist/
+
+# Environment variables
+.env*
+!.env.example
+
+# Debug logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# IDE & Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# AI, Antigravity, Gemini & System metadata
+.gemini/
+.antigravity/
+.system_generated/
+.claude/
+.cursor/
+.windsurf/
+brain/
+scratch/
+*.pdf
+
+# Markdown files (Ignore all PRDs and notes, except README.md)
+*.md
+!README.md
+
+# Operating System
+.DS_Store
+Thumbs.db
