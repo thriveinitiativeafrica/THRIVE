@@ -40,7 +40,7 @@ export const testimonials: Testimonial[] = [
     author: "Grace Mwangi",
     location: "Nairobi / Regional Exchange",
     role: "Scholarship Recipient & Nurse Trainee",
-    avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80",
+    avatar: "https://images.unsplash.com/photo-1589156280159-27698a70f29e?auto=format&fit=crop&w=150&q=80",
     category: "Beneficiary",
   },
   {

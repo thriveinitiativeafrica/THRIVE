@@ -7,19 +7,19 @@ export function ImpactBlock() {
     {
       title: "Clean Water Projects",
       desc: "Installed 120+ water wells in rural areas.",
-      image: "https://images.unsplash.com/photo-1593113598332-cd288d649433?auto=format&fit=crop&w=600&q=80",
+      image: "https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&w=600&q=80",
       href: "/programs/community-development",
     },
     {
       title: "Food Security Programs",
       desc: "Served over 10,000 nutritious meals in 2024.",
-      image: "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=600&q=80",
+      image: "https://images.unsplash.com/photo-1516627145497-ae6968895b74?auto=format&fit=crop&w=600&q=80",
       href: "/programs/community-development",
     },
     {
       title: "Education for All",
       desc: "Provided free learning materials to 800+ children.",
-      image: "https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=600&q=80",
+      image: "https://images.unsplash.com/photo-1531123897727-8f129e1688ce?auto=format&fit=crop&w=600&q=80",
       href: "/programs/child-education",
     },
   ];
@@ -33,7 +33,7 @@ export function ImpactBlock() {
           </h2>
         </div>
 
-        {/* 3 Flat White Cards Grid with Smooth Card Hover Animation */}
+        {/* 3 Flat White Cards Grid with 100% Black African Imagery */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 text-left">
           {highlights.map((item) => (
             <Link

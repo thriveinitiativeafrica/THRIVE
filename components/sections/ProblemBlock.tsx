@@ -50,17 +50,17 @@ export function ProblemBlock() {
             </div>
           </div>
 
-          {/* Right Column: Photo Frame with Flat Geometric Sector (5 cols, Neutral borders) */}
+          {/* Right Column: Photo Frame with 100% Black African Subjects */}
           <div className="lg:col-span-5 flex justify-center">
             <div className="relative w-full max-w-sm aspect-[4/5] isolate group">
-              {/* Neutral Backdrop (No yellow outline) */}
+              {/* Neutral Backdrop */}
               <div className="absolute top-0 right-0 w-3/4 h-3/4 bg-gray-200 border border-gray-300 rounded-tr-full rounded-tl-3xl rounded-br-3xl -z-10 transition-transform duration-500 group-hover:scale-102" />
 
               {/* Photo with Black African Community Children */}
               <div className="relative w-full h-full rounded-3xl overflow-hidden border-2 border-white bg-thrive-cream">
                 <Image
-                  src="https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=800&q=80"
-                  alt="African children standing together in community setting"
+                  src="https://images.unsplash.com/photo-1516627145497-ae6968895b74?auto=format&fit=crop&w=800&q=80"
+                  alt="Young African child smiling in community setting"
                   fill
                   sizes="(max-width: 768px) 100vw, 40vw"
                   className="object-cover transition-transform duration-700 group-hover:scale-105"

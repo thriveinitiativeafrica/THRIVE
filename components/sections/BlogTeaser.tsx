@@ -16,7 +16,7 @@ export function BlogTeaser() {
           </h2>
         </div>
 
-        {/* 3 Story Cards with Smooth Hover Animation */}
+        {/* 3 Story Cards with 100% Black African Imagery */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 text-left">
           {blogPosts.slice(0, 3).map((post) => (
             <Link

@@ -33,7 +33,7 @@ export function Hero() {
                 onClick={() => setDonateModalOpen(true)}
                 className="px-7 py-3 rounded-full bg-thrive-gold-600 hover:bg-thrive-gold-500 text-thrive-purple-900 font-bold text-xs uppercase tracking-wider transition-all"
               >
-                Donate Now
+                Donate
               </button>
 
               <Link
@@ -54,11 +54,23 @@ export function Hero() {
 
               {/* 5-Photo Mosaic with 100% Black / West African Subjects (No shadows) */}
               <div className="relative z-10 w-full h-full p-2 grid grid-cols-2 gap-3">
-                {/* Photo 1: Top Left */}
+                {/* Photo 1: Top Left - Black African woman smiling */}
+                <div className="relative rounded-2xl overflow-hidden aspect-square border-2 border-white/20">
+                  <Image
+                    src="https://images.unsplash.com/photo-1531123897727-8f129e1688ce?auto=format&fit=crop&w=500&q=80"
+                    alt="African woman smiling"
+                    fill
+                    sizes="220px"
+                    className="object-cover"
+                    priority
+                  />
+                </div>
+
+                {/* Photo 2: Top Right - Black African student smiling */}
                 <div className="relative rounded-2xl overflow-hidden aspect-square border-2 border-white/20">
                   <Image
                     src="https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&w=500&q=80"
-                    alt="African mother and child smiling"
+                    alt="African school child smiling"
                     fill
                     sizes="220px"
                     className="object-cover"
@@ -66,23 +78,11 @@ export function Hero() {
                   />
                 </div>
 
-                {/* Photo 2: Top Right */}
-                <div className="relative rounded-2xl overflow-hidden aspect-square border-2 border-white/20">
-                  <Image
-                    src="https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=500&q=80"
-                    alt="African children learning in classroom"
-                    fill
-                    sizes="220px"
-                    className="object-cover"
-                    priority
-                  />
-                </div>
-
-                {/* Photo 3: Center Highlight */}
+                {/* Photo 3: Center Highlight - Young Black child with bright smile */}
                 <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-44 h-44 rounded-2xl overflow-hidden border-2 border-white z-20">
                   <Image
-                    src="https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=500&q=80"
-                    alt="African young child with hopeful expression"
+                    src="https://images.unsplash.com/photo-1516627145497-ae6968895b74?auto=format&fit=crop&w=500&q=80"
+                    alt="Young Black child smiling happily"
                     fill
                     sizes="180px"
                     className="object-cover"
@@ -90,22 +90,22 @@ export function Hero() {
                   />
                 </div>
 
-                {/* Photo 4: Bottom Left */}
+                {/* Photo 4: Bottom Left - Black community member */}
                 <div className="relative rounded-2xl overflow-hidden aspect-square border-2 border-white/20">
                   <Image
-                    src="https://images.unsplash.com/photo-1593113598332-cd288d649433?auto=format&fit=crop&w=500&q=80"
-                    alt="African children at clean water well"
+                    src="https://images.unsplash.com/photo-1522529599102-193c0d76b5b6?auto=format&fit=crop&w=500&q=80"
+                    alt="African man smiling"
                     fill
                     sizes="220px"
                     className="object-cover"
                   />
                 </div>
 
-                {/* Photo 5: Bottom Right */}
+                {/* Photo 5: Bottom Right - African woman with headwrap */}
                 <div className="relative rounded-2xl overflow-hidden aspect-square border-2 border-white/20">
                   <Image
-                    src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=500&q=80"
-                    alt="African young woman smiling"
+                    src="https://images.unsplash.com/photo-1589156280159-27698a70f29e?auto=format&fit=crop&w=500&q=80"
+                    alt="African woman in traditional headwrap smiling"
                     fill
                     sizes="220px"
                     className="object-cover"

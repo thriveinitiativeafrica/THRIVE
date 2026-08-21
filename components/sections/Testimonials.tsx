@@ -23,7 +23,7 @@ export function Testimonials() {
         "With the vocational skills sponsorship, I started my tailoring and fashion enterprise. I can now support my siblings through school.",
       name: "Grace Mwangi",
       location: "Youth Academy Graduate",
-      avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80",
+      avatar: "https://images.unsplash.com/photo-1589156280159-27698a70f29e?auto=format&fit=crop&w=150&q=80",
     },
   ];
 
@@ -36,7 +36,7 @@ export function Testimonials() {
           </h2>
         </div>
 
-        {/* 3 Testimonial Cards with Card Lift Animation */}
+        {/* 3 Testimonial Cards with Card Lift Animation and 100% Black African Avatars */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 text-left">
           {testimonialsList.map((item) => (
             <div

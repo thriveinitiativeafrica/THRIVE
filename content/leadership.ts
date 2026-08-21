@@ -96,7 +96,7 @@ export const leadershipData: {
       roleOverview: "School Outreach & Youth Mentorship",
       responsibilities:
         "Oversees educational outreach, school engagement, youth mentorship, leadership development, and personal-development programmes for children and young people.",
-      image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=600&q=80",
+      image: "https://images.unsplash.com/photo-1531123897727-8f129e1688ce?auto=format&fit=crop&w=600&q=80",
     },
     {
       id: 7,
@@ -106,7 +106,7 @@ export const leadershipData: {
       roleOverview: "Practical Training & Vocational Empowerment",
       responsibilities:
         "Develops and coordinates workshops, training sessions, skills-acquisition programmes, and learning opportunities that equip beneficiaries with practical and transferable skills.",
-      image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=600&q=80",
+      image: "https://images.unsplash.com/photo-1522529599102-193c0d76b5b6?auto=format&fit=crop&w=600&q=80",
     },
     {
       id: 8,
@@ -156,7 +156,7 @@ export const leadershipData: {
       roleOverview: "Digital Storytelling, Social Engagement & Web Ecosystem",
       responsibilities:
         "Manages digital content planning, social media communication, online campaigns, visual storytelling, and digital engagement. Works with the communications team to increase awareness of THRIVE’s programmes and impact.",
-      image: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=600&q=80",
+      image: "https://images.unsplash.com/photo-1589156280159-27698a70f29e?auto=format&fit=crop&w=600&q=80",
     },
     {
       id: 13,
@@ -186,7 +186,7 @@ export const leadershipData: {
       roleOverview: "Volunteer Recruitment, Welfare & Community Mobilization",
       responsibilities:
         "Coordinates volunteer recruitment, onboarding, engagement, welfare, participation, and retention. Creates meaningful opportunities for volunteers and members to contribute to THRIVE’s programmes and community-impact activities.",
-      image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=600&q=80",
+      image: "https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?auto=format&fit=crop&w=600&q=80",
     },
   ],
 };

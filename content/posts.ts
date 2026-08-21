@@ -67,9 +67,9 @@ Through targeted interventions that combine practical agricultural technology wi
     author: {
       name: "Folashade Adeleke",
       role: "Director of Child Education & Youth",
-      avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80",
+      avatar: "https://images.unsplash.com/photo-1531123897727-8f129e1688ce?auto=format&fit=crop&w=150&q=80",
     },
-    coverImage: "https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&w=1000&q=80",
+    coverImage: "https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&w=1000&q=80",
     readTime: "4 min read",
     tags: ["Child Education", "Mentorship", "Literacy", "SDG 4"],
     sdgTag: 4,

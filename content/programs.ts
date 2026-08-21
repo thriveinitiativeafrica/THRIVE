@@ -38,7 +38,7 @@ export const programsData: Program[] = [
     gallery: [
       "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?auto=format&fit=crop&w=600&q=80",
       "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?auto=format&fit=crop&w=600&q=80",
-      "https://images.unsplash.com/photo-1582213782179-e0d53f98f2ca?auto=format&fit=crop&w=600&q=80",
+      "https://images.unsplash.com/photo-1589156280159-27698a70f29e?auto=format&fit=crop&w=600&q=80",
     ],
     mandate:
       "Leads programmes focused on women’s empowerment, leadership, mentorship, advocacy, confidence-building, and capacity development. Identifies opportunities that strengthen women’s participation in governance, business, and community decision-making while expanding access to vital social and economic support systems.",
@@ -72,7 +72,7 @@ export const programsData: Program[] = [
         "Before joining the THRIVE Women's Cohort, I had no collateral to expand my tailoring stall. Through their business coaching and seed grant, I now employ three young apprentices and pay my children's school fees on time.",
       author: "Amina Okoro",
       role: "Founder, Ammy Fashion & Craft, Lagos",
-      avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80",
+      avatar: "https://images.unsplash.com/photo-1531123897727-8f129e1688ce?auto=format&fit=crop&w=200&q=80",
     },
   },
   {
@@ -83,11 +83,11 @@ export const programsData: Program[] = [
     badge: "SDG 4: Quality Education",
     sdgNumber: 4,
     sdgLabel: "Quality Education",
-    heroImage: "https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=1200&q=80",
+    heroImage: "https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&w=1200&q=80",
     gallery: [
-      "https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&w=600&q=80",
-      "https://images.unsplash.com/photo-1427504494785-3a9ca7044f45?auto=format&fit=crop&w=600&q=80",
-      "https://images.unsplash.com/photo-1580582932707-520aed937b7b?auto=format&fit=crop&w=600&q=80",
+      "https://images.unsplash.com/photo-1516627145497-ae6968895b74?auto=format&fit=crop&w=600&q=80",
+      "https://images.unsplash.com/photo-1531123897727-8f129e1688ce?auto=format&fit=crop&w=600&q=80",
+      "https://images.unsplash.com/photo-1589156280159-27698a70f29e?auto=format&fit=crop&w=600&q=80",
     ],
     mandate:
       "Oversees educational outreach, school engagement, youth mentorship, leadership development, and personal-development programmes for children and young people. We bridge the classroom gap by providing learning supplies, remedial coaching, and life-skills workshops.",
@@ -121,7 +121,7 @@ export const programsData: Program[] = [
         "Receiving my textbooks and school uniform from THRIVE meant I didn't have to stay home while my classmates studied. My grades improved, and I now dream of studying medicine at university.",
       author: "Emmanuel Adeyemi",
       role: "SS2 Student & Youth Mentorship Scholar",
-      avatar: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&w=200&q=80",
+      avatar: "https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&w=200&q=80",
     },
   },
   {
@@ -132,11 +132,11 @@ export const programsData: Program[] = [
     badge: "SDG 8 & 10: Decent Work & Reduced Inequalities",
     sdgNumber: 10,
     sdgLabel: "Reduced Inequalities",
-    heroImage: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1200&q=80",
+    heroImage: "https://images.unsplash.com/photo-1522529599102-193c0d76b5b6?auto=format&fit=crop&w=1200&q=80",
     gallery: [
-      "https://images.unsplash.com/photo-1581092921461-eab62e97a780?auto=format&fit=crop&w=600&q=80",
-      "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&w=600&q=80",
-      "https://images.unsplash.com/photo-1531482615713-2afd69097998?auto=format&fit=crop&w=600&q=80",
+      "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?auto=format&fit=crop&w=600&q=80",
+      "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?auto=format&fit=crop&w=600&q=80",
+      "https://images.unsplash.com/photo-1589156280159-27698a70f29e?auto=format&fit=crop&w=600&q=80",
     ],
     mandate:
       "Develops and coordinates workshops, training sessions, skills-acquisition programmes, and learning opportunities that equip beneficiaries with practical, scalable, and transferable vocational and digital skills.",
@@ -181,11 +181,11 @@ export const programsData: Program[] = [
     badge: "SDG 10 & 16: Reduced Inequalities & Justice",
     sdgNumber: 10,
     sdgLabel: "Reduced Inequalities",
-    heroImage: "https://images.unsplash.com/photo-1577495508048-b635879837f1?auto=format&fit=crop&w=1200&q=80",
+    heroImage: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=1200&q=80",
     gallery: [
-      "https://images.unsplash.com/photo-1544027993-37dbfe43562a?auto=format&fit=crop&w=600&q=80",
-      "https://images.unsplash.com/photo-1511632765486-a01980e01a18?auto=format&fit=crop&w=600&q=80",
-      "https://images.unsplash.com/photo-1582213782179-e0d53f98f2ca?auto=format&fit=crop&w=600&q=80",
+      "https://images.unsplash.com/photo-1522529599102-193c0d76b5b6?auto=format&fit=crop&w=600&q=80",
+      "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?auto=format&fit=crop&w=600&q=80",
+      "https://images.unsplash.com/photo-1589156280159-27698a70f29e?auto=format&fit=crop&w=600&q=80",
     ],
     mandate:
       "Coordinates advocacy campaigns and initiatives relating to equality, inclusion, youth participation, social empowerment, and community development. Supports THRIVE’s engagement with civil society stakeholders, policymakers, and local traditional leaders.",
@@ -230,11 +230,11 @@ export const programsData: Program[] = [
     badge: "SDG 3 & 11: Good Health & Sustainable Communities",
     sdgNumber: 11,
     sdgLabel: "Sustainable Communities",
-    heroImage: "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=1200&q=80",
+    heroImage: "https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&w=1200&q=80",
     gallery: [
-      "https://images.unsplash.com/photo-1593113598332-cd288d649433?auto=format&fit=crop&w=600&q=80",
-      "https://images.unsplash.com/photo-1542810634-71277d95dcbb?auto=format&fit=crop&w=600&q=80",
-      "https://images.unsplash.com/photo-1469571486292-0ba58a3f068b?auto=format&fit=crop&w=600&q=80",
+      "https://images.unsplash.com/photo-1516627145497-ae6968895b74?auto=format&fit=crop&w=600&q=80",
+      "https://images.unsplash.com/photo-1531123897727-8f129e1688ce?auto=format&fit=crop&w=600&q=80",
+      "https://images.unsplash.com/photo-1589156280159-27698a70f29e?auto=format&fit=crop&w=600&q=80",
     ],
     mandate:
       "Leads community-based programmes, outreach activities, awareness campaigns, and grassroots engagement. Works with local community stakeholders to identify urgent humanitarian needs and execute high-impact interventions.",
