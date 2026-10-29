@@ -1,216 +1,270 @@
 import fs from "fs";
 import path from "path";
-import type {
-  DbPost,
-  DbVolunteerSignup,
-  DbContactMessage,
-  DbNewsletterSubscriber,
-  PostType,
-  PostStatus,
-} from "./schema";
+import { neon } from "@neondatabase/serverless";
+import { drizzle } from "drizzle-orm/neon-http";
+import { eq, desc } from "drizzle-orm";
+import { posts, contactMessages, newsletterSubscribers, type PostRecord } from "./schema";
 
 const STORE_PATH = path.join(process.cwd(), "content", "posts-store.json");
 
-// In-memory cache
-let postsCache: DbPost[] | null = null;
-const inMemoryVolunteers: DbVolunteerSignup[] = [];
-const inMemoryContacts: DbContactMessage[] = [];
-const inMemoryNewsletters: DbNewsletterSubscriber[] = [];
+let postsCache: PostRecord[] | null = null;
+const inMemoryContacts: { id: number; name: string; email: string; message: string; created_at: string }[] = [];
+const inMemoryNewsletters: { id: number; email: string; created_at: string }[] = [];
 
-function loadPostsFromDisk(): DbPost[] {
+function getLocalStore(): PostRecord[] {
   try {
     if (fs.existsSync(STORE_PATH)) {
       const data = fs.readFileSync(STORE_PATH, "utf-8");
       return JSON.parse(data);
     }
   } catch (err) {
-    console.error("Error reading posts from disk:", err);
+    console.error("Error reading local posts store:", err);
   }
   return [];
 }
 
-function persistPostsToDisk(posts: DbPost[]) {
+function persistLocalStore(data: PostRecord[]) {
   try {
     const dir = path.dirname(STORE_PATH);
     if (!fs.existsSync(dir)) {
       fs.mkdirSync(dir, { recursive: true });
     }
-    fs.writeFileSync(STORE_PATH, JSON.stringify(posts, null, 2), "utf-8");
+    fs.writeFileSync(STORE_PATH, JSON.stringify(data, null, 2), "utf-8");
+    postsCache = data;
   } catch (err) {
-    console.warn("Could not write posts to disk (read-only filesystem):", err);
+    console.warn("Could not write posts to local store:", err);
   }
 }
 
-export function getPostsStore(): DbPost[] {
-  if (!postsCache) {
-    postsCache = loadPostsFromDisk();
+function getDb() {
+  const dbUrl = process.env.DATABASE_URL;
+  if (!dbUrl) return null;
+  try {
+    const sql = neon(dbUrl);
+    return drizzle(sql, { schema: { posts, contactMessages, newsletterSubscribers } });
+  } catch (err) {
+    console.warn("Could not connect to Neon Postgres, falling back to local store:", err);
+    return null;
   }
-  return postsCache;
 }
 
 export async function getAllPosts(options?: {
-  type?: PostType;
-  status?: PostStatus | "all";
+  status?: "published" | "draft" | "all";
   limit?: number;
-}): Promise<DbPost[]> {
-  const all = getPostsStore();
-  let filtered = [...all];
+}): Promise<PostRecord[]> {
+  const statusFilter = options?.status ?? "published";
+  const limit = options?.limit;
+  const db = getDb();
 
-  if (options?.type) {
-    filtered = filtered.filter((p) => p.type === options.type);
+  if (db) {
+    try {
+      let query = db.select().from(posts);
+      const results = await query.orderBy(desc(posts.createdAt));
+      let filtered = results.map((r) => ({
+        id: r.id,
+        title: r.title,
+        slug: r.slug,
+        excerpt: r.excerpt,
+        body: r.body,
+        cover_image_url: r.coverImageUrl,
+        cover_image_alt: r.coverImageAlt,
+        author: r.author,
+        status: (r.status === "published" ? "published" : "draft") as "published" | "draft",
+        published_at: r.publishedAt ? r.publishedAt.toISOString() : null,
+        created_at: r.createdAt ? r.createdAt.toISOString() : new Date().toISOString(),
+        updated_at: r.updatedAt ? r.updatedAt.toISOString() : new Date().toISOString(),
+        seo_title: r.seoTitle,
+        seo_description: r.seoDescription,
+      }));
+
+      if (statusFilter !== "all") {
+        filtered = filtered.filter((p) => p.status === statusFilter);
+      }
+      if (limit) {
+        filtered = filtered.slice(0, limit);
+      }
+      return filtered;
+    } catch (err) {
+      console.warn("Error querying posts from Neon Postgres, using local store:", err);
+    }
   }
 
-  if (options?.status && options.status !== "all") {
-    filtered = filtered.filter((p) => p.status === options.status);
-  } else if (!options?.status) {
-    // Default to published only for public queries
-    filtered = filtered.filter((p) => p.status === "published");
+  // Fallback to local store
+  if (!postsCache) {
+    postsCache = getLocalStore();
   }
-
-  // Sort by publishDate / createdAt desc
-  filtered.sort((a, b) => new Date(b.publishDate || b.createdAt).getTime() - new Date(a.publishDate || a.createdAt).getTime());
-
-  if (options?.limit && options.limit > 0) {
-    return filtered.slice(0, options.limit);
+  let filtered = [...postsCache];
+  if (statusFilter !== "all") {
+    filtered = filtered.filter((p) => p.status === statusFilter);
   }
-
+  filtered.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+  if (limit) {
+    filtered = filtered.slice(0, limit);
+  }
   return filtered;
 }
 
-export async function getLatestPosts(limit = 6): Promise<DbPost[]> {
-  return getAllPosts({ status: "published", limit });
-}
-
-export async function getPostBySlug(slug: string): Promise<DbPost | null> {
-  const all = getPostsStore();
-  const found = all.find((p) => p.slug === slug);
-  return found || null;
-}
-
-export async function savePost(
-  data: Partial<DbPost> & { title: string; content: string }
-): Promise<DbPost> {
-  const store = getPostsStore();
-  const now = new Date().toISOString();
-
-  // Slug generation if missing
-  const slug =
-    data.slug ||
-    data.title
-      .toLowerCase()
-      .replace(/[^a-z0-9]+/g, "-")
-      .replace(/(^-|-$)/g, "");
-
-  const existingIndex = data.id ? store.findIndex((p) => p.id === data.id) : -1;
-
-  if (existingIndex >= 0) {
-    // Update
-    const updated: DbPost = {
-      ...store[existingIndex],
-      ...data,
-      slug,
-      updatedAt: now,
-    };
-    store[existingIndex] = updated;
-    persistPostsToDisk(store);
-    return updated;
+export async function getPostBySlug(slug: string): Promise<PostRecord | null> {
+  const db = getDb();
+  if (db) {
+    try {
+      const results = await db.select().from(posts).where(eq(posts.slug, slug)).limit(1);
+      if (results.length > 0) {
+        const r = results[0];
+        return {
+          id: r.id,
+          title: r.title,
+          slug: r.slug,
+          excerpt: r.excerpt,
+          body: r.body,
+          cover_image_url: r.coverImageUrl,
+          cover_image_alt: r.coverImageAlt,
+          author: r.author,
+          status: (r.status === "published" ? "published" : "draft") as "published" | "draft",
+          published_at: r.publishedAt ? r.publishedAt.toISOString() : null,
+          created_at: r.createdAt ? r.createdAt.toISOString() : new Date().toISOString(),
+          updated_at: r.updatedAt ? r.updatedAt.toISOString() : new Date().toISOString(),
+          seo_title: r.seoTitle,
+          seo_description: r.seoDescription,
+        };
+      }
+    } catch (err) {
+      console.warn("Error querying post from Neon Postgres, using local store:", err);
+    }
   }
 
-  // Create
-  const newPost: DbPost = {
-    id: `post-${Date.now()}`,
-    slug,
-    title: data.title,
-    italicTitle: data.italicTitle,
-    excerpt: data.excerpt || data.content.slice(0, 160).trim() + "...",
-    content: data.content,
-    type: data.type || "blog",
-    category: data.category || "Field Story",
-    tags: data.tags || ["Community Outreach"],
-    author: data.author || {
-      name: "THRIVE Field Team",
-      role: "Grassroots Project Lead",
-      avatar: "/images/avatar-amina.webp",
-    },
-    publishDate: data.publishDate || new Date().toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" }),
-    coverImage: data.coverImage || "/images/story-water.webp",
-    coverImageAlt: data.coverImageAlt || data.title,
-    inlineImages: data.inlineImages || [],
-    status: data.status || "published",
-    readTime: data.readTime || "4 min read",
-    seoTitle: data.seoTitle,
-    seoDescription: data.seoDescription,
-    createdAt: now,
-    updatedAt: now,
-  };
-
-  store.unshift(newPost);
-  persistPostsToDisk(store);
-  return newPost;
+  const all = getLocalStore();
+  return all.find((p) => p.slug === slug) || null;
 }
 
-export async function createPost(
-  data: Partial<DbPost> & { title: string; content: string }
-): Promise<DbPost> {
-  return savePost(data);
+export async function savePost(data: Partial<PostRecord> & { title: string; slug: string; excerpt: string; body: string; author: string }): Promise<PostRecord> {
+  const now = new Date().toISOString();
+  const id = data.id || `post-${Date.now()}`;
+  const status = data.status || "draft";
+  const publishedAt = status === "published" ? (data.published_at || now) : null;
+
+  const postRecord: PostRecord = {
+    id,
+    title: data.title,
+    slug: data.slug,
+    excerpt: data.excerpt,
+    body: data.body,
+    cover_image_url: data.cover_image_url || null,
+    cover_image_alt: data.cover_image_alt || null,
+    author: data.author,
+    status,
+    published_at: publishedAt,
+    created_at: data.created_at || now,
+    updated_at: now,
+    seo_title: data.seo_title || null,
+    seo_description: data.seo_description || null,
+  };
+
+  const db = getDb();
+  if (db) {
+    try {
+      const existing = await db.select().from(posts).where(eq(posts.id, id)).limit(1);
+      if (existing.length > 0) {
+        await db.update(posts).set({
+          title: postRecord.title,
+          slug: postRecord.slug,
+          excerpt: postRecord.excerpt,
+          body: postRecord.body,
+          coverImageUrl: postRecord.cover_image_url,
+          coverImageAlt: postRecord.cover_image_alt,
+          author: postRecord.author,
+          status: postRecord.status,
+          publishedAt: publishedAt ? new Date(publishedAt) : null,
+          updatedAt: new Date(),
+          seoTitle: postRecord.seo_title,
+          seoDescription: postRecord.seo_description,
+        }).where(eq(posts.id, id));
+      } else {
+        await db.insert(posts).values({
+          id: postRecord.id,
+          title: postRecord.title,
+          slug: postRecord.slug,
+          excerpt: postRecord.excerpt,
+          body: postRecord.body,
+          coverImageUrl: postRecord.cover_image_url,
+          coverImageAlt: postRecord.cover_image_alt,
+          author: postRecord.author,
+          status: postRecord.status,
+          publishedAt: publishedAt ? new Date(publishedAt) : null,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          seoTitle: postRecord.seo_title,
+          seoDescription: postRecord.seo_description,
+        });
+      }
+    } catch (err) {
+      console.warn("Could not save post to Neon Postgres, saving to local store:", err);
+    }
+  }
+
+  // Also persist to local store
+  const current = getLocalStore();
+  const idx = current.findIndex((p) => p.id === id);
+  if (idx >= 0) {
+    current[idx] = postRecord;
+  } else {
+    current.unshift(postRecord);
+  }
+  persistLocalStore(current);
+
+  return postRecord;
 }
 
 export async function deletePost(id: string): Promise<boolean> {
-  const store = getPostsStore();
-  const index = store.findIndex((p) => p.id === id);
-  if (index >= 0) {
-    store.splice(index, 1);
-    persistPostsToDisk(store);
-    return true;
+  const db = getDb();
+  if (db) {
+    try {
+      await db.delete(posts).where(eq(posts.id, id));
+    } catch (err) {
+      console.warn("Could not delete post from Neon Postgres:", err);
+    }
   }
-  return false;
+
+  const current = getLocalStore();
+  const filtered = current.filter((p) => p.id !== id);
+  persistLocalStore(filtered);
+  return true;
 }
 
-export async function saveVolunteerSignup(
-  data: Omit<DbVolunteerSignup, "id" | "createdAt">
-): Promise<DbVolunteerSignup> {
-  const signup: DbVolunteerSignup = {
-    id: inMemoryVolunteers.length + 1,
-    createdAt: new Date().toISOString(),
-    ...data,
-  };
-  inMemoryVolunteers.unshift(signup);
-  return signup;
-}
-
-export async function getVolunteerSignups(): Promise<DbVolunteerSignup[]> {
-  return inMemoryVolunteers;
-}
-
-export async function saveContactMessage(
-  data: Omit<DbContactMessage, "id" | "createdAt">
-): Promise<DbContactMessage> {
-  const contact: DbContactMessage = {
+export async function saveContactMessage(name: string, email: string, message: string): Promise<void> {
+  const db = getDb();
+  if (db) {
+    try {
+      await db.insert(contactMessages).values({ name, email, message });
+      return;
+    } catch (err) {
+      console.warn("Could not save contact message to Neon Postgres, saving to memory:", err);
+    }
+  }
+  inMemoryContacts.push({
     id: inMemoryContacts.length + 1,
-    createdAt: new Date().toISOString(),
-    ...data,
-  };
-  inMemoryContacts.unshift(contact);
-  return contact;
-}
-
-export async function getContactMessages(): Promise<DbContactMessage[]> {
-  return inMemoryContacts;
-}
-
-export async function saveNewsletterSubscriber(
-  email: string
-): Promise<DbNewsletterSubscriber> {
-  const existing = inMemoryNewsletters.find(
-    (n) => n.email.toLowerCase() === email.toLowerCase()
-  );
-  if (existing) return existing;
-
-  const sub: DbNewsletterSubscriber = {
-    id: inMemoryNewsletters.length + 1,
+    name,
     email,
-    createdAt: new Date().toISOString(),
-  };
-  inMemoryNewsletters.unshift(sub);
-  return sub;
+    message,
+    created_at: new Date().toISOString(),
+  });
+}
+
+export async function saveNewsletterSubscriber(email: string): Promise<void> {
+  const db = getDb();
+  if (db) {
+    try {
+      await db.insert(newsletterSubscribers).values({ email });
+      return;
+    } catch (err) {
+      console.warn("Could not save subscriber to Neon Postgres, saving to memory:", err);
+    }
+  }
+  if (!inMemoryNewsletters.some((n) => n.email.toLowerCase() === email.toLowerCase())) {
+    inMemoryNewsletters.push({
+      id: inMemoryNewsletters.length + 1,
+      email,
+      created_at: new Date().toISOString(),
+    });
+  }
 }

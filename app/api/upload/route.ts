@@ -1,52 +1,82 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
+import crypto from "crypto";
 import fs from "fs";
 import path from "path";
 
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
   try {
     const formData = await req.formData();
     const file = formData.get("file") as File | null;
+    const alt = formData.get("alt") as string || "";
 
     if (!file) {
-      return NextResponse.json(
-        { success: false, error: "No image file provided in upload" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "No file provided" }, { status: 400 });
     }
+
+    const cloudName = process.env.CLOUDINARY_CLOUD_NAME;
+    const apiKey = process.env.CLOUDINARY_API_KEY;
+    const apiSecret = process.env.CLOUDINARY_API_SECRET;
 
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
 
-    const safeName = file.name.replace(/[^a-zA-Z0-9.-]/g, "_").toLowerCase();
-    const filename = `${Date.now()}-${safeName}`;
+    // If Cloudinary keys are configured, perform server-side signed upload
+    if (cloudName && apiKey && apiSecret) {
+      const timestamp = Math.round(new Date().getTime() / 1000);
+      const signaturePayload = `timestamp=${timestamp}${apiSecret}`;
+      const signature = crypto.createHash("sha1").update(signaturePayload).digest("hex");
 
-    // Target upload folder in public
-    const uploadDir = path.join(process.cwd(), "public", "uploads");
+      const uploadFormData = new FormData();
+      uploadFormData.append("file", new Blob([buffer], { type: file.type }), file.name);
+      uploadFormData.append("api_key", apiKey);
+      uploadFormData.append("timestamp", timestamp.toString());
+      uploadFormData.append("signature", signature);
 
+      const cloudinaryRes = await fetch(
+        `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
+        {
+          method: "POST",
+          body: uploadFormData,
+        }
+      );
+
+      if (!cloudinaryRes.ok) {
+        const errorText = await cloudinaryRes.text();
+        console.error("Cloudinary upload failed:", errorText);
+        return NextResponse.json({ error: "Cloudinary upload failed" }, { status: 502 });
+      }
+
+      const cloudinaryData = await cloudinaryRes.json();
+      return NextResponse.json({
+        url: cloudinaryData.secure_url,
+        alt: alt || file.name,
+      });
+    }
+
+    // Fallback: save to public/uploads or return base64 data URL
     try {
+      const uploadDir = path.join(process.cwd(), "public", "uploads");
       if (!fs.existsSync(uploadDir)) {
         fs.mkdirSync(uploadDir, { recursive: true });
       }
-      const filePath = path.join(uploadDir, filename);
+      const safeName = `${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.-]/g, "_")}`;
+      const filePath = path.join(uploadDir, safeName);
       fs.writeFileSync(filePath, buffer);
       return NextResponse.json({
-        success: true,
-        url: `/uploads/${filename}`,
-        filename,
+        url: `/uploads/${safeName}`,
+        alt: alt || file.name,
       });
     } catch {
-      // Serverless fallback: return base64 Data URL if local disk write is read-only
+      // Memory fallback for read-only filesystem environments
       const base64 = buffer.toString("base64");
-      const mimeType = file.type || "image/jpeg";
-      const dataUrl = `data:${mimeType};base64,${base64}`;
+      const dataUrl = `data:${file.type};base64,${base64}`;
       return NextResponse.json({
-        success: true,
         url: dataUrl,
-        filename,
+        alt: alt || file.name,
       });
     }
   } catch (err: unknown) {
-    const errorMsg = err instanceof Error ? err.message : "Image upload failed";
-    return NextResponse.json({ success: false, error: errorMsg }, { status: 500 });
+    console.error("Upload handler error:", err);
+    return NextResponse.json({ error: "Upload failed" }, { status: 500 });
   }
 }

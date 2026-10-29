@@ -1,21 +1,16 @@
 import type { Metadata } from "next";
-import { Fraunces, Inter } from "next/font/google";
+  import { Instrument_Sans } from "next/font/google";
 import "./globals.css";
 import { siteConfig } from "@/content/site.config";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
+import { DonateModal } from "@/components/shared/DonateModal";
 
-const fraunces = Fraunces({
+const instrumentSans = Instrument_Sans({
   subsets: ["latin"],
-  variable: "--font-fraunces",
+  variable: "--font-sans",
   display: "swap",
-  style: ["normal", "italic"],
-});
-
-const inter = Inter({
-  subsets: ["latin"],
-  variable: "--font-inter",
-  display: "swap",
+  weight: ["400", "500", "600"],
 });
 
 const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || siteConfig.url;
@@ -23,7 +18,7 @@ const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || siteConfig.url;
 export const metadata: Metadata = {
   metadataBase: new URL(baseUrl),
   title: {
-    default: `${siteConfig.name} — ${siteConfig.tagline}`,
+    default: `${siteConfig.name}, ${siteConfig.tagline}`,
     template: `%s | ${siteConfig.name}`,
   },
   description: siteConfig.description,
@@ -51,7 +46,7 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_NG",
     url: baseUrl,
-    title: `${siteConfig.name} — ${siteConfig.tagline}`,
+    title: `${siteConfig.name}, ${siteConfig.tagline}`,
     description: siteConfig.description,
     siteName: siteConfig.name,
     images: [
@@ -59,13 +54,13 @@ export const metadata: Metadata = {
         url: "/og-default.png",
         width: 1200,
         height: 630,
-        alt: `${siteConfig.name} — Transforming Hope, Rights, Inclusion, Vision & Empowerment`,
+        alt: `${siteConfig.name} - Grassroots Community Progress in Nigeria`,
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: `${siteConfig.name} — ${siteConfig.tagline}`,
+    title: `${siteConfig.name}, ${siteConfig.tagline}`,
     description: siteConfig.description,
     images: ["/og-default.png"],
     creator: "@thrive_org",
@@ -92,22 +87,24 @@ export default function RootLayout({
     "@context": "https://schema.org",
     "@type": "NGO",
     name: siteConfig.name,
-    alternateName: siteConfig.acronymName,
+    alternateName: "THRIVE Initiative Africa",
     url: baseUrl,
-    logo: `${baseUrl}/logo/thrive-emblem.png`,
+    logo: `${baseUrl}/logo/thrive-logo-clean.png`,
     description: siteConfig.description,
     address: {
       "@type": "PostalAddress",
-      streetAddress: "14 Impact Crescent, Victoria Island",
-      addressLocality: "Lagos",
-      addressRegion: "Lagos State",
+      streetAddress: siteConfig.contact.address,
+      addressLocality: "Victoria Island",
+      addressRegion: "Lagos",
       addressCountry: "NG",
     },
     contactPoint: {
       "@type": "ContactPoint",
       telephone: siteConfig.contact.phone,
-      contactType: "customer service",
+      contactType: "Customer Support",
       email: siteConfig.contact.email,
+      areaServed: "NG",
+      availableLanguage: "en",
     },
     sameAs: [
       siteConfig.social.facebook,
@@ -119,17 +116,18 @@ export default function RootLayout({
   };
 
   return (
-    <html lang="en" className={`${fraunces.variable} ${inter.variable}`}>
+    <html lang="en" className={instrumentSans.variable}>
       <head>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdOrg) }}
         />
       </head>
-      <body className="antialiased min-h-screen flex flex-col selection:bg-thrive-gold-400 selection:text-thrive-purple-900">
+      <body className="min-h-screen flex flex-col bg-[#FAF6EC] text-[#2E1650] antialiased">
         <Navbar />
-        <main className="flex-grow">{children}</main>
+        <main className="flex-1">{children}</main>
         <Footer />
+        <DonateModal />
       </body>
     </html>
   );

@@ -1,10 +1,3 @@
-/**
- * THRIVE Initiative — Centralized Image Configuration
- * All images are served locally through next/image for maximum performance,
- * zero layout shift, and guaranteed Nigerian/West African representation.
- * Swapping any image across the entire site is a single-line change here.
- */
-
 export interface SiteImageConfig {
   src: string;
   alt: string;
@@ -16,7 +9,7 @@ export const siteImages = {
   logo: {
     clean: "/logo/thrive-logo-clean.png",
     emblem: "/logo/thrive-emblem.png",
-    alt: "THRIVE Initiative Logo — Transforming Hope, Rights, Inclusion, Vision & Empowerment",
+    alt: "THRIVE Initiative Logo, Transforming Hope, Rights, Inclusion, Vision and Empowerment",
   },
   ogDefault: "/og-default.png",
   hero: {
@@ -90,13 +83,13 @@ export const siteImages = {
   stories: {
     farming: {
       src: "/images/story-farming.webp",
-      alt: "Mama Abigail and community farmers harvesting fresh produce under AgriThrive drip irrigation",
+      alt: "Community farmers harvesting fresh produce under AgriThrive drip irrigation",
       width: 1200,
       height: 800,
     },
     education: {
       src: "/images/story-education.webp",
-      alt: "Tobi smiling in his new school uniform at partner primary school in Ajegunle",
+      alt: "Pupils smiling in new school uniforms at partner primary school",
       width: 1200,
       height: 800,
     },
@@ -108,7 +101,7 @@ export const siteImages = {
     },
     makokoRelief: {
       src: "/images/update-makoko-relief.webp",
-      alt: "Field volunteers offloading 600 emergency food hampers in Makoko community",
+      alt: "Field volunteers offloading emergency food hampers in Makoko community",
       width: 1200,
       height: 800,
     },

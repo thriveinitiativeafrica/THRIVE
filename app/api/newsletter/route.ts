@@ -1,19 +1,21 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { saveNewsletterSubscriber } from "@/db";
 
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
   try {
-    const body = await req.json();
-    const { email } = body;
+    const { email } = await req.json();
 
     if (!email || !email.includes("@")) {
-      return NextResponse.json({ success: false, error: "Valid email is required" }, { status: 400 });
+      return NextResponse.json(
+        { error: "A valid email address is required." },
+        { status: 400 }
+      );
     }
 
-    const sub = await saveNewsletterSubscriber(email);
-    return NextResponse.json({ success: true, data: sub });
+    await saveNewsletterSubscriber(email);
+    return NextResponse.json({ success: true, message: "Thank you for subscribing to updates from THRIVE." });
   } catch (err: unknown) {
-    const errorMsg = err instanceof Error ? err.message : "Failed to subscribe to newsletter";
-    return NextResponse.json({ success: false, error: errorMsg }, { status: 500 });
+    console.error("Newsletter API error:", err);
+    return NextResponse.json({ error: "Failed to subscribe." }, { status: 500 });
   }
 }

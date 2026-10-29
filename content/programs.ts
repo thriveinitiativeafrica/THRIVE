@@ -10,19 +10,12 @@ export interface Program {
   gallery: string[];
   mandate: string;
   keyObjectives: string[];
-  impactStats: { value: string; label: string }[];
   currentInitiatives: {
     title: string;
     description: string;
     targetBeneficiaries: string;
     status: "Active" | "Ongoing" | "Upcoming";
   }[];
-  testimonial: {
-    quote: string;
-    author: string;
-    role: string;
-    avatar: string;
-  };
 }
 
 export const programsData: Program[] = [
@@ -30,50 +23,37 @@ export const programsData: Program[] = [
     slug: "women-empowerment",
     title: "Women Empowerment & Gender Programs",
     shortTitle: "Women Empowerment",
-    subtitle: "Championing female leadership, economic independence, and breaking systemic gender barriers.",
+    subtitle: "Championing female leadership, economic independence, and community mentorship in Lagos.",
     badge: "SDG 5: Gender Equality",
     sdgNumber: 5,
     sdgLabel: "Gender Equality",
-    heroImage: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=1200&q=80",
+    heroImage: "/images/hero-woman.webp",
     gallery: [
-      "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?auto=format&fit=crop&w=600&q=80",
-      "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?auto=format&fit=crop&w=600&q=80",
-      "https://images.unsplash.com/photo-1589156280159-27698a70f29e?auto=format&fit=crop&w=600&q=80",
+      "/images/hero-woman.webp",
+      "/images/who-we-are.webp",
     ],
     mandate:
-      "Leads programmes focused on women’s empowerment, leadership, mentorship, advocacy, confidence-building, and capacity development. Identifies opportunities that strengthen women’s participation in governance, business, and community decision-making while expanding access to vital social and economic support systems.",
+      "Leads programmes focused on women empowerment, leadership, mentorship, confidence-building, and capacity development. Identifies opportunities that strengthen participation in governance, business, and community decision-making while expanding access to vital social and economic support systems.",
     keyObjectives: [
       "Establish community-based female mentorship circles and leadership cohorts.",
       "Facilitate financial literacy, cooperative savings, and micro-business seed funding.",
       "Advocate against gender-based violence and provide psychosocial and legal support links.",
       "Empower women with digital skills and vocational autonomy to secure sustainable livelihoods.",
     ],
-    impactStats: [
-      { value: "2,150+", label: "Women Mentored & Trained" },
-      { value: "180+", label: "Micro-Enterprises Launched" },
-      { value: "94%", label: "Reported Increased Household Income" },
-    ],
     currentInitiatives: [
       {
         title: "HerVoice Leadership Academy",
-        description: "A 12-week intensive masterclass on civic participation, public speaking, and community organizing for young women.",
+        description: "A masterclass on civic participation, public speaking, and community organizing for young women.",
         targetBeneficiaries: "Young female professionals and grassroots organizers",
         status: "Active",
       },
       {
         title: "SheThrives Micro-Grants",
-        description: "Disbursement of seed capital and business mentorship for vulnerable mothers starting artisanal and market businesses.",
-        targetBeneficiaries: "300+ Low-income mothers across underserved wards",
+        description: "Seed capital and business mentorship for mothers starting artisanal and market businesses.",
+        targetBeneficiaries: "Low-income mothers across underserved wards in Lagos",
         status: "Ongoing",
       },
     ],
-    testimonial: {
-      quote:
-        "Before joining the THRIVE Women's Cohort, I had no collateral to expand my tailoring stall. Through their business coaching and seed grant, I now employ three young apprentices and pay my children's school fees on time.",
-      author: "Amina Okoro",
-      role: "Founder, Ammy Fashion & Craft, Lagos",
-      avatar: "https://images.unsplash.com/photo-1531123897727-8f129e1688ce?auto=format&fit=crop&w=200&q=80",
-    },
   },
   {
     slug: "child-education",
@@ -83,11 +63,10 @@ export const programsData: Program[] = [
     badge: "SDG 4: Quality Education",
     sdgNumber: 4,
     sdgLabel: "Quality Education",
-    heroImage: "https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&w=1200&q=80",
+    heroImage: "/images/hero-classroom.webp",
     gallery: [
-      "https://images.unsplash.com/photo-1516627145497-ae6968895b74?auto=format&fit=crop&w=600&q=80",
-      "https://images.unsplash.com/photo-1531123897727-8f129e1688ce?auto=format&fit=crop&w=600&q=80",
-      "https://images.unsplash.com/photo-1589156280159-27698a70f29e?auto=format&fit=crop&w=600&q=80",
+      "/images/hero-classroom.webp",
+      "/images/impact-education.webp",
     ],
     mandate:
       "Oversees educational outreach, school engagement, youth mentorship, leadership development, and personal-development programmes for children and young people. We bridge the classroom gap by providing learning supplies, remedial coaching, and life-skills workshops.",
@@ -97,81 +76,56 @@ export const programsData: Program[] = [
       "Facilitate merit-based scholarships for out-of-school and vulnerable children.",
       "Nurture leadership, ethics, and career planning through one-on-one youth mentorship.",
     ],
-    impactStats: [
-      { value: "3,800+", label: "School Kits Distributed" },
-      { value: "14", label: "Partner Schools Supported" },
-      { value: "850+", label: "Children Enrolled in Literacy Clubs" },
-    ],
     currentInitiatives: [
       {
         title: "Backpack of Hope Drive",
-        description: "Annual distribution of essential scholastic materials to rural primary school pupils prior to academic session resumption.",
-        targetBeneficiaries: "1,500 Primary pupils in rural communities",
+        description: "Distribution of essential scholastic materials to rural primary school pupils prior to academic session resumption.",
+        targetBeneficiaries: "Primary pupils in rural communities",
         status: "Active",
       },
       {
         title: "FutureLeaders Mentorship Circle",
-        description: "Pairing secondary school students with university students and young professionals for career guidance and emotional support.",
+        description: "Pairing secondary school students with university students and young professionals for career guidance.",
         targetBeneficiaries: "Senior secondary school teenagers",
         status: "Ongoing",
       },
     ],
-    testimonial: {
-      quote:
-        "Receiving my textbooks and school uniform from THRIVE meant I didn't have to stay home while my classmates studied. My grades improved, and I now dream of studying medicine at university.",
-      author: "Emmanuel Adeyemi",
-      role: "SS2 Student & Youth Mentorship Scholar",
-      avatar: "https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&w=200&q=80",
-    },
   },
   {
     slug: "skills-acquisition",
     title: "Skills Acquisition & Capacity Building",
     shortTitle: "Skills Acquisition",
-    subtitle: "Equipping young people and job seekers with high-demand vocational and digital skills for economic self-reliance.",
+    subtitle: "Equipping young people and job seekers with practical vocational and digital skills for economic self-reliance.",
     badge: "SDG 8 & 10: Decent Work & Reduced Inequalities",
     sdgNumber: 10,
     sdgLabel: "Reduced Inequalities",
-    heroImage: "https://images.unsplash.com/photo-1522529599102-193c0d76b5b6?auto=format&fit=crop&w=1200&q=80",
+    heroImage: "/images/story-farming.webp",
     gallery: [
-      "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?auto=format&fit=crop&w=600&q=80",
-      "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?auto=format&fit=crop&w=600&q=80",
-      "https://images.unsplash.com/photo-1589156280159-27698a70f29e?auto=format&fit=crop&w=600&q=80",
+      "/images/story-farming.webp",
+      "/images/who-we-are.webp",
     ],
     mandate:
       "Develops and coordinates workshops, training sessions, skills-acquisition programmes, and learning opportunities that equip beneficiaries with practical, scalable, and transferable vocational and digital skills.",
     keyObjectives: [
-      "Deliver hands-on vocational modules: modern fashion design, culinary arts, solar installation, and craft fabrication.",
-      "Provide foundational digital skills: web basics, graphic design, and social media digital marketing.",
+      "Deliver hands-on vocational modules in fashion design, culinary arts, solar installation, and craft fabrication.",
+      "Provide foundational digital skills in web basics, graphic design, and social media digital marketing.",
       "Supply post-graduation starter toolkits and apprentice transition assistance.",
       "Facilitate cooperative formation so graduates pool resources and access larger contracts.",
-    ],
-    impactStats: [
-      { value: "1,200+", label: "Artisans & Technicians Certified" },
-      { value: "82%", label: "Employed or Self-Employed within 6 Months" },
-      { value: "320+", label: "Starter Toolkits Awarded" },
     ],
     currentInitiatives: [
       {
         title: "SolarTech Youth Apprentice Scheme",
         description: "Training rural youth in solar panel assembly, inverter troubleshooting, and green energy maintenance.",
-        targetBeneficiaries: "120 Unemployed youths in semi-urban hubs",
+        targetBeneficiaries: "Unemployed youths in semi-urban hubs",
         status: "Active",
       },
       {
         title: "Digital Pathways for Her",
-        description: "Intensive coding and UI design bootcamp exclusively for high-potential young women from underserved communities.",
-        targetBeneficiaries: "60 Young women aged 18-28",
+        description: "Intensive digital skills bootcamp for young women from underserved communities.",
+        targetBeneficiaries: "Young women aged 18 to 28",
         status: "Ongoing",
       },
     ],
-    testimonial: {
-      quote:
-        "The digital marketing and graphic design workshop changed my trajectory completely. I received a laptop grant upon graduating and now earn remotely doing freelance branding for local stores.",
-      author: "Chidinma Nwosu",
-      role: "Freelance Creative & Bootcamp Alumna",
-      avatar: "https://images.unsplash.com/photo-1573497019236-17f8177b81e8?auto=format&fit=crop&w=200&q=80",
-    },
   },
   {
     slug: "advocacy-inclusion",
@@ -181,46 +135,33 @@ export const programsData: Program[] = [
     badge: "SDG 10 & 16: Reduced Inequalities & Justice",
     sdgNumber: 10,
     sdgLabel: "Reduced Inequalities",
-    heroImage: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=1200&q=80",
+    heroImage: "/images/problem-community.webp",
     gallery: [
-      "https://images.unsplash.com/photo-1522529599102-193c0d76b5b6?auto=format&fit=crop&w=600&q=80",
-      "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?auto=format&fit=crop&w=600&q=80",
-      "https://images.unsplash.com/photo-1589156280159-27698a70f29e?auto=format&fit=crop&w=600&q=80",
+      "/images/problem-community.webp",
+      "/images/hero-volunteers.webp",
     ],
     mandate:
-      "Coordinates advocacy campaigns and initiatives relating to equality, inclusion, youth participation, social empowerment, and community development. Supports THRIVE’s engagement with civil society stakeholders, policymakers, and local traditional leaders.",
+      "Coordinates advocacy campaigns and initiatives relating to equality, inclusion, youth participation, social empowerment, and community development. Supports engagement with civil society stakeholders, policymakers, and local community leaders.",
     keyObjectives: [
-      "Convene community townhalls bridging grassroots residents and local government representatives.",
+      "Convene community townhalls bridging grassroots residents and local representatives.",
       "Conduct policy research briefs and civic scorecards on education and social welfare spending.",
       "Promote disability inclusion in public spaces, learning environments, and vocational centers.",
       "Lead public awareness campaigns on human rights, voter education, and civic duties.",
     ],
-    impactStats: [
-      { value: "45+", label: "Civic Townhalls Organized" },
-      { value: "18,000+", label: "Citizens Reached through Campaigns" },
-      { value: "6", label: "Local Policy Recommendations Adopted" },
-    ],
     currentInitiatives: [
       {
         title: "Community Voice Townhalls",
-        description: "Quarterly consultative forums enabling grassroots dwellers to present priority welfare needs directly to ward councilors.",
+        description: "Consultative forums enabling grassroots dwellers to present priority welfare needs directly to councilors.",
         targetBeneficiaries: "Community residents, youth leaders, and market associations",
         status: "Active",
       },
       {
         title: "AccessForAll Inclusion Drive",
         description: "Advocating for ramp accessibility and inclusive learning materials for persons living with physical disabilities.",
-        targetBeneficiaries: "Persons with disabilities & community institutions",
+        targetBeneficiaries: "Persons with disabilities and community institutions",
         status: "Ongoing",
       },
     ],
-    testimonial: {
-      quote:
-        "THRIVE gave our community associations the training and courage to engage our local government council. Today, our community has refurbished primary healthcare centers and regular power grid repairs.",
-      author: "Elder Olatunji Bakare",
-      role: "Community Development Association Chairman",
-      avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=200&q=80",
-    },
   },
   {
     slug: "community-development",
@@ -230,45 +171,32 @@ export const programsData: Program[] = [
     badge: "SDG 3 & 11: Good Health & Sustainable Communities",
     sdgNumber: 11,
     sdgLabel: "Sustainable Communities",
-    heroImage: "https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&w=1200&q=80",
+    heroImage: "/images/impact-water.webp",
     gallery: [
-      "https://images.unsplash.com/photo-1516627145497-ae6968895b74?auto=format&fit=crop&w=600&q=80",
-      "https://images.unsplash.com/photo-1531123897727-8f129e1688ce?auto=format&fit=crop&w=600&q=80",
-      "https://images.unsplash.com/photo-1589156280159-27698a70f29e?auto=format&fit=crop&w=600&q=80",
+      "/images/impact-water.webp",
+      "/images/impact-food.webp",
     ],
     mandate:
-      "Leads community-based programmes, outreach activities, awareness campaigns, and grassroots engagement. Works with local community stakeholders to identify urgent humanitarian needs and execute high-impact interventions.",
+      "Leads community-based programmes, outreach activities, awareness campaigns, and grassroots engagement. Works with local community stakeholders to identify urgent humanitarian needs and execute targeted interventions.",
     keyObjectives: [
       "Install and rehabilitate solar-powered clean water boreholes in rural villages.",
       "Execute nutritional food relief drives for food-insecure families and elderly widows.",
-      "Organize free mobile healthcare screening camps with essential medications and doctor consultations.",
-      "Promote environmental sanitation, waste sorting, and clean neighborhood clean-up drives.",
-    ],
-    impactStats: [
-      { value: "24", label: "Clean Water Boreholes Installed" },
-      { value: "28,000+", label: "Clean Water Beneficiaries Daily" },
-      { value: "14,500+", label: "Free Health Consultations Conducted" },
+      "Organize mobile healthcare screening camps with doctor consultations.",
+      "Promote environmental sanitation and neighborhood clean-up drives.",
     ],
     currentInitiatives: [
       {
-        title: "PureFlow Clean Water Project",
-        description: "Drilling solar boreholes and setting up community water management committees in dry peri-urban settlements.",
-        targetBeneficiaries: "6 Rural villages currently without treated piped water",
+        title: "Clean Water Infrastructure Initiative",
+        description: "Drilling solar boreholes and setting up community water management committees.",
+        targetBeneficiaries: "Rural settlements without treated piped water",
         status: "Active",
       },
       {
         title: "Community Nutrition Basket",
-        description: "Monthly food distribution boxes packed with staples (rice, beans, garri, oils) for vulnerable households.",
-        targetBeneficiaries: "500 Widowed and elderly-headed households",
+        description: "Food distribution boxes packed with staples for vulnerable households.",
+        targetBeneficiaries: "Widowed and elderly-headed households",
         status: "Ongoing",
       },
     ],
-    testimonial: {
-      quote:
-        "Waterborne diseases used to keep our children sick and away from school every rainy season. Since THRIVE installed the clean solar borehole, clinic visits have dropped by 80% and our children are healthy.",
-      author: "Grace Mwangi",
-      role: "Village Women Leader & Mother of Four",
-      avatar: "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?auto=format&fit=crop&w=200&q=80",
-    },
   },
 ];

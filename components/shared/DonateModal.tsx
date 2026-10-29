@@ -1,254 +1,263 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { siteConfig } from "@/content/site.config";
-import {
-  IconClose,
-  IconCheck,
-  IconCopy,
-  IconCreditCard,
-  IconLandmark,
-} from "@/components/shared/Icons";
-import { cn, formatCurrency } from "@/lib/utils";
+import { IconClose, IconCheck, IconCopy } from "@/components/shared/Icons";
 
-interface DonateModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  initialAmount?: number;
+export function openDonateModal(defaultAmount?: number) {
+  if (typeof window !== "undefined") {
+    window.dispatchEvent(
+      new CustomEvent("open-donate-modal", { detail: { amount: defaultAmount } })
+    );
+  }
 }
 
-export function DonateModal({
-  isOpen,
-  onClose,
-  initialAmount = 15000,
-}: DonateModalProps) {
-  const [selectedAmount, setSelectedAmount] = useState<number>(initialAmount);
+export function DonateModal() {
+  const [isOpen, setIsOpen] = useState(false);
+  const [frequency, setFrequency] = useState<"once" | "monthly">("once");
+  const [selectedAmount, setSelectedAmount] = useState<number>(10000);
   const [customAmount, setCustomAmount] = useState<string>("");
-  const [isCustom, setIsCustom] = useState<boolean>(false);
-  const [copiedBank, setCopiedBank] = useState<boolean>(false);
-  const [activeTab, setActiveTab] = useState<"online" | "transfer">("online");
-  const [donorName, setDonorName] = useState("");
-  const [donorEmail, setDonorEmail] = useState("");
-  const [frequency, setFrequency] = useState<"one-time" | "monthly">("one-time");
+  const [showBankDetails, setShowBankDetails] = useState(false);
+  const [copied, setCopied] = useState(false);
+  const modalRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleOpen(e: Event) {
+      const customEvent = e as CustomEvent<{ amount?: number }>;
+      if (customEvent.detail?.amount) {
+        setSelectedAmount(customEvent.detail.amount);
+        setCustomAmount("");
+      }
+      setShowBankDetails(false);
+      setIsOpen(true);
+    }
+
+    window.addEventListener("open-donate-modal", handleOpen);
+    return () => window.removeEventListener("open-donate-modal", handleOpen);
+  }, []);
+
+  // Keyboard accessibility and scroll lock
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.key === "Escape") {
+        setIsOpen(false);
+      }
+    }
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.body.style.overflow = originalOverflow;
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [isOpen]);
 
   if (!isOpen) return null;
 
-  const currentTiers = siteConfig.donationTiers;
-  const effectiveAmount = isCustom ? parseFloat(customAmount) || 0 : selectedAmount;
+  const currentAmount = customAmount ? parseInt(customAmount, 10) || 0 : selectedAmount;
 
-  const handleCopyAccount = (text: string) => {
-    navigator.clipboard.writeText(text);
-    setCopiedBank(true);
-    setTimeout(() => setCopiedBank(false), 2000);
-  };
+  function handleConfirmDonation() {
+    const paystackKey = process.env.NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY;
+    if (paystackKey && typeof window !== "undefined") {
+      // In production with Paystack key, trigger inline checkout
+      alert("Redirecting to secure Paystack payment gateway...");
+      return;
+    }
 
-  const handleDonateProceed = (e: React.FormEvent) => {
-    e.preventDefault();
-    alert(
-      `Thank you ${donorName || "generous donor"}! Initializing contribution of ${formatCurrency(
-        effectiveAmount,
-        "NGN"
-      )} (${frequency}). In production, this directs to Paystack / Flutterwave.`
-    );
-    onClose();
-  };
+    // Default fallback: show bank transfer details
+    setShowBankDetails(true);
+  }
+
+  function copyAccountNumber() {
+    navigator.clipboard.writeText(siteConfig.bankDetails.accountNumberNaira);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-150">
-      <div className="relative w-full max-w-lg bg-white rounded-3xl overflow-hidden border border-thrive-border shadow-2xl flex flex-col max-h-[90vh]">
-        {/* Header */}
-        <div className="bg-thrive-purple-900 text-white px-6 py-5 flex items-center justify-between border-b border-thrive-purple-800">
-          <div>
-            <h3 className="font-serif text-lg font-bold text-white">Make a Donation</h3>
-            <p className="text-xs text-thrive-gold-200">Direct grassroots impact in Nigerian communities</p>
-          </div>
-          <button
-            onClick={onClose}
-            className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-colors"
-            aria-label="Close modal"
-          >
-            <IconClose size={18} />
-          </button>
-        </div>
+    <div
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="donate-modal-title"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50"
+    >
+      <div
+        ref={modalRef}
+        className="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 text-[#2E1650] relative shadow-lg"
+      >
+        <button
+          onClick={() => setIsOpen(false)}
+          aria-label="Close modal"
+          className="absolute top-6 right-6 p-2 text-gray-400 hover:text-[#2E1650] rounded-full transition-colors"
+        >
+          <IconClose className="w-5 h-5" />
+        </button>
 
-        {/* Content */}
-        <div className="p-6 overflow-y-auto space-y-5">
-          {/* Frequency Selector */}
-          <div className="grid grid-cols-2 p-1 bg-thrive-cream rounded-2xl border border-thrive-border">
-            <button
-              type="button"
-              onClick={() => setFrequency("one-time")}
-              className={cn(
-                "py-2 rounded-xl text-xs font-bold uppercase tracking-wider transition-all text-center",
-                frequency === "one-time" ? "bg-white text-thrive-purple-900 shadow-xs" : "text-thrive-ink-600 hover:text-thrive-purple-900"
-              )}
-            >
-              One-Time Gift
-            </button>
-            <button
-              type="button"
-              onClick={() => setFrequency("monthly")}
-              className={cn(
-                "py-2 rounded-xl text-xs font-bold uppercase tracking-wider transition-all text-center",
-                frequency === "monthly" ? "bg-white text-thrive-purple-900 shadow-xs" : "text-thrive-ink-600 hover:text-thrive-purple-900"
-              )}
-            >
-              Monthly Supporter
-            </button>
-          </div>
-
-          {/* Payment Method Tabs */}
-          <div className="flex border-b border-thrive-border">
-            <button
-              onClick={() => setActiveTab("online")}
-              className={cn(
-                "flex items-center gap-2 pb-2.5 px-4 text-xs font-bold uppercase tracking-wider border-b-2 transition-all",
-                activeTab === "online"
-                  ? "border-thrive-purple-900 text-thrive-purple-900"
-                  : "border-transparent text-thrive-ink-600 hover:text-thrive-purple-900"
-              )}
-            >
-              <IconCreditCard size={16} />
-              <span>Card / Paystack</span>
-            </button>
-            <button
-              onClick={() => setActiveTab("transfer")}
-              className={cn(
-                "flex items-center gap-2 pb-2.5 px-4 text-xs font-bold uppercase tracking-wider border-b-2 transition-all",
-                activeTab === "transfer"
-                  ? "border-thrive-purple-900 text-thrive-purple-900"
-                  : "border-transparent text-thrive-ink-600 hover:text-thrive-purple-900"
-              )}
-            >
-              <IconLandmark size={16} />
-              <span>Direct Bank Transfer</span>
-            </button>
-          </div>
-
-          {activeTab === "online" ? (
-            <form onSubmit={handleDonateProceed} className="space-y-4">
-              {/* Preset Amounts Grid */}
-              <div className="grid grid-cols-3 gap-2">
-                {currentTiers.map((tier) => (
-                  <button
-                    key={tier.amount}
-                    type="button"
-                    onClick={() => {
-                      setSelectedAmount(tier.amount);
-                      setIsCustom(false);
-                    }}
-                    className={cn(
-                      "py-2.5 px-2 rounded-xl border text-center font-bold text-xs transition-all",
-                      !isCustom && selectedAmount === tier.amount
-                        ? "border-thrive-purple-900 bg-thrive-purple-900 text-white shadow-xs"
-                        : "border-thrive-border bg-white text-thrive-ink-800 hover:bg-thrive-cream"
-                    )}
-                  >
-                    <span>{tier.label}</span>
-                  </button>
-                ))}
+        {!showBankDetails ? (
+          <div className="space-y-6">
+            <div>
+              <div className="flex items-center gap-2 mb-2">
+                <span className="w-2 h-2 rounded-full bg-[#D4A017]" />
+                <span className="text-xs uppercase font-semibold tracking-wider text-[#2E1650]">
+                  Make a Contribution
+                </span>
               </div>
-
-              {/* Custom Amount Input */}
-              <div className="flex items-center gap-2.5">
-                <label className="text-xs font-bold text-thrive-purple-900 whitespace-nowrap">Or Custom (₦):</label>
-                <div className="relative flex-1">
-                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs font-bold text-thrive-ink-400">₦</span>
-                  <input
-                    type="number"
-                    min="500"
-                    placeholder="e.g. 25000"
-                    value={customAmount}
-                    onChange={(e) => {
-                      setCustomAmount(e.target.value);
-                      setIsCustom(true);
-                    }}
-                    onFocus={() => setIsCustom(true)}
-                    className="w-full pl-7 pr-3 py-2 rounded-xl border border-thrive-border text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-thrive-purple-500"
-                  />
-                </div>
-              </div>
-
-              {/* Allocation Note */}
-              <div className="p-3.5 rounded-xl bg-thrive-cream border border-thrive-border text-xs text-thrive-ink-800">
-                <span className="font-bold text-thrive-purple-900">Program Allocation: </span>
-                {currentTiers.find((t) => t.amount === selectedAmount)?.impact ||
-                  "Directly funds food relief, schooling kits, and clean water boreholes in Nigeria."}
-              </div>
-
-              {/* Donor Contact Fields */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div>
-                  <label className="block text-xs font-semibold text-thrive-purple-900 mb-1">Full Name</label>
-                  <input
-                    type="text"
-                    placeholder="Amina Bello"
-                    value={donorName}
-                    onChange={(e) => setDonorName(e.target.value)}
-                    className="w-full px-3 py-2 rounded-xl border border-thrive-border text-xs focus:ring-2 focus:ring-thrive-purple-500 focus:outline-none"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-semibold text-thrive-purple-900 mb-1">Email Address *</label>
-                  <input
-                    type="email"
-                    required
-                    placeholder="amina@example.com"
-                    value={donorEmail}
-                    onChange={(e) => setDonorEmail(e.target.value)}
-                    className="w-full px-3 py-2 rounded-xl border border-thrive-border text-xs focus:ring-2 focus:ring-thrive-purple-500 focus:outline-none"
-                  />
-                </div>
-              </div>
-
-              {/* Submit CTA - Solid gold Donate primary action without arrows */}
-              <button
-                type="submit"
-                className="w-full py-3.5 px-6 rounded-full bg-thrive-gold-600 hover:bg-thrive-gold-500 text-thrive-purple-900 font-extrabold text-xs uppercase tracking-wider shadow-md hover:shadow-lg transition-all"
-              >
-                Proceed with {formatCurrency(effectiveAmount, "NGN")} Donation
-              </button>
-            </form>
-          ) : (
-            /* Bank Transfer Info */
-            <div className="space-y-4">
-              <p className="text-xs text-thrive-ink-600 leading-relaxed">
-                Direct wire transfer from your banking mobile app or USSD:
-              </p>
-
-              <div className="p-5 rounded-2xl bg-thrive-purple-900 text-white space-y-3 border border-thrive-purple-800">
-                <div className="flex justify-between items-center text-xs text-thrive-purple-100/80 border-b border-white/10 pb-2">
-                  <span>Bank Name</span>
-                  <span className="font-bold text-white">{siteConfig.bankDetails.bankName}</span>
-                </div>
-                <div className="flex justify-between items-center text-xs text-thrive-purple-100/80 border-b border-white/10 pb-2">
-                  <span>Account Name</span>
-                  <span className="font-bold text-white text-right">{siteConfig.bankDetails.accountName}</span>
-                </div>
-                <div className="flex justify-between items-center text-xs text-thrive-purple-100/80">
-                  <span>Naira (₦) Account No.</span>
-                  <div className="flex items-center gap-2">
-                    <span className="font-mono text-base font-bold text-thrive-gold-400">
-                      {siteConfig.bankDetails.accountNumberNaira}
-                    </span>
-                    <button
-                      type="button"
-                      onClick={() => handleCopyAccount(siteConfig.bankDetails.accountNumberNaira)}
-                      className="p-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-white transition-colors"
-                      title="Copy account number"
-                    >
-                      {copiedBank ? <IconCheck size={16} className="text-emerald-400" /> : <IconCopy size={16} />}
-                    </button>
-                  </div>
-                </div>
-              </div>
-
-              <p className="text-[11px] text-thrive-ink-600 italic">
-                * Send transfer notification or receipt to <strong>{siteConfig.contact.email}</strong> for your tax deduction certificate.
+              <h2 id="donate-modal-title" className="text-2xl font-medium text-[#2E1650]">
+                Support Grassroots Programs in Lagos
+              </h2>
+              <p className="text-xs text-gray-600 mt-1">
+                Your contribution directly funds community water boreholes, school learning kits, and women vocational grants in Lagos, Nigeria.
               </p>
             </div>
-          )}
-        </div>
+
+            {/* Frequency Selector */}
+            <div className="flex p-1 bg-[#FAF6EC] rounded-full border border-gray-200">
+              <button
+                type="button"
+                onClick={() => setFrequency("once")}
+                className={`flex-1 py-2 text-xs font-medium rounded-full transition-colors ${
+                  frequency === "once" ? "bg-[#2E1650] text-white" : "text-gray-600"
+                }`}
+              >
+                Give Once
+              </button>
+              <button
+                type="button"
+                onClick={() => setFrequency("monthly")}
+                className={`flex-1 py-2 text-xs font-medium rounded-full transition-colors ${
+                  frequency === "monthly" ? "bg-[#2E1650] text-white" : "text-gray-600"
+                }`}
+              >
+                Give Monthly
+              </button>
+            </div>
+
+            {/* Preset Amount Grid */}
+            <div className="space-y-2">
+              <label className="block text-xs font-medium text-gray-700">Select Amount (NGN)</label>
+              <div className="grid grid-cols-3 gap-2">
+                {[5000, 10000, 25000, 50000, 100000].map((amt) => {
+                  const isSelected = selectedAmount === amt && !customAmount;
+                  return (
+                    <button
+                      key={amt}
+                      type="button"
+                      onClick={() => {
+                        setSelectedAmount(amt);
+                        setCustomAmount("");
+                      }}
+                      className={`py-3 px-2 rounded-2xl text-xs font-medium border text-center transition-colors ${
+                        isSelected
+                          ? "border-[#2E1650] bg-[#FAF6EC] text-[#2E1650] font-semibold"
+                          : "border-gray-200 hover:border-gray-300 text-gray-700"
+                      }`}
+                    >
+                      ₦{amt.toLocaleString()}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Custom Amount Field */}
+            <div>
+              <label className="block text-xs font-medium text-gray-700 mb-1">
+                Or Enter Custom Amount (NGN)
+              </label>
+              <div className="relative">
+                <span className="absolute left-4 top-3 text-xs text-gray-400">₦</span>
+                <input
+                  type="number"
+                  placeholder="e.g. 75000"
+                  value={customAmount}
+                  onChange={(e) => setCustomAmount(e.target.value)}
+                  className="w-full pl-8 pr-4 py-2.5 rounded-2xl border border-gray-200 text-sm focus:outline-none focus:border-[#2E1650]"
+                />
+              </div>
+            </div>
+
+            <button
+              type="button"
+              onClick={handleConfirmDonation}
+              disabled={currentAmount <= 0}
+              className="w-full py-3.5 bg-[#D4A017] hover:bg-[#B88912] text-[#2E1650] font-medium rounded-full text-sm transition-colors disabled:opacity-50"
+            >
+              Confirm Donation of ₦{currentAmount.toLocaleString()}
+            </button>
+          </div>
+        ) : (
+          <div className="space-y-6">
+            <div>
+              <div className="flex items-center gap-2 mb-2">
+                <span className="w-2 h-2 rounded-full bg-[#D4A017]" />
+                <span className="text-xs uppercase font-semibold tracking-wider text-[#2E1650]">
+                  Direct Bank Transfer
+                </span>
+              </div>
+              <h2 className="text-2xl font-medium text-[#2E1650]">Bank Transfer Details</h2>
+              <p className="text-xs text-gray-600 mt-1">
+                Please transfer your donation of <strong>₦{currentAmount.toLocaleString()}</strong> to our official NGO account.
+              </p>
+            </div>
+
+            <div className="p-5 bg-[#FAF6EC] rounded-2xl border border-gray-200 space-y-3">
+              <div>
+                <span className="text-[11px] text-gray-500 block">Bank Name</span>
+                <span className="text-sm font-semibold text-[#2E1650]">{siteConfig.bankDetails.bankName}</span>
+              </div>
+              <div>
+                <span className="text-[11px] text-gray-500 block">Account Name</span>
+                <span className="text-sm font-semibold text-[#2E1650]">{siteConfig.bankDetails.accountName}</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <div>
+                  <span className="text-[11px] text-gray-500 block">Account Number</span>
+                  <span className="text-base font-mono font-bold text-[#2E1650] tracking-wider">
+                    {siteConfig.bankDetails.accountNumberNaira}
+                  </span>
+                </div>
+                <button
+                  onClick={copyAccountNumber}
+                  className="px-3 py-1.5 bg-white border border-gray-300 rounded-full text-xs font-medium hover:border-[#2E1650] flex items-center gap-1"
+                >
+                  {copied ? (
+                    <>
+                      <IconCheck className="w-3.5 h-3.5 text-green-700" />
+                      <span>Copied</span>
+                    </>
+                  ) : (
+                    <>
+                      <IconCopy className="w-3.5 h-3.5" />
+                      <span>Copy</span>
+                    </>
+                  )}
+                </button>
+              </div>
+              <div>
+                <span className="text-[11px] text-gray-500 block">Transfer Narration / Reference</span>
+                <span className="text-xs font-mono text-gray-600">
+                  DONATION-{Date.now().toString().slice(-6)}
+                </span>
+              </div>
+            </div>
+
+            <p className="text-xs text-gray-500">
+              After transferring, please email your receipt to <strong>{siteConfig.contact.email}</strong> so our finance team can verify and issue your donation acknowledgement.
+            </p>
+
+            <button
+              type="button"
+              onClick={() => setIsOpen(false)}
+              className="w-full py-3 bg-[#2E1650] text-white hover:bg-[#381A5F] font-medium rounded-full text-sm transition-colors"
+            >
+              Close and Finish
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

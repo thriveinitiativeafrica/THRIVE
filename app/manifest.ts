@@ -5,7 +5,7 @@ export default function manifest(): MetadataRoute.Manifest {
     name: "THRIVE Initiative",
     short_name: "THRIVE",
     description:
-      "Transforming Hope, Rights, Inclusion, Vision & Empowerment — Nigerian NGO based in Lagos.",
+      "Transforming Hope, Rights, Inclusion, Vision and Empowerment, a Nigerian NGO based in Lagos.",
     start_url: "/",
     display: "standalone",
     background_color: "#2E1650",

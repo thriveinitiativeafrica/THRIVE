@@ -10,8 +10,8 @@ export async function GET() {
 
   const rssItems = posts
     .map((post) => {
-      const postUrl = `${baseUrl}/stories/${post.slug}`;
-      const pubDate = new Date(post.createdAt).toUTCString();
+      const postUrl = `${baseUrl}/blog/${post.slug}`;
+      const pubDate = new Date(post.created_at).toUTCString();
       return `
         <item>
           <title><![CDATA[${post.title}]]></title>
@@ -19,8 +19,7 @@ export async function GET() {
           <guid isPermaLink="true">${postUrl}</guid>
           <description><![CDATA[${post.excerpt}]]></description>
           <pubDate>${pubDate}</pubDate>
-          <category>${post.category}</category>
-          <author>${siteConfig.contact.email} (${post.author?.name || "THRIVE Initiative"})</author>
+          <author>${siteConfig.contact.email} (${post.author || "THRIVE Initiative"})</author>
         </item>
       `;
     })
@@ -29,7 +28,7 @@ export async function GET() {
   const rss = `<?xml version="1.0" encoding="UTF-8"?>
     <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
       <channel>
-        <title><![CDATA[${siteConfig.name} — Field Dispatches]]></title>
+        <title><![CDATA[${siteConfig.name}, Field Dispatches]]></title>
         <link>${baseUrl}</link>
         <description><![CDATA[${siteConfig.description}]]></description>
         <language>en-NG</language>

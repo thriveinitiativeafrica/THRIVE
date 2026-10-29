@@ -5,315 +5,367 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { siteConfig } from "@/content/site.config";
-import { siteImages } from "@/content/images.config";
+import { openDonateModal } from "@/components/shared/DonateModal";
 import { IconChevronDown, IconMenu, IconClose } from "@/components/shared/Icons";
-import { cn } from "@/lib/utils";
-import { DonateModal } from "../shared/DonateModal";
 
 export function Navbar() {
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [openDropdown, setOpenDropdown] = useState<string | null>(null);
-  const [donateModalOpen, setDonateModalOpen] = useState(false);
   const pathname = usePathname();
-  const navRef = useRef<HTMLDivElement>(null);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [aboutDropdownOpen, setAboutDropdownOpen] = useState(false);
+  const [programsDropdownOpen, setProgramsDropdownOpen] = useState(false);
+  const [mobileAboutExpanded, setMobileAboutExpanded] = useState(false);
+  const [mobileProgramsExpanded, setMobileProgramsExpanded] = useState(false);
 
-  const isHome = pathname === "/";
+  const aboutRef = useRef<HTMLDivElement>(null);
+  const programsRef = useRef<HTMLDivElement>(null);
 
+  // Close dropdowns on outside click
   useEffect(() => {
-    const handleScroll = () => {
-      if (window.scrollY > 40) {
-        setIsScrolled(true);
-      } else {
-        setIsScrolled(false);
+    function handleClickOutside(event: MouseEvent) {
+      if (aboutRef.current && !aboutRef.current.contains(event.target as Node)) {
+        setAboutDropdownOpen(false);
       }
-    };
-    handleScroll();
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        setOpenDropdown(null);
-        setMobileMenuOpen(false);
+      if (programsRef.current && !programsRef.current.contains(event.target as Node)) {
+        setProgramsDropdownOpen(false);
       }
-    };
-
-    const handleClickOutside = (e: MouseEvent) => {
-      if (navRef.current && !navRef.current.contains(e.target as Node)) {
-        setOpenDropdown(null);
-      }
-    };
-
-    document.addEventListener("keydown", handleKeyDown);
+    }
     document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("keydown", handleKeyDown);
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  // Close mobile menu on route change
   useEffect(() => {
     setMobileMenuOpen(false);
-    setOpenDropdown(null);
   }, [pathname]);
 
-  const toggleDropdown = (label: string) => {
-    setOpenDropdown(openDropdown === label ? null : label);
-  };
-
-  const isLightNav = isScrolled || !isHome;
+  const volunteerFormUrl = process.env.NEXT_PUBLIC_VOLUNTEER_FORM_URL;
+  const getInvolvedHref = volunteerFormUrl || "/contact";
+  const getInvolvedExternal = Boolean(volunteerFormUrl);
 
   return (
-    <>
-      <header
-        ref={navRef}
-        className={cn(
-          "fixed top-0 left-0 right-0 z-40 transition-all duration-300",
-          isLightNav
-            ? "bg-white/95 backdrop-blur-md text-thrive-purple-900 border-b border-thrive-border shadow-xs py-3"
-            : "bg-transparent text-white py-4 sm:py-5 border-b border-white/10"
-        )}
-      >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
-          {/* Brand Logo with New Official Asset */}
+    <header className="sticky top-4 z-40 px-3 sm:px-6 lg:px-8">
+      <div className="max-w-6xl mx-auto bg-white border border-gray-200/90 rounded-full px-4 sm:px-6 py-2.5 flex items-center justify-between shadow-sm">
+        {/* Left: Logo */}
+        <Link href="/" className="flex items-center gap-2 shrink-0">
+          <Image
+            src="/logo/thrive-logo-clean.png"
+            alt="THRIVE Initiative"
+            width={130}
+            height={32}
+            className="h-8 w-auto object-contain"
+            priority
+          />
+        </Link>
+
+        {/* Center: Desktop Navigation Links */}
+        <nav className="hidden lg:flex items-center gap-6 text-sm font-medium text-[#2E1650]">
           <Link
             href="/"
-            className={cn(
-              "flex items-center gap-3 group transition-transform duration-200 hover:scale-[1.02]",
-              !isLightNav && "bg-white/95 px-3 py-1.5 rounded-2xl shadow-sm border border-white/20"
-            )}
-            aria-label="THRIVE Initiative Home"
+            className={`transition-colors hover:text-[#D4A017] ${
+              pathname === "/" ? "font-semibold text-[#D4A017]" : ""
+            }`}
           >
-            <div className="relative w-8 h-8 sm:w-9 sm:h-9 shrink-0">
-              <Image
-                src={siteImages.logo.emblem}
-                alt="THRIVE Emblem"
-                fill
-                sizes="36px"
-                className="object-contain"
-                priority
-              />
-            </div>
-            <div className="flex flex-col">
-              <span className="font-serif text-lg sm:text-xl font-bold tracking-tight text-thrive-purple-900 leading-none">
-                THRIVE
-              </span>
-              <span className="text-[9px] tracking-widest uppercase font-semibold text-thrive-gold-600 leading-tight">
-                Initiative
-              </span>
-            </div>
+            Home
           </Link>
 
-          {/* Desktop Navigation Links */}
-          <nav className="hidden lg:flex items-center gap-1 xl:gap-2" aria-label="Main Navigation">
-            {siteConfig.nav.map((item) => {
-              const hasChildren = item.children && item.children.length > 0;
-              const isActive =
-                pathname === item.href ||
-                (hasChildren && item.children?.some((c) => pathname === c.href));
-              const isOpen = openDropdown === item.label;
-
-              if (hasChildren) {
-                return (
-                  <div key={item.label} className="relative">
-                    <button
-                      type="button"
-                      onClick={() => toggleDropdown(item.label)}
-                      aria-expanded={isOpen}
-                      aria-haspopup="true"
-                      className={cn(
-                        "flex items-center gap-1.5 px-3.5 py-2 rounded-full text-xs font-semibold uppercase tracking-wider transition-colors",
-                        isLightNav
-                          ? isActive
-                            ? "text-thrive-purple-900 bg-thrive-purple-100"
-                            : "text-thrive-ink-800 hover:text-thrive-purple-900 hover:bg-thrive-cream"
-                          : isActive
-                          ? "text-white bg-white/20"
-                          : "text-white/90 hover:text-white hover:bg-white/10"
-                      )}
-                    >
-                      <span>{item.label}</span>
-                      <IconChevronDown
-                        className={cn("w-3.5 h-3.5", isOpen && "rotate-180")}
-                      />
-                    </button>
-
-                    {/* Dropdown Menu */}
-                    {isOpen && (
-                      <div
-                        role="menu"
-                        className="absolute top-full left-0 mt-2 w-72 bg-white text-thrive-purple-900 border border-thrive-border rounded-2xl p-2.5 z-50 shadow-xl"
-                      >
-                        {item.children?.map((sub) => (
-                          <Link
-                            key={sub.href}
-                            href={sub.href}
-                            role="menuitem"
-                            onClick={() => setOpenDropdown(null)}
-                            className={cn(
-                              "block p-2.5 rounded-xl transition-colors text-left",
-                              pathname === sub.href
-                                ? "bg-thrive-purple-50 text-thrive-purple-900 font-bold"
-                                : "text-thrive-ink-800 hover:bg-thrive-cream hover:text-thrive-purple-900"
-                            )}
-                          >
-                            <div className="text-xs font-bold uppercase tracking-wider">
-                              {sub.label}
-                            </div>
-                            {sub.description && (
-                              <div className="text-[11px] text-thrive-ink-600 line-clamp-1 mt-0.5">
-                                {sub.description}
-                              </div>
-                            )}
-                          </Link>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                );
-              }
-
-              return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className={cn(
-                    "px-3.5 py-2 rounded-full text-xs font-semibold uppercase tracking-wider transition-colors",
-                    isLightNav
-                      ? isActive
-                        ? "text-thrive-purple-900 bg-thrive-purple-100"
-                        : "text-thrive-ink-800 hover:text-thrive-purple-900 hover:bg-thrive-cream"
-                      : isActive
-                      ? "text-white bg-white/20"
-                      : "text-white/90 hover:text-white hover:bg-white/10"
-                  )}
-                >
-                  {item.label}
-                </Link>
-              );
-            })}
-          </nav>
-
-          {/* Action CTAs */}
-          <div className="hidden md:flex items-center gap-3">
+          {/* About Us Dropdown */}
+          <div
+            ref={aboutRef}
+            className="relative"
+            onMouseEnter={() => setAboutDropdownOpen(true)}
+            onMouseLeave={() => setAboutDropdownOpen(false)}
+          >
             <button
-              onClick={() => setDonateModalOpen(true)}
-              className="px-6 py-2.5 rounded-full bg-thrive-gold-600 hover:bg-thrive-gold-500 text-thrive-purple-900 font-bold text-xs uppercase tracking-wider shadow-sm transition-all hover:shadow-md active:scale-95"
+              type="button"
+              onClick={() => setAboutDropdownOpen(!aboutDropdownOpen)}
+              className="flex items-center gap-1 transition-colors hover:text-[#D4A017] py-1"
             >
-              Donate
+              <span>About Us</span>
+              <IconChevronDown className="w-3.5 h-3.5 text-gray-400" />
             </button>
 
-            <Link
-              href="/get-involved/volunteer"
-              className={cn(
-                "px-5 py-2 rounded-full font-bold text-xs uppercase tracking-wider transition-all border",
-                isLightNav
-                  ? "border-thrive-purple-900 text-thrive-purple-900 hover:bg-thrive-purple-900 hover:text-white"
-                  : "border-white text-white hover:bg-white hover:text-thrive-purple-900"
-              )}
-            >
-              Volunteer
-            </Link>
+            {aboutDropdownOpen && (
+              <div className="absolute top-full left-0 mt-2 w-48 bg-white border border-gray-200 rounded-2xl py-2 shadow-sm z-50">
+                <Link
+                  href="/about/story"
+                  className="block px-4 py-2 text-xs hover:bg-[#FAF6EC] text-[#2E1650] transition-colors"
+                >
+                  Our Story & Values
+                </Link>
+                <Link
+                  href="/about/team"
+                  className="block px-4 py-2 text-xs hover:bg-[#FAF6EC] text-[#2E1650] transition-colors"
+                >
+                  About the Team
+                </Link>
+              </div>
+            )}
           </div>
 
-          {/* Mobile Menu Toggle */}
-          <div className="flex items-center gap-2 lg:hidden">
+          {/* Programs Dropdown */}
+          <div
+            ref={programsRef}
+            className="relative"
+            onMouseEnter={() => setProgramsDropdownOpen(true)}
+            onMouseLeave={() => setProgramsDropdownOpen(false)}
+          >
             <button
-              onClick={() => setDonateModalOpen(true)}
-              className="px-4 py-1.5 rounded-full bg-thrive-gold-600 text-thrive-purple-900 font-bold text-xs uppercase tracking-wider shadow-sm"
+              type="button"
+              onClick={() => setProgramsDropdownOpen(!programsDropdownOpen)}
+              className="flex items-center gap-1 transition-colors hover:text-[#D4A017] py-1"
             >
-              Donate
+              <span>Programs</span>
+              <IconChevronDown className="w-3.5 h-3.5 text-gray-400" />
             </button>
 
-            <button
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className={cn(
-                "p-2 rounded-xl border transition-colors",
-                isLightNav
-                  ? "border-thrive-border text-thrive-purple-900 bg-white"
-                  : "border-white/20 text-white bg-white/10"
-              )}
-              aria-label="Toggle navigation menu"
+            {programsDropdownOpen && (
+              <div className="absolute top-full left-0 mt-2 w-64 bg-white border border-gray-200 rounded-2xl py-2 shadow-sm z-50">
+                <Link
+                  href="/programs"
+                  className="block px-4 py-2 text-xs font-semibold text-[#2E1650] hover:bg-[#FAF6EC] border-b border-gray-100 transition-colors"
+                >
+                  All Programs
+                </Link>
+                <Link
+                  href="/programs/women-empowerment"
+                  className="block px-4 py-2 text-xs hover:bg-[#FAF6EC] text-[#2E1650] transition-colors"
+                >
+                  Women Empowerment & Gender
+                </Link>
+                <Link
+                  href="/programs/child-education"
+                  className="block px-4 py-2 text-xs hover:bg-[#FAF6EC] text-[#2E1650] transition-colors"
+                >
+                  Child Education & Youth
+                </Link>
+                <Link
+                  href="/programs/skills-acquisition"
+                  className="block px-4 py-2 text-xs hover:bg-[#FAF6EC] text-[#2E1650] transition-colors"
+                >
+                  Skills Acquisition
+                </Link>
+                <Link
+                  href="/programs/advocacy-inclusion"
+                  className="block px-4 py-2 text-xs hover:bg-[#FAF6EC] text-[#2E1650] transition-colors"
+                >
+                  Advocacy & Social Inclusion
+                </Link>
+                <Link
+                  href="/programs/community-development"
+                  className="block px-4 py-2 text-xs hover:bg-[#FAF6EC] text-[#2E1650] transition-colors"
+                >
+                  Community Development
+                </Link>
+              </div>
+            )}
+          </div>
+
+          {/* Get Involved */}
+          {getInvolvedExternal ? (
+            <a
+              href={getInvolvedHref}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="transition-colors hover:text-[#D4A017]"
             >
-              {mobileMenuOpen ? <IconClose size={20} /> : <IconMenu size={20} />}
+              Get Involved
+            </a>
+          ) : (
+            <Link href="/contact" className="transition-colors hover:text-[#D4A017]">
+              Get Involved
+            </Link>
+          )}
+
+          {/* Blog */}
+          <Link
+            href="/blog"
+            className={`transition-colors hover:text-[#D4A017] ${
+              pathname.startsWith("/blog") ? "font-semibold text-[#D4A017]" : ""
+            }`}
+          >
+            Blog
+          </Link>
+
+          {/* Contact */}
+          <Link
+            href="/contact"
+            className={`transition-colors hover:text-[#D4A017] ${
+              pathname === "/contact" ? "font-semibold text-[#D4A017]" : ""
+            }`}
+          >
+            Contact
+          </Link>
+        </nav>
+
+        {/* Right: Donate Button */}
+        <div className="flex items-center gap-3">
+          <button
+            type="button"
+            onClick={() => openDonateModal()}
+            className="px-5 py-2 rounded-full bg-[#D4A017] hover:bg-[#B88912] text-[#2E1650] text-xs sm:text-sm font-medium transition-colors"
+          >
+            Donate
+          </button>
+
+          {/* Mobile Menu Toggle Button */}
+          <button
+            type="button"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="lg:hidden p-2 text-[#2E1650] hover:bg-gray-100 rounded-full transition-colors"
+            aria-label="Toggle menu"
+          >
+            {mobileMenuOpen ? <IconClose className="w-5 h-5" /> : <IconMenu className="w-5 h-5" />}
+          </button>
+        </div>
+      </div>
+
+      {/* Mobile Menu Dropdown */}
+      {mobileMenuOpen && (
+        <div className="lg:hidden mt-2 max-w-6xl mx-auto bg-white border border-gray-200 rounded-3xl p-5 shadow-lg space-y-4">
+          <nav className="flex flex-col space-y-2 text-sm text-[#2E1650]">
+            <Link
+              href="/"
+              className="py-2 px-3 rounded-xl hover:bg-[#FAF6EC] font-medium"
+            >
+              Home
+            </Link>
+
+            {/* Mobile About Us */}
+            <div>
+              <button
+                type="button"
+                onClick={() => setMobileAboutExpanded(!mobileAboutExpanded)}
+                className="w-full flex items-center justify-between py-2 px-3 rounded-xl hover:bg-[#FAF6EC] font-medium"
+              >
+                <span>About Us</span>
+                <IconChevronDown
+                  className={`w-4 h-4 transition-transform ${
+                    mobileAboutExpanded ? "rotate-180" : ""
+                  }`}
+                />
+              </button>
+              {mobileAboutExpanded && (
+                <div className="pl-6 space-y-1 py-1">
+                  <Link
+                    href="/about/story"
+                    className="block py-1.5 text-xs text-gray-700 hover:text-[#D4A017]"
+                  >
+                    Our Story & Values
+                  </Link>
+                  <Link
+                    href="/about/team"
+                    className="block py-1.5 text-xs text-gray-700 hover:text-[#D4A017]"
+                  >
+                    About the Team
+                  </Link>
+                </div>
+              )}
+            </div>
+
+            {/* Mobile Programs */}
+            <div>
+              <button
+                type="button"
+                onClick={() => setMobileProgramsExpanded(!mobileProgramsExpanded)}
+                className="w-full flex items-center justify-between py-2 px-3 rounded-xl hover:bg-[#FAF6EC] font-medium"
+              >
+                <span>Programs</span>
+                <IconChevronDown
+                  className={`w-4 h-4 transition-transform ${
+                    mobileProgramsExpanded ? "rotate-180" : ""
+                  }`}
+                />
+              </button>
+              {mobileProgramsExpanded && (
+                <div className="pl-6 space-y-1 py-1">
+                  <Link
+                    href="/programs"
+                    className="block py-1.5 text-xs font-semibold text-[#2E1650]"
+                  >
+                    All Programs
+                  </Link>
+                  <Link
+                    href="/programs/women-empowerment"
+                    className="block py-1.5 text-xs text-gray-700 hover:text-[#D4A017]"
+                  >
+                    Women Empowerment & Gender
+                  </Link>
+                  <Link
+                    href="/programs/child-education"
+                    className="block py-1.5 text-xs text-gray-700 hover:text-[#D4A017]"
+                  >
+                    Child Education & Youth
+                  </Link>
+                  <Link
+                    href="/programs/skills-acquisition"
+                    className="block py-1.5 text-xs text-gray-700 hover:text-[#D4A017]"
+                  >
+                    Skills Acquisition
+                  </Link>
+                  <Link
+                    href="/programs/advocacy-inclusion"
+                    className="block py-1.5 text-xs text-gray-700 hover:text-[#D4A017]"
+                  >
+                    Advocacy & Social Inclusion
+                  </Link>
+                  <Link
+                    href="/programs/community-development"
+                    className="block py-1.5 text-xs text-gray-700 hover:text-[#D4A017]"
+                  >
+                    Community Development
+                  </Link>
+                </div>
+              )}
+            </div>
+
+            {/* Mobile Get Involved */}
+            {getInvolvedExternal ? (
+              <a
+                href={getInvolvedHref}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="py-2 px-3 rounded-xl hover:bg-[#FAF6EC] font-medium"
+              >
+                Get Involved
+              </a>
+            ) : (
+              <Link
+                href="/contact"
+                className="py-2 px-3 rounded-xl hover:bg-[#FAF6EC] font-medium"
+              >
+                Get Involved
+              </Link>
+            )}
+
+            <Link
+              href="/blog"
+              className="py-2 px-3 rounded-xl hover:bg-[#FAF6EC] font-medium"
+            >
+              Blog
+            </Link>
+
+            <Link
+              href="/contact"
+              className="py-2 px-3 rounded-xl hover:bg-[#FAF6EC] font-medium"
+            >
+              Contact
+            </Link>
+          </nav>
+
+          <div className="pt-2 border-t border-gray-100">
+            <button
+              type="button"
+              onClick={() => {
+                setMobileMenuOpen(false);
+                openDonateModal();
+              }}
+              className="w-full py-3 bg-[#D4A017] hover:bg-[#B88912] text-[#2E1650] font-medium rounded-full text-center text-sm transition-colors"
+            >
+              Donate Now
             </button>
           </div>
         </div>
-
-        {/* Mobile Navigation Drawer */}
-        {mobileMenuOpen && (
-          <div className="lg:hidden bg-white text-thrive-purple-900 border-t border-thrive-border px-5 py-6 space-y-4 max-h-[85vh] overflow-y-auto shadow-2xl">
-            <nav className="flex flex-col space-y-1">
-              {siteConfig.nav.map((item) => {
-                const hasChildren = item.children && item.children.length > 0;
-                return (
-                  <div key={item.label} className="border-b border-thrive-border-light pb-2">
-                    {hasChildren ? (
-                      <div>
-                        <div className="px-3 py-2 text-xs uppercase font-bold tracking-wider text-thrive-purple-900">
-                          {item.label}
-                        </div>
-                        <div className="pl-3 space-y-1">
-                          {item.children?.map((sub) => (
-                            <Link
-                              key={sub.href}
-                              href={sub.href}
-                              className={cn(
-                                "block px-3 py-2 rounded-xl text-xs font-semibold uppercase tracking-wider",
-                                pathname === sub.href
-                                  ? "bg-thrive-purple-50 text-thrive-purple-900"
-                                  : "text-thrive-ink-800 hover:bg-thrive-cream"
-                              )}
-                            >
-                              {sub.label}
-                            </Link>
-                          ))}
-                        </div>
-                      </div>
-                    ) : (
-                      <Link
-                        href={item.href}
-                        className={cn(
-                          "block px-3 py-2.5 rounded-xl text-xs font-semibold uppercase tracking-wider",
-                          pathname === item.href
-                            ? "bg-thrive-purple-50 text-thrive-purple-900"
-                            : "text-thrive-ink-800 hover:bg-thrive-cream"
-                        )}
-                      >
-                        {item.label}
-                      </Link>
-                    )}
-                  </div>
-                );
-              })}
-            </nav>
-
-            <div className="pt-4 flex flex-col gap-2.5">
-              <button
-                onClick={() => {
-                  setMobileMenuOpen(false);
-                  setDonateModalOpen(true);
-                }}
-                className="w-full py-3 rounded-full bg-thrive-gold-600 text-thrive-purple-900 font-bold text-center text-xs uppercase tracking-wider shadow-sm"
-              >
-                Donate
-              </button>
-              <Link
-                href="/get-involved/volunteer"
-                className="w-full py-3 rounded-full bg-white border-2 border-thrive-purple-900 text-thrive-purple-900 font-bold text-center text-xs uppercase tracking-wider"
-              >
-                Become a Volunteer
-              </Link>
-            </div>
-          </div>
-        )}
-      </header>
-
-      {/* Global Donation Modal */}
-      <DonateModal isOpen={donateModalOpen} onClose={() => setDonateModalOpen(false)} />
-    </>
+      )}
+    </header>
   );
 }

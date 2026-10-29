@@ -1,113 +1,89 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { getAllPosts, savePost, deletePost } from "@/db";
-import type { PostType, PostStatus } from "@/db/schema";
+import { revalidatePath } from "next/cache";
 
-export async function GET(req: Request) {
-  try {
-    const { searchParams } = new URL(req.url);
-    const limit = parseInt(searchParams.get("limit") || "50", 10);
-    const type = (searchParams.get("type") as PostType) || undefined;
-    const status = (searchParams.get("status") as PostStatus | "all") || "published";
+export async function GET(req: NextRequest) {
+  const { searchParams } = new URL(req.url);
+  const status = searchParams.get("status") as "published" | "draft" | "all" | null;
+  const limit = searchParams.get("limit") ? parseInt(searchParams.get("limit")!, 10) : undefined;
 
-    const posts = await getAllPosts({
-      type,
-      status,
-      limit,
-    });
+  const postsList = await getAllPosts({
+    status: status || "published",
+    limit,
+  });
 
-    return NextResponse.json({ success: true, count: posts.length, data: posts });
-  } catch (err: unknown) {
-    const errorMsg = err instanceof Error ? err.message : "Failed to retrieve posts";
-    return NextResponse.json({ success: false, error: errorMsg }, { status: 500 });
-  }
+  return NextResponse.json({ posts: postsList });
 }
 
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const {
-      id,
-      title,
-      slug,
-      italicTitle,
-      excerpt,
-      content,
-      type,
-      category,
-      tags,
-      author,
-      publishDate,
-      coverImage,
-      coverImageAlt,
-      inlineImages,
-      status,
-      readTime,
-      seoTitle,
-      seoDescription,
-    } = body;
 
-    if (!title || !content) {
+    if (!body.title || !body.excerpt || !body.body) {
       return NextResponse.json(
-        { success: false, error: "Title and content are required" },
+        { error: "Title, excerpt, and body are required fields." },
         { status: 400 }
       );
     }
 
+    const slug =
+      body.slug ||
+      body.title
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/(^-|-$)+/g, "");
+
     const post = await savePost({
-      id,
-      title,
+      id: body.id,
+      title: body.title,
       slug,
-      italicTitle,
-      excerpt,
-      content,
-      type: type || "blog",
-      category: category || "Field Story",
-      tags: tags || ["Community Outreach"],
-      author: author || {
-        name: "THRIVE Field Team",
-        role: "Grassroots Project Lead",
-        avatar: "/images/avatar-amina.webp",
-      },
-      publishDate,
-      coverImage: coverImage || "/images/story-water.webp",
-      coverImageAlt: coverImageAlt || title,
-      inlineImages: inlineImages || [],
-      status: status || "published",
-      readTime: readTime || "4 min read",
-      seoTitle,
-      seoDescription,
+      excerpt: body.excerpt,
+      body: body.body,
+      cover_image_url: body.cover_image_url,
+      cover_image_alt: body.cover_image_alt,
+      author: body.author || "THRIVE Initiative",
+      status: body.status || "draft",
+      published_at: body.published_at,
+      seo_title: body.seo_title,
+      seo_description: body.seo_description,
     });
 
-    return NextResponse.json({ success: true, data: post });
+    try {
+      revalidatePath("/blog");
+      revalidatePath(`/blog/${slug}`);
+      revalidatePath("/");
+    } catch {
+      // Revalidation in non-cached contexts
+    }
+
+    return NextResponse.json({ success: true, post });
   } catch (err: unknown) {
-    const errorMsg = err instanceof Error ? err.message : "Failed to save post";
-    return NextResponse.json({ success: false, error: errorMsg }, { status: 500 });
+    console.error("Save post error:", err);
+    return NextResponse.json({ error: "Failed to save post." }, { status: 500 });
   }
 }
 
-export async function DELETE(req: Request) {
+export async function DELETE(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
     const id = searchParams.get("id");
 
     if (!id) {
-      return NextResponse.json(
-        { success: false, error: "Post ID is required for deletion" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "Post ID is required." }, { status: 400 });
     }
 
-    const deleted = await deletePost(id);
-    if (!deleted) {
-      return NextResponse.json(
-        { success: false, error: "Post not found" },
-        { status: 404 }
-      );
+    await deletePost(id);
+
+    try {
+      revalidatePath("/blog");
+      revalidatePath("/");
+    } catch {
+      // Revalidation in non-cached contexts
     }
 
-    return NextResponse.json({ success: true, message: "Post deleted successfully" });
+    return NextResponse.json({ success: true });
   } catch (err: unknown) {
-    const errorMsg = err instanceof Error ? err.message : "Failed to delete post";
-    return NextResponse.json({ success: false, error: errorMsg }, { status: 500 });
+    console.error("Delete post error:", err);
+    return NextResponse.json({ error: "Failed to delete post." }, { status: 500 });
   }
 }
