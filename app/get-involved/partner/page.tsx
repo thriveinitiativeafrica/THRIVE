@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { CheckCircle2, Send, ShieldCheck } from "lucide-react";
+import { IconCheckCircle, IconShieldCheck } from "@/components/shared/Icons";
 
 export default function PartnerPage() {
   const [partnerData, setPartnerData] = useState({
@@ -99,7 +99,7 @@ export default function PartnerPage() {
               </div>
 
               <div className="p-4 rounded-2xl bg-gray-50 border border-gray-200 flex items-center gap-3 text-xs text-thrive-purple-900 font-semibold">
-                <ShieldCheck className="w-5 h-5 text-thrive-purple-900 shrink-0" />
+                <IconShieldCheck className="w-5 h-5 text-thrive-purple-900 shrink-0" />
                 <span>Full compliance auditing & customized impact reporting provided for every institutional partnership.</span>
               </div>
             </div>
@@ -109,7 +109,7 @@ export default function PartnerPage() {
               {submitted ? (
                 <div className="text-center py-10 space-y-4">
                   <div className="w-16 h-16 rounded-full bg-gray-100 text-thrive-purple-900 flex items-center justify-center mx-auto">
-                    <CheckCircle2 className="w-10 h-10" />
+                    <IconCheckCircle className="w-10 h-10" />
                   </div>
                   <h3 className="font-serif text-2xl font-bold text-thrive-purple-900">
                     Partnership Inquiry Received
@@ -230,7 +230,6 @@ export default function PartnerPage() {
                     className="w-full py-3.5 rounded-full bg-thrive-purple-900 hover:bg-thrive-purple-800 text-white font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 disabled:opacity-50 transition-all"
                   >
                     <span>{loading ? "Sending..." : "Submit Partnership Proposal"}</span>
-                    <Send className="w-3.5 h-3.5 text-thrive-gold-400" />
                   </button>
                 </form>
               )}

@@ -1,7 +1,7 @@
 import React from "react";
 import type { Metadata } from "next";
 import { VolunteerCTA } from "@/components/sections/VolunteerCTA";
-import { Award, Users, BookOpen, HeartHandshake } from "lucide-react";
+import { IconUsers, IconBook, IconHeart, IconShieldCheck } from "@/components/shared/Icons";
 
 export const metadata: Metadata = {
   title: "Volunteer With Us — Join the THRIVE Volunteer Corps",
@@ -12,22 +12,22 @@ export const metadata: Metadata = {
 export default function VolunteerPage() {
   const volunteerBenefits = [
     {
-      icon: <Users className="w-6 h-6 text-thrive-purple-900 butterfly-hover" />,
+      icon: <IconUsers className="w-6 h-6 text-thrive-purple-900" />,
       title: "Community Mobilization",
       desc: "Work on the frontlines alongside seasoned community coordinators and grassroots leaders.",
     },
     {
-      icon: <BookOpen className="w-6 h-6 text-thrive-purple-900 butterfly-hover" />,
+      icon: <IconBook className="w-6 h-6 text-thrive-purple-900" />,
       title: "Capacity Building Workshops",
       desc: "Get access to exclusive quarterly training sessions on project management and monitoring.",
     },
     {
-      icon: <Award className="w-6 h-6 text-thrive-purple-900 butterfly-hover" />,
+      icon: <IconShieldCheck className="w-6 h-6 text-thrive-purple-900" />,
       title: "Official Impact Credential",
       desc: "Receive formal certificates of service and personalized professional recommendation letters.",
     },
     {
-      icon: <HeartHandshake className="w-6 h-6 text-thrive-purple-900 butterfly-hover" />,
+      icon: <IconHeart className="w-6 h-6 text-thrive-purple-900" />,
       title: "Lifelong Changemaker Network",
       desc: "Connect with like-minded humanitarians, educators, doctors, and civic innovators across Nigeria.",
     },
