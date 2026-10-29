@@ -1,90 +1,96 @@
 import React from "react";
 import Image from "next/image";
-import { Star } from "lucide-react";
+import { siteImages } from "@/content/images.config";
+import { SectionBackground } from "@/components/shared/SectionBackground";
 
 export function Testimonials() {
   const testimonialsList = [
     {
       quote:
-        "The food distribution program came at the right time. My family can now eat nutritious meals every day, and my children are growing strong.",
-      name: "Samuel Ndlovu",
-      location: "Community Beneficiary",
-      avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&q=80",
+        "The emergency food relief arrived when our community had exhausted all options. My household received wholesome staple grains and cooking essentials that sustained my three children.",
+      name: "Babatunde Alabi",
+      location: "Makoko Waterfront Settlement, Lagos",
+      avatar: siteImages.avatars.babatunde,
     },
     {
       quote:
-        "Thanks to the clean water project, our village no longer suffers from waterborne illnesses. My children are healthier, happier, and attending school regularly.",
+        "Before THRIVE installed the solar borehole in Olomowewe, our young daughters spent hours fetching turbid water every morning. Today, our community clinic records zero dysentery cases.",
       name: "Amina Okoro",
-      location: "Lagos, Nigeria",
-      avatar: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=150&q=80",
+      location: "Olomowewe Water Committee Chair",
+      avatar: siteImages.avatars.amina,
     },
     {
       quote:
-        "With the vocational skills sponsorship, I started my tailoring and fashion enterprise. I can now support my siblings through school.",
-      name: "Grace Mwangi",
-      location: "Youth Academy Graduate",
-      avatar: "https://images.unsplash.com/photo-1589156280159-27698a70f29e?auto=format&fit=crop&w=150&q=80",
+        "Through the vocational tailoring scholarship, I mastered garment design and received my start-up sewing machine. I now train three younger apprentices and support my family.",
+      name: "Grace Adeyemi",
+      location: "THRIVE Skills Academy Graduate, Lagos",
+      avatar: siteImages.avatars.grace,
     },
   ];
 
   return (
-    <section className="py-20 lg:py-28 bg-thrive-cream border-t border-gray-200 overflow-hidden">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12 text-center">
+    <section className="py-20 lg:py-28 bg-thrive-cream border-t border-thrive-border relative overflow-hidden">
+      {/* ProofDeck-style Animated Background */}
+      <SectionBackground variant="cream" pattern="floating-elements" />
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12 text-center relative z-10">
         <div className="space-y-4 max-w-2xl mx-auto">
+          <span className="text-xs font-bold uppercase tracking-widest text-thrive-purple-700">
+            Voices of the Community
+          </span>
           <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-medium tracking-tight text-thrive-purple-900 leading-[1.15]">
-            Real <span className="italic font-normal font-serif">Stories, Real Impact</span>
+            Real <span className="italic font-normal font-serif text-thrive-gold-600">Stories, Real Impact</span>
           </h2>
         </div>
 
-        {/* 3 Testimonial Cards with Card Lift Animation and 100% Black African Avatars */}
+        {/* 3 Testimonial Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 text-left">
           {testimonialsList.map((item) => (
             <div
               key={item.name}
-              className="bg-white rounded-2xl p-6 sm:p-8 border border-gray-200 flex flex-col justify-between space-y-6 transition-all duration-300 hover:-translate-y-1.5 hover:border-thrive-purple-900 group"
+              className="bg-white rounded-3xl p-6 sm:p-8 border border-thrive-border flex flex-col justify-between space-y-6 shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-1 group"
             >
-              {/* 5 Stars */}
-              <div className="flex items-center gap-1">
+              {/* 5 Literal Rating Stars (Bespoke SVG) */}
+              <div className="flex items-center gap-1" aria-label="5 star testimonial rating">
                 {Array.from({ length: 5 }).map((_, i) => (
-                  <Star
+                  <svg
                     key={i}
-                    className="w-3.5 h-3.5 fill-thrive-gold-600 text-thrive-gold-600 transition-transform duration-300 group-hover:scale-110"
-                  />
+                    className="w-4 h-4 fill-thrive-gold-500 text-thrive-gold-500"
+                    viewBox="0 0 24 24"
+                    aria-hidden="true"
+                  >
+                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                  </svg>
                 ))}
               </div>
 
               {/* Quote */}
-              <p className="text-xs sm:text-sm text-thrive-ink-800 leading-relaxed italic font-normal flex-1">
+              <p className="text-sm text-thrive-ink-800 leading-relaxed italic font-normal flex-1">
                 &ldquo;{item.quote}&rdquo;
               </p>
 
               {/* Author & Avatar */}
-              <div className="flex items-center gap-3 pt-2 border-t border-gray-100">
-                <div className="relative w-10 h-10 rounded-full overflow-hidden shrink-0 border border-gray-200">
+              <div className="flex items-center gap-3 pt-3 border-t border-thrive-border">
+                <div className="relative w-11 h-11 rounded-full overflow-hidden shrink-0 border-2 border-thrive-purple-100 bg-thrive-cream">
                   <Image
-                    src={item.avatar}
-                    alt={item.name}
+                    src={item.avatar.src}
+                    alt={item.avatar.alt}
                     fill
-                    sizes="40px"
-                    className="object-cover transition-transform duration-500 group-hover:scale-110"
+                    sizes="44px"
+                    className="object-cover"
                   />
                 </div>
                 <div>
-                  <h4 className="font-serif text-xs sm:text-sm font-bold text-thrive-purple-900">
+                  <h3 className="font-serif text-sm font-bold text-thrive-purple-900 leading-tight">
                     {item.name}
-                  </h4>
-                  <p className="text-[11px] text-thrive-ink-600">{item.location}</p>
+                  </h3>
+                  <p className="text-[11px] text-thrive-ink-600 mt-0.5">
+                    {item.location}
+                  </p>
                 </div>
               </div>
             </div>
           ))}
-        </div>
-
-        {/* Carousel Dots */}
-        <div className="flex items-center justify-center gap-1.5 pt-2">
-          <span className="w-2 h-2 rounded-full bg-thrive-purple-900" />
-          <span className="w-1.5 h-1.5 rounded-full bg-gray-300" />
-          <span className="w-1.5 h-1.5 rounded-full bg-gray-300" />
         </div>
       </div>
     </section>

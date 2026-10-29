@@ -12,7 +12,7 @@ export const siteConfig = {
   description:
     "THRIVE Initiative is a Nigerian nonprofit organization dedicated to women empowerment, child education, skills acquisition, advocacy, social inclusion, and sustainable community development.",
   url: "https://thriveinitiative.org",
-  ogImage: "https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&w=1200&q=80",
+  ogImage: "/og-default.png",
   contact: {
     email: "contact@thriveinitiative.org",
     supportEmail: "support@thriveinitiative.org",
@@ -89,7 +89,14 @@ export const siteConfig = {
         { label: "Partner With Us", href: "/get-involved/partner", description: "Institutional and corporate partnerships" },
       ],
     },
-    { label: "Stories & Blog", href: "/blog" },
+    {
+      label: "Stories & Updates",
+      href: "/stories",
+      children: [
+        { label: "All Field Stories", href: "/stories", description: "In-depth project chronicles & turnaround accounts" },
+        { label: "Live Field Dispatches", href: "/updates", description: "Real-time relief and milestone updates" },
+      ],
+    },
     { label: "Contact", href: "/contact" },
   ] as NavItem[],
 };

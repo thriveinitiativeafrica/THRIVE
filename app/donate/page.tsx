@@ -2,7 +2,14 @@
 
 import React, { useState } from "react";
 import { siteConfig } from "@/content/site.config";
-import { Check, Copy, ArrowRight, HelpCircle, Landmark, CreditCard } from "lucide-react";
+import {
+  IconCheck,
+  IconCopy,
+  IconHelp,
+  IconLandmark,
+  IconCreditCard,
+} from "@/components/shared/Icons";
+import { SectionBackground } from "@/components/shared/SectionBackground";
 import { cn, formatCurrency } from "@/lib/utils";
 
 export default function DonatePage() {
@@ -39,43 +46,49 @@ export default function DonatePage() {
     },
     {
       q: "Can I sponsor a specific community borehole or school project directly?",
-      a: "Absolutely. For targeted project sponsorships in specific states or communities, please contact our directorate at contact@thriveinitiative.org.",
+      a: "Yes. For targeted community borehole sponsorships or school scholarships, please contact our directorate at contact@thriveinitiative.org.",
     },
   ];
 
   return (
-    <div className="space-y-0">
+    <div className="space-y-0 min-h-screen">
       {/* Unified Hero Banner */}
       <section className="bg-thrive-purple-900 text-white pt-32 pb-16 lg:pt-36 lg:pb-20 relative overflow-hidden border-b border-thrive-purple-800">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center space-y-6 max-w-3xl mx-auto">
+        <SectionBackground variant="purple" pattern="dual-corners" />
+
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center space-y-6">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 border border-white/15 text-xs text-thrive-gold-200 font-semibold tracking-wide">
+            <span>Grassroots Accountability</span>
+          </div>
+
           <h1 className="font-serif text-4xl sm:text-5xl lg:text-6xl font-medium tracking-tight leading-tight">
             Invest in Human <br />
             <span className="italic font-normal font-serif text-thrive-gold-400">
-              Dignity & Potential
+              Dignity &amp; Potential
             </span>
           </h1>
-          <p className="text-base sm:text-lg text-thrive-purple-100/80 leading-relaxed font-normal">
-            Your contribution fuels real, verifiable change across Nigerian communities. Choose your giving preference below to support our frontline programs.
+          <p className="text-base sm:text-lg text-thrive-purple-100/90 leading-relaxed font-normal max-w-2xl mx-auto">
+            Your contribution directly funds clean water boreholes, school enrollment kits, and emergency nutrition across vulnerable Nigerian settlements.
           </p>
         </div>
       </section>
 
       {/* Main Donation Portal */}
-      <section className="py-20 lg:py-28 bg-white">
+      <section className="py-20 lg:py-28 bg-white relative overflow-hidden">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
             {/* Left Column: Giving Form (7 cols) */}
-            <div className="lg:col-span-7 bg-white rounded-2xl p-6 sm:p-10 border border-gray-200 space-y-6">
+            <div className="lg:col-span-7 bg-white rounded-3xl p-6 sm:p-10 border border-thrive-border shadow-lg space-y-6">
               {/* Frequency Switcher */}
-              <div className="flex items-center justify-between p-1 bg-gray-100 rounded-xl">
+              <div className="flex items-center justify-between p-1 bg-thrive-cream rounded-2xl border border-thrive-border">
                 <button
                   type="button"
                   onClick={() => setFrequency("one-time")}
                   className={cn(
-                    "flex-1 py-2 rounded-lg text-xs font-semibold transition-all",
+                    "flex-1 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all",
                     frequency === "one-time"
-                      ? "bg-thrive-purple-900 text-white"
-                      : "text-gray-600 hover:text-thrive-purple-900"
+                      ? "bg-thrive-purple-900 text-white shadow-xs"
+                      : "text-thrive-ink-600 hover:text-thrive-purple-900"
                   )}
                 >
                   One-Time Gift
@@ -84,10 +97,10 @@ export default function DonatePage() {
                   type="button"
                   onClick={() => setFrequency("monthly")}
                   className={cn(
-                    "flex-1 py-2 rounded-lg text-xs font-semibold transition-all",
+                    "flex-1 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all",
                     frequency === "monthly"
-                      ? "bg-thrive-purple-900 text-white"
-                      : "text-gray-600 hover:text-thrive-purple-900"
+                      ? "bg-thrive-purple-900 text-white shadow-xs"
+                      : "text-thrive-ink-600 hover:text-thrive-purple-900"
                   )}
                 >
                   Monthly Partner
@@ -95,39 +108,39 @@ export default function DonatePage() {
               </div>
 
               {/* Payment Mode Tabs */}
-              <div className="flex border-b border-gray-200">
+              <div className="flex border-b border-thrive-border">
                 <button
                   type="button"
                   onClick={() => setActiveTab("gateway")}
                   className={cn(
-                    "flex items-center gap-2 pb-3 px-4 text-xs font-semibold border-b-2 transition-all",
+                    "flex items-center gap-2 pb-3 px-4 text-xs font-bold uppercase tracking-wider border-b-2 transition-all",
                     activeTab === "gateway"
                       ? "border-thrive-purple-900 text-thrive-purple-900"
-                      : "border-transparent text-gray-500 hover:text-gray-900"
+                      : "border-transparent text-thrive-ink-600 hover:text-thrive-purple-900"
                   )}
                 >
-                  <CreditCard className="w-4 h-4" />
+                  <IconCreditCard size={16} />
                   Debit Card / Paystack
                 </button>
                 <button
                   type="button"
                   onClick={() => setActiveTab("bank")}
                   className={cn(
-                    "flex items-center gap-2 pb-3 px-4 text-xs font-semibold border-b-2 transition-all",
+                    "flex items-center gap-2 pb-3 px-4 text-xs font-bold uppercase tracking-wider border-b-2 transition-all",
                     activeTab === "bank"
                       ? "border-thrive-purple-900 text-thrive-purple-900"
-                      : "border-transparent text-gray-500 hover:text-gray-900"
+                      : "border-transparent text-thrive-ink-600 hover:text-thrive-purple-900"
                   )}
                 >
-                  <Landmark className="w-4 h-4" />
+                  <IconLandmark size={16} />
                   Direct Bank Transfer
                 </button>
               </div>
 
               {activeTab === "gateway" ? (
                 <div className="space-y-5">
-                  {/* Tiers Grid (Naira only) */}
-                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
+                  {/* Tiers Grid */}
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                     {currentTiers.map((tier) => (
                       <button
                         key={tier.amount}
@@ -137,16 +150,26 @@ export default function DonatePage() {
                           setIsCustom(false);
                         }}
                         className={cn(
-                          "p-3.5 rounded-xl border text-left transition-all relative flex flex-col justify-between",
+                          "p-3.5 rounded-2xl border text-left transition-all relative flex flex-col justify-between shadow-2xs",
                           !isCustom && selectedAmount === tier.amount
                             ? "border-thrive-purple-900 bg-thrive-purple-900 text-white"
-                            : "border-gray-200 bg-white text-gray-800 hover:border-gray-300"
+                            : "border-thrive-border bg-white text-thrive-ink-800 hover:bg-thrive-cream"
                         )}
                       >
-                        <div className={cn("font-serif text-base font-bold", !isCustom && selectedAmount === tier.amount ? "text-white" : "text-thrive-purple-900")}>
+                        <div
+                          className={cn(
+                            "font-serif text-base font-bold",
+                            !isCustom && selectedAmount === tier.amount ? "text-white" : "text-thrive-purple-900"
+                          )}
+                        >
                           {tier.label}
                         </div>
-                        <div className={cn("text-[11px] line-clamp-2 mt-1", !isCustom && selectedAmount === tier.amount ? "text-thrive-purple-100" : "text-gray-500")}>
+                        <div
+                          className={cn(
+                            "text-[10px] line-clamp-2 mt-1",
+                            !isCustom && selectedAmount === tier.amount ? "text-thrive-purple-100" : "text-thrive-ink-600"
+                          )}
+                        >
                           {tier.impact}
                         </div>
                       </button>
@@ -155,11 +178,11 @@ export default function DonatePage() {
 
                   {/* Custom Amount Input */}
                   <div className="flex items-center gap-3">
-                    <label className="text-xs font-semibold text-gray-600 whitespace-nowrap">
+                    <label className="text-xs font-bold text-thrive-purple-900 whitespace-nowrap">
                       Custom Amount (₦):
                     </label>
                     <div className="relative flex-1">
-                      <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-sm font-bold text-gray-400">
+                      <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-sm font-bold text-thrive-ink-400">
                         ₦
                       </span>
                       <input
@@ -172,50 +195,49 @@ export default function DonatePage() {
                           setIsCustom(true);
                         }}
                         onFocus={() => setIsCustom(true)}
-                        className="w-full pl-8 pr-4 py-2.5 rounded-xl border border-gray-200 text-sm font-medium focus:outline-none focus:border-thrive-purple-900"
+                        className="w-full pl-8 pr-4 py-2.5 rounded-xl border border-thrive-border text-xs font-bold focus:outline-none focus:ring-2 focus:ring-thrive-purple-500"
                       />
                     </div>
                   </div>
 
-                  {/* Impact Statement Box */}
-                  <div className="p-4 rounded-xl bg-gray-50 border border-gray-200 text-xs text-gray-700 space-y-1">
+                  {/* Impact Statement */}
+                  <div className="p-4 rounded-2xl bg-thrive-cream border border-thrive-border text-xs text-thrive-ink-800 space-y-1">
                     <div className="font-bold text-thrive-purple-900">
-                      Your Contribution Impact:
+                      Your Contribution Allocation:
                     </div>
-                    <p>
+                    <p className="leading-relaxed">
                       {currentTiers.find((t) => t.amount === selectedAmount)?.impact ||
                         "Deploys vital food supplies, scholarships, and clean water to Nigerian communities in need."}
                     </p>
                   </div>
 
-                  {/* Gateway Triggers */}
-                  <div className="space-y-3 pt-2">
+                  {/* Submit CTA - Solid gold button without arrows */}
+                  <div className="pt-2">
                     <button
                       onClick={() => handleProceed("Paystack / Flutterwave")}
-                      className="w-full py-3.5 rounded-full bg-thrive-purple-900 hover:bg-thrive-purple-800 text-white font-bold text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-2"
+                      className="w-full py-4 rounded-full bg-thrive-gold-600 hover:bg-thrive-gold-500 text-thrive-purple-900 font-extrabold text-xs uppercase tracking-wider shadow-md hover:shadow-lg transition-all"
                     >
-                      <span>Proceed to Donate {formatCurrency(effectiveAmount, "NGN")}</span>
-                      <ArrowRight className="w-4 h-4 text-thrive-gold-400" />
+                      Proceed to Donate {formatCurrency(effectiveAmount, "NGN")}
                     </button>
                   </div>
                 </div>
               ) : (
                 /* Direct Bank Transfer */
                 <div className="space-y-5">
-                  <p className="text-xs text-gray-600 leading-relaxed">
-                    Make direct wire or internet banking transfers into our officially registered bank account:
+                  <p className="text-xs text-thrive-ink-600 leading-relaxed">
+                    Make direct wire or internet banking transfers into our registered account:
                   </p>
 
-                  <div className="p-5 rounded-xl bg-thrive-purple-900 text-white space-y-3">
-                    <div className="flex justify-between items-center text-xs text-thrive-purple-100/70 border-b border-white/10 pb-2">
+                  <div className="p-5 rounded-2xl bg-thrive-purple-900 text-white space-y-3 border border-thrive-purple-800">
+                    <div className="flex justify-between items-center text-xs text-thrive-purple-100/80 border-b border-white/10 pb-2">
                       <span>Bank Name</span>
-                      <span className="font-semibold text-white">{siteConfig.bankDetails.bankName}</span>
+                      <span className="font-bold text-white">{siteConfig.bankDetails.bankName}</span>
                     </div>
-                    <div className="flex justify-between items-center text-xs text-thrive-purple-100/70 border-b border-white/10 pb-2">
+                    <div className="flex justify-between items-center text-xs text-thrive-purple-100/80 border-b border-white/10 pb-2">
                       <span>Account Name</span>
-                      <span className="font-semibold text-white text-right">{siteConfig.bankDetails.accountName}</span>
+                      <span className="font-bold text-white text-right">{siteConfig.bankDetails.accountName}</span>
                     </div>
-                    <div className="flex justify-between items-center text-xs text-thrive-purple-100/70">
+                    <div className="flex justify-between items-center text-xs text-thrive-purple-100/80">
                       <span>Naira (₦) Account No.</span>
                       <div className="flex items-center gap-2">
                         <span className="font-mono text-base font-bold text-thrive-gold-400">
@@ -224,33 +246,37 @@ export default function DonatePage() {
                         <button
                           type="button"
                           onClick={() => handleCopyAccount(siteConfig.bankDetails.accountNumberNaira)}
-                          className="p-1 rounded-md bg-white/10 hover:bg-white/20 text-white transition-colors"
+                          className="p-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-white transition-colors"
+                          title="Copy account number"
                         >
-                          {copiedBank ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+                          {copiedBank ? <IconCheck size={16} className="text-emerald-400" /> : <IconCopy size={16} />}
                         </button>
                       </div>
                     </div>
                   </div>
 
-                  <div className="p-4 rounded-xl bg-gray-50 border border-gray-200 text-xs text-gray-700">
-                    Please email transfer confirmations to <strong>{siteConfig.contact.email}</strong> to receive your formal donor recognition.
+                  <div className="p-4 rounded-2xl bg-thrive-cream border border-thrive-border text-xs text-thrive-ink-800 leading-relaxed">
+                    Please email transfer confirmations to <strong>{siteConfig.contact.email}</strong> to receive your formal donor receipt.
                   </div>
                 </div>
               )}
             </div>
 
-            {/* Right Column: Fund Accountability & Transparency (5 cols) */}
+            {/* Right Column: Fund Accountability (5 cols) */}
             <div className="lg:col-span-5 space-y-6">
-              <div className="bg-thrive-purple-900 text-white rounded-2xl p-8 border border-thrive-purple-700 space-y-4">
+              <div className="bg-thrive-purple-900 text-white rounded-3xl p-8 border border-thrive-purple-700 space-y-4 shadow-lg">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-thrive-gold-400">
+                  Financial Integrity
+                </span>
                 <h3 className="font-serif text-2xl font-bold text-white">
                   How Every Donation is Allocated
                 </h3>
 
-                <div className="space-y-3 pt-2">
+                <div className="space-y-4 pt-2">
                   <div>
-                    <div className="flex justify-between text-xs font-semibold mb-1">
+                    <div className="flex justify-between text-xs font-bold mb-1">
                       <span>Direct Program Execution</span>
-                      <span className="text-thrive-gold-400">88%</span>
+                      <span className="text-thrive-gold-400 font-mono">88%</span>
                     </div>
                     <div className="w-full h-2 rounded-full bg-white/10 overflow-hidden">
                       <div className="h-full bg-thrive-gold-500 rounded-full" style={{ width: "88%" }} />
@@ -258,9 +284,9 @@ export default function DonatePage() {
                   </div>
 
                   <div>
-                    <div className="flex justify-between text-xs font-semibold mb-1">
-                      <span>Monitoring & Evaluation (MEL)</span>
-                      <span className="text-white">8%</span>
+                    <div className="flex justify-between text-xs font-bold mb-1">
+                      <span>Monitoring &amp; Evaluation (MEL)</span>
+                      <span className="text-white font-mono">8%</span>
                     </div>
                     <div className="w-full h-2 rounded-full bg-white/10 overflow-hidden">
                       <div className="h-full bg-white/60 rounded-full" style={{ width: "8%" }} />
@@ -268,9 +294,9 @@ export default function DonatePage() {
                   </div>
 
                   <div>
-                    <div className="flex justify-between text-xs font-semibold mb-1">
-                      <span>Operational & Administration</span>
-                      <span className="text-thrive-purple-300">4%</span>
+                    <div className="flex justify-between text-xs font-bold mb-1">
+                      <span>Operational &amp; Administration</span>
+                      <span className="text-thrive-purple-300 font-mono">4%</span>
                     </div>
                     <div className="w-full h-2 rounded-full bg-white/10 overflow-hidden">
                       <div className="h-full bg-thrive-purple-300 rounded-full" style={{ width: "4%" }} />
@@ -279,22 +305,22 @@ export default function DonatePage() {
                 </div>
 
                 <p className="text-xs text-thrive-purple-100/75 leading-relaxed pt-2">
-                  Audited annually under the supervision of the Finance & Resource Management team.
+                  Audited annually under the supervision of the Finance &amp; Resource Management team.
                 </p>
               </div>
 
               {/* FAQs */}
-              <div className="bg-white rounded-2xl p-6 sm:p-8 border border-gray-200 space-y-4">
+              <div className="bg-white rounded-3xl p-6 sm:p-8 border border-thrive-border space-y-4 shadow-xs">
                 <h4 className="font-serif text-xl font-bold text-thrive-purple-900 flex items-center gap-2">
-                  <HelpCircle className="w-5 h-5 text-thrive-purple-900" />
-                  <span>Donation FAQs</span>
+                  <IconHelp size={20} className="text-thrive-purple-900" />
+                  <span>Donation Questions</span>
                 </h4>
 
-                <div className="space-y-4 divide-y divide-gray-100">
+                <div className="space-y-4 divide-y divide-thrive-border">
                   {faqs.map((faq, idx) => (
-                    <div key={idx} className={idx > 0 ? "pt-3" : ""}>
+                    <div key={idx} className={idx > 0 ? "pt-3.5" : ""}>
                       <div className="text-xs font-bold text-thrive-purple-900">{faq.q}</div>
-                      <div className="text-xs text-gray-600 mt-1 leading-relaxed">{faq.a}</div>
+                      <div className="text-xs text-thrive-ink-600 mt-1 leading-relaxed">{faq.a}</div>
                     </div>
                   ))}
                 </div>

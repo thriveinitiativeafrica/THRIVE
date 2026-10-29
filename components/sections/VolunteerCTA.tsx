@@ -1,8 +1,8 @@
 "use client";
 
 import React, { useState } from "react";
-import Image from "next/image";
-import { CheckCircle2 } from "lucide-react";
+import { IconCheckCircle } from "@/components/shared/Icons";
+import { SectionBackground } from "@/components/shared/SectionBackground";
 
 export function VolunteerCTA() {
   const [formData, setFormData] = useState({
@@ -24,7 +24,7 @@ export function VolunteerCTA() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           ...formData,
-          areaOfInterest: "General Volunteer",
+          areaOfInterest: "General Field Volunteer",
         }),
       });
       setSubmitted(true);
@@ -37,108 +37,138 @@ export function VolunteerCTA() {
 
   return (
     <section className="relative py-20 lg:py-28 overflow-hidden bg-thrive-cream border-t border-thrive-border">
-      {/* Background B&W Crowd of African Community Members (No gradients) */}
-      <div className="absolute inset-0 z-0">
-        <Image
-          src="https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=1800&q=80"
-          alt="African community gathering backdrop"
-          fill
-          className="object-cover grayscale opacity-20"
-        />
-      </div>
+      {/* ProofDeck-style Background Atmosphere */}
+      <SectionBackground variant="cream" pattern="floating-elements" />
 
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <div className="bg-white rounded-3xl overflow-hidden grid grid-cols-1 md:grid-cols-2 border border-thrive-border">
-          {/* Left Panel: Deep Brand Purple (No teal, No gradients, No shadows) */}
-          <div className="bg-thrive-purple-900 text-white p-8 sm:p-10 lg:p-12 flex flex-col justify-between space-y-6">
-            <div className="space-y-4">
-              <h2 className="font-serif text-3xl sm:text-4xl font-medium tracking-tight text-thrive-gold-400 leading-[1.1]">
-                Be a Part of <br />
-                the <span className="italic font-normal font-serif text-white">Change</span>
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <div className="bg-white rounded-3xl overflow-hidden grid grid-cols-1 md:grid-cols-2 border border-thrive-border shadow-xl">
+          {/* Left Panel: Deep Brand Purple */}
+          <div className="bg-thrive-purple-900 text-white p-8 sm:p-10 lg:p-12 flex flex-col justify-between space-y-6 relative overflow-hidden">
+            <SectionBackground variant="purple" pattern="concentric-arcs" />
+
+            <div className="space-y-4 relative z-10">
+              <span className="text-xs font-bold uppercase tracking-widest text-thrive-gold-400">
+                Community Network
+              </span>
+              <h2 className="font-serif text-3xl sm:text-4xl font-medium tracking-tight text-white leading-[1.1]">
+                Be Part of <br />
+                the <span className="italic font-normal font-serif text-thrive-gold-400">Change</span>
               </h2>
 
-              <p className="text-xs sm:text-sm text-white/90 leading-relaxed font-normal">
-                Whether it&apos;s teaching, organizing events, or providing on-the-ground help, your time and skills can make a huge difference. Sign up and join our volunteer network across Nigeria.
+              <p className="text-sm text-thrive-purple-100/85 leading-relaxed font-normal">
+                Our active field volunteers lead weekend reading tutoring, distribute nutrition parcels, and coordinate community clean water borehole maintenance across Lagos and Ogun communities.
               </p>
+
+              <div className="pt-2 space-y-2 text-xs text-thrive-purple-100/90 font-medium">
+                <div className="flex items-center gap-2">
+                  <span className="w-1.5 h-1.5 rounded-full bg-thrive-gold-400" />
+                  <span>Flexible commitments (weekend or project-based)</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="w-1.5 h-1.5 rounded-full bg-thrive-gold-400" />
+                  <span>Certified community service verification</span>
+                </div>
+              </div>
             </div>
 
-            <div>
+            <div className="relative z-10 pt-4">
               <a
-                href="#volunteer-form"
-                className="inline-block px-7 py-3 rounded-full bg-thrive-gold-600 hover:bg-thrive-gold-500 text-thrive-purple-900 font-bold text-xs uppercase tracking-wider transition-all"
+                href="#volunteer-signup-form"
+                className="inline-block px-7 py-3 rounded-full bg-thrive-gold-600 hover:bg-thrive-gold-500 text-thrive-purple-900 font-bold text-xs uppercase tracking-wider shadow-sm transition-all active:scale-95"
               >
-                Become a Volunteer
+                Sign Up as a Volunteer
               </a>
             </div>
           </div>
 
           {/* Right Panel: Clean White Signup Form */}
-          <div id="volunteer-form" className="p-8 sm:p-10 bg-white flex flex-col justify-center">
+          <div id="volunteer-signup-form" className="p-8 sm:p-10 bg-white flex flex-col justify-center">
             {submitted ? (
               <div className="text-center py-6 space-y-3">
-                <div className="w-12 h-12 rounded-full bg-thrive-purple-100 text-thrive-purple-900 flex items-center justify-center mx-auto">
-                  <CheckCircle2 className="w-7 h-7" />
+                <div className="w-12 h-12 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 flex items-center justify-center mx-auto">
+                  <IconCheckCircle size={28} />
                 </div>
                 <h3 className="font-serif text-xl font-bold text-thrive-purple-900">
-                  Thank You for Signing Up!
+                  Welcome to the Network!
                 </h3>
-                <p className="text-xs text-thrive-ink-600">
-                  We have registered your application. Our volunteer coordinator will be in touch with you shortly.
+                <p className="text-xs text-thrive-ink-600 leading-relaxed">
+                  Thank you for stepping forward. Our volunteer coordinator will reach out to you with upcoming outreach schedules.
                 </p>
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-4">
+                <div className="space-y-1">
+                  <h3 className="font-serif text-lg font-bold text-thrive-purple-900">
+                    Volunteer Application
+                  </h3>
+                  <p className="text-xs text-thrive-ink-600">
+                    Connect with our team in Lagos.
+                  </p>
+                </div>
+
                 <div>
+                  <label className="block text-[11px] font-bold uppercase tracking-wider text-thrive-purple-900 mb-1">
+                    Full Name *
+                  </label>
                   <input
                     type="text"
                     required
-                    placeholder="Name"
+                    placeholder="e.g., Tunde Adeleke"
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    className="w-full px-4 py-2.5 rounded-lg border border-thrive-border bg-thrive-cream/40 text-thrive-ink-900 text-xs placeholder-thrive-ink-600/60 focus:outline-none focus:bg-white focus:border-thrive-purple-900"
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-thrive-border text-xs focus:ring-2 focus:ring-thrive-purple-500 focus:outline-none"
                   />
                 </div>
 
                 <div>
+                  <label className="block text-[11px] font-bold uppercase tracking-wider text-thrive-purple-900 mb-1">
+                    Email Address *
+                  </label>
                   <input
                     type="email"
                     required
-                    placeholder="Email"
+                    placeholder="tunde@example.com"
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    className="w-full px-4 py-2.5 rounded-lg border border-thrive-border bg-thrive-cream/40 text-thrive-ink-900 text-xs placeholder-thrive-ink-600/60 focus:outline-none focus:bg-white focus:border-thrive-purple-900"
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-thrive-border text-xs focus:ring-2 focus:ring-thrive-purple-500 focus:outline-none"
                   />
                 </div>
 
-                <div>
-                  <input
-                    type="text"
-                    placeholder="Skills (e.g. Teaching, Logistics, Medical, Tech)"
-                    value={formData.skills}
-                    onChange={(e) => setFormData({ ...formData, skills: e.target.value })}
-                    className="w-full px-4 py-2.5 rounded-lg border border-thrive-border bg-thrive-cream/40 text-thrive-ink-900 text-xs placeholder-thrive-ink-600/60 focus:outline-none focus:bg-white focus:border-thrive-purple-900"
-                  />
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-[11px] font-bold uppercase tracking-wider text-thrive-purple-900 mb-1">
+                      Skills
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="Teaching, Logistics, Tech"
+                      value={formData.skills}
+                      onChange={(e) => setFormData({ ...formData, skills: e.target.value })}
+                      className="w-full px-3.5 py-2.5 rounded-xl border border-thrive-border text-xs focus:ring-2 focus:ring-thrive-purple-500 focus:outline-none"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-[11px] font-bold uppercase tracking-wider text-thrive-purple-900 mb-1">
+                      Availability
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="Weekends, Bi-weekly"
+                      value={formData.availability}
+                      onChange={(e) => setFormData({ ...formData, availability: e.target.value })}
+                      className="w-full px-3.5 py-2.5 rounded-xl border border-thrive-border text-xs focus:ring-2 focus:ring-thrive-purple-500 focus:outline-none"
+                    />
+                  </div>
                 </div>
 
-                <div>
-                  <input
-                    type="text"
-                    placeholder="Availability (e.g. Weekends, Full-time)"
-                    value={formData.availability}
-                    onChange={(e) => setFormData({ ...formData, availability: e.target.value })}
-                    className="w-full px-4 py-2.5 rounded-lg border border-thrive-border bg-thrive-cream/40 text-thrive-ink-900 text-xs placeholder-thrive-ink-600/60 focus:outline-none focus:bg-white focus:border-thrive-purple-900"
-                  />
-                </div>
-
-                <div>
-                  <button
-                    type="submit"
-                    disabled={loading}
-                    className="px-6 py-2.5 rounded-lg bg-thrive-purple-900 hover:bg-thrive-purple-800 text-white font-bold text-xs uppercase tracking-wider transition-all disabled:opacity-50"
-                  >
-                    {loading ? "Submitting..." : "Sign Up"}
-                  </button>
-                </div>
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="w-full py-3 rounded-full bg-thrive-purple-900 hover:bg-thrive-purple-800 text-white font-bold text-xs uppercase tracking-wider shadow-sm transition-all disabled:opacity-50"
+                >
+                  {loading ? "Registering..." : "Submit Application"}
+                </button>
               </form>
             )}
           </div>

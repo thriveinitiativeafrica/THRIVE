@@ -1,0 +1,124 @@
+[
+  {
+    "id": "post-1",
+    "slug": "clean-water-restores-classroom-attendance-olomowewe",
+    "title": "Clean Water Restores Classroom Attendance in Olomowewe Village",
+    "italicTitle": "Clean Water",
+    "type": "blog",
+    "category": "Health & Water",
+    "tags": ["Clean Water", "Public Health", "SDG 6", "Rural Education"],
+    "author": {
+      "name": "Dr. Olayemi Peters",
+      "role": "Director of Monitoring & Impact",
+      "avatar": "/images/avatar-amina.webp"
+    },
+    "publishDate": "24 Oct 2026",
+    "coverImage": "/images/story-water.webp",
+    "coverImageAlt": "Solar-powered borehole commissioning in Olomowewe Village",
+    "inlineImages": [
+      {
+        "url": "/images/impact-water.webp",
+        "caption": "Community women and pupils accessing clean drinking water from the solar borehole distribution point.",
+        "alt": "Clean water borehole taps in community"
+      }
+    ],
+    "excerpt": "How a 110-meter solar borehole eradicated waterborne dysentery and returned young girls to classroom desks in rural Ogun.",
+    "status": "published",
+    "readTime": "5 min read",
+    "seoTitle": "Clean Water Restores Classroom Attendance in Olomowewe | THRIVE",
+    "seoDescription": "Discover how THRIVE Initiative's solar borehole project delivered potable water to over 2,500 rural residents in Olomowewe.",
+    "createdAt": "2026-10-24T10:00:00.000Z",
+    "updatedAt": "2026-10-24T10:00:00.000Z",
+    "content": "### Safe Water is the Foundation of Child Literacy\n\nBefore THRIVE commissioned the solar borehole in Olomowewe, the only available water source was a shallow seasonal stream located four kilometers from the village center. For decades, traditional division of domestic labor meant young girls woke at dawn to trek for water before school. When rains delayed, water levels dropped to stagnant pools, and local clinics recorded recurring outbreaks of waterborne dysentery.\n\n#### The Engineering Solution\n\nWorking directly with the village development council, our team deployed a high-capacity solar drilling rig:\n\n- Drilled to 110 meters depth to tap deep, pristine underground aquifers.\n- Installed a solar pump array with battery storage for continuous water flow.\n- Erected a 10,000-liter elevated storage tank feeding eight distribution taps.\n- Trained a 5-member community water committee to handle routine servicing.\n\n> \"Our daughters used to miss Monday and Tuesday classes due to stomach illnesses. Since the borehole opened, our clinic has not recorded a single case of waterborne disease, and school attendance is at its highest in ten years.\"\n> — *Amina Okoro, Olomowewe Water Committee Chair*\n\n#### Measurable Community Outcomes\n\n- Over **2,500 residents** with direct daily access to clean water.\n- **Zero reported dysentery cases** since commissioning.\n- Average morning water fetching time dropped from **3 hours to under 10 minutes**.\n- Primary school attendance jumped by **42%** across female pupils.\n\nGrassroots infrastructure succeeds when local communities own it from day one. THRIVE continues to monitor water quality monthly alongside the village committee."
+  },
+  {
+    "id": "post-2",
+    "slug": "agrithrive-resilient-drip-irrigation-doubles-harvests",
+    "title": "AgriThrive: Resilient Drip Irrigation Doubles Community Vegetable Harvests",
+    "italicTitle": "Resilient Farming",
+    "type": "blog",
+    "category": "Food Security",
+    "tags": ["Agriculture", "Food Security", "Women Empowerment", "SDG 2"],
+    "author": {
+      "name": "Chukwudi Eze",
+      "role": "Director of Community Development",
+      "avatar": "/images/avatar-babatunde.webp"
+    },
+    "publishDate": "18 Oct 2026",
+    "coverImage": "/images/story-farming.webp",
+    "coverImageAlt": "Mama Abigail and community farmers harvesting fresh produce under AgriThrive drip irrigation",
+    "inlineImages": [
+      {
+        "url": "/images/impact-food.webp",
+        "caption": "Freshly harvested organic vegetables packaged for local market delivery by women cooperative leaders.",
+        "alt": "Harvested organic vegetables in baskets"
+      }
+    ],
+    "excerpt": "Low-pressure solar drip irrigation kits are transforming dry plots into thriving vegetable hubs for female farming cooperatives.",
+    "status": "published",
+    "readTime": "4 min read",
+    "seoTitle": "AgriThrive Resilient Farming Program in Nigeria | THRIVE Initiative",
+    "seoDescription": "How climate-smart community drip irrigation and resilient seed distribution are reversing food insecurity in arid settlements.",
+    "createdAt": "2026-10-18T14:30:00.000Z",
+    "updatedAt": "2026-10-18T14:30:00.000Z",
+    "content": "### Climate Resilience in Dry Farming Settlements\n\nUnpredictable weather patterns and extended dry spells have made traditional rain-fed agriculture precarious for smallholders. In our target agricultural clusters, families previously faced severe seasonal hunger gaps during the dry months when food prices spike.\n\n#### Solar-Powered Drip Kits\n\nUnder the **AgriThrive Initiative**, THRIVE partnered with women-led farming cooperatives across 12 settlements to introduce low-pressure drip irrigation kits powered by compact solar pumps:\n\n1. Water delivery directly to root zones, reducing water waste by up to 60% compared to surface irrigation.\n2. Distribution of drought-resilient indigenous seed varieties for spinach, tomato, and peppers.\n3. Practical workshops on natural composting, soil mulching, and pest management.\n\n> \"Before this program, our fields were barren dust from November to March. Now we harvest leafy greens twice a week throughout the dry season, supplying the local market and feeding our children.\"\n> — *Mama Abigail, Farm Cooperative Lead*\n\n#### Key Pilot Milestones\n\n- **1,400+ kg** of fresh organic produce harvested in the first quarterly cycle.\n- **85 female smallholders** trained in climate-smart agricultural techniques.\n- **₦45,000 monthly supplemental income** generated per participating family.\n\nBy uniting affordable technology with grassroots cooperative leadership, we are building lasting food security that withstands climate stress."
+  },
+  {
+    "id": "post-3",
+    "slug": "makoko-emergency-nutrition-relief-600-families",
+    "title": "Field Update: Emergency Nutrition Relief Mobilized for 600 Families in Makoko",
+    "italicTitle": "Emergency Nutrition",
+    "type": "update",
+    "category": "Community Relief",
+    "tags": ["Emergency Relief", "Makoko", "Nutrition", "Field Dispatch"],
+    "author": {
+      "name": "Folashade Adeleke",
+      "role": "Director of Child Education & Youth",
+      "avatar": "/images/avatar-grace.webp"
+    },
+    "publishDate": "28 Oct 2026",
+    "coverImage": "/images/update-makoko-relief.webp",
+    "coverImageAlt": "Field volunteers offloading emergency food hampers in Makoko community",
+    "inlineImages": [
+      {
+        "url": "/images/hero-volunteers.webp",
+        "caption": "Volunteer teams moving nutrition parcels through waterfront community walkways.",
+        "alt": "Volunteers carrying relief boxes"
+      }
+    ],
+    "excerpt": "THRIVE field volunteers offloaded 600 emergency family food hampers across waterfront settlements in Lagos following heavy tidal flooding.",
+    "status": "published",
+    "readTime": "2 min read",
+    "seoTitle": "Field Dispatch: Makoko Emergency Food Relief | THRIVE Initiative",
+    "seoDescription": "Emergency nutrition hampers containing fortified grains and clean water parcels delivered to 600 vulnerable families in Makoko.",
+    "createdAt": "2026-10-28T09:15:00.000Z",
+    "updatedAt": "2026-10-28T09:15:00.000Z",
+    "content": "### Rapid Response to Waterfront Inundation\n\nFollowing seasonal high tides that inundated residential structures across Makoko, our emergency response volunteers mobilized within 24 hours to deliver targeted nutrition packages.\n\n#### What Was Distributed\n\n- **600 family food hampers** containing fortified garri, parboiled rice, dried beans, iodized salt, and vegetable cooking oil.\n- **1,200 liters of bottled potable water** to prevent reliance on floodwaters.\n- **200 hygiene kits** with disinfectant soaps, water purification tablets, and sanitary essentials for nursing mothers.\n\nSpecial thanks to our 25 field volunteers who navigated shallow waterways to ensure packages reached elderly residents and homebound mothers directly."
+  },
+  {
+    "id": "post-4",
+    "slug": "draft-youth-vocational-tech-hub-launch-ikeja",
+    "title": "Youth Vocational Coding & Digital Craft Hub Launching in Ikeja",
+    "italicTitle": "Vocational Tech",
+    "type": "blog",
+    "category": "Skills Acquisition",
+    "tags": ["Youth Tech", "Skills Acquisition", "Sample Draft"],
+    "author": {
+      "name": "Babatunde Alabi",
+      "role": "Vocational Program Lead",
+      "avatar": "/images/avatar-babatunde.webp"
+    },
+    "publishDate": "29 Oct 2026",
+    "coverImage": "/images/hero-classroom.webp",
+    "coverImageAlt": "Youths in computer learning workshop",
+    "inlineImages": [],
+    "excerpt": "Upcoming digital skills academy providing free web design and craft entrepreneurship courses to 150 peri-urban youths.",
+    "status": "draft",
+    "readTime": "3 min read",
+    "seoTitle": "Youth Vocational Tech Hub Launch | THRIVE",
+    "seoDescription": "Empowering Nigerian youths with digital craft and software skills for sustainable employment.",
+    "createdAt": "2026-10-29T08:00:00.000Z",
+    "updatedAt": "2026-10-29T08:00:00.000Z",
+    "content": "### Expanding Horizons for Lagos Youths\n\n*(This post is currently in draft status and only visible within the Executive Studio)*\n\nOur upcoming Skills Acquisition hub in Ikeja aims to bridge the digital divide for 150 high school graduates who lack access to personal computers or stable internet connections. The curriculum encompasses frontend web fundamentals, digital graphic craft, and business bookkeeping."
+  }
+]

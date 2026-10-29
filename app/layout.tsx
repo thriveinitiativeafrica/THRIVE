@@ -18,8 +18,10 @@ const inter = Inter({
   display: "swap",
 });
 
+const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || siteConfig.url;
+
 export const metadata: Metadata = {
-  metadataBase: new URL(siteConfig.url),
+  metadataBase: new URL(baseUrl),
   title: {
     default: `${siteConfig.name} — ${siteConfig.tagline}`,
     template: `%s | ${siteConfig.name}`,
@@ -30,10 +32,10 @@ export const metadata: Metadata = {
     "Nonprofit Nigeria",
     "Women Empowerment",
     "Child Education",
+    "Clean Water Boreholes",
     "Skills Acquisition",
     "Community Outreach",
-    "Advocacy and Social Inclusion",
-    "NGO Lagos",
+    "Grassroots NGO Lagos",
     "SDG 5 Gender Equality",
     "Sustainable Development Goals",
   ],
@@ -47,17 +49,17 @@ export const metadata: Metadata = {
   },
   openGraph: {
     type: "website",
-    locale: "en_US",
-    url: siteConfig.url,
+    locale: "en_NG",
+    url: baseUrl,
     title: `${siteConfig.name} — ${siteConfig.tagline}`,
     description: siteConfig.description,
     siteName: siteConfig.name,
     images: [
       {
-        url: siteConfig.ogImage,
+        url: "/og-default.png",
         width: 1200,
         height: 630,
-        alt: siteConfig.name,
+        alt: `${siteConfig.name} — Transforming Hope, Rights, Inclusion, Vision & Empowerment`,
       },
     ],
   },
@@ -65,7 +67,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: `${siteConfig.name} — ${siteConfig.tagline}`,
     description: siteConfig.description,
-    images: [siteConfig.ogImage],
+    images: ["/og-default.png"],
     creator: "@thrive_org",
   },
   robots: {
@@ -91,8 +93,8 @@ export default function RootLayout({
     "@type": "NGO",
     name: siteConfig.name,
     alternateName: siteConfig.acronymName,
-    url: siteConfig.url,
-    logo: `${siteConfig.url}/logo.png`,
+    url: baseUrl,
+    logo: `${baseUrl}/logo/thrive-emblem.png`,
     description: siteConfig.description,
     address: {
       "@type": "PostalAddress",

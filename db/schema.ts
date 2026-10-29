@@ -1,17 +1,37 @@
+export type PostType = "blog" | "update";
+export type PostStatus = "published" | "draft";
+
+export interface PostInlineImage {
+  url: string;
+  caption: string;
+  alt: string;
+}
+
 export interface DbPost {
-  id: number;
+  id: string;
   slug: string;
   title: string;
   italicTitle?: string;
-  excerpt?: string;
+  excerpt: string;
   content: string;
-  coverImageUrl?: string;
-  category?: string;
-  published: boolean;
-  publishedAt?: Date | string;
-  createdAt: Date | string;
-  updatedAt: Date | string;
-  readTime?: string;
+  type: PostType;
+  category: string;
+  tags: string[];
+  author: {
+    name: string;
+    role: string;
+    avatar: string;
+  };
+  publishDate: string;
+  coverImage: string;
+  coverImageAlt: string;
+  inlineImages?: PostInlineImage[];
+  status: PostStatus;
+  readTime: string;
+  seoTitle?: string;
+  seoDescription?: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface DbVolunteerSignup {
@@ -23,7 +43,7 @@ export interface DbVolunteerSignup {
   availability?: string;
   areaOfInterest?: string;
   skills?: string;
-  createdAt: Date | string;
+  createdAt: string;
 }
 
 export interface DbContactMessage {
@@ -33,11 +53,11 @@ export interface DbContactMessage {
   subject?: string;
   message: string;
   category?: string;
-  createdAt: Date | string;
+  createdAt: string;
 }
 
 export interface DbNewsletterSubscriber {
   id: number;
   email: string;
-  createdAt: Date | string;
+  createdAt: string;
 }

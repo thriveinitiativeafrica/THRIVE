@@ -1,42 +1,50 @@
 import React from "react";
-import { HandHeart, Utensils, GraduationCap } from "lucide-react";
 
 export function StatsStrip() {
   const stats = [
     {
       value: "2,500+",
       label: "Families Helped",
-      icon: <HandHeart className="w-5 h-5 text-thrive-gold-400 butterfly-hover" />,
+      detail: "Clean water & relief outreach",
+      dotColor: "bg-thrive-gold-600",
     },
     {
       value: "10,000+",
       label: "Meals Served",
-      icon: <Utensils className="w-5 h-5 text-thrive-gold-400 butterfly-hover" />,
+      detail: "Community nutrition parcels",
+      dotColor: "bg-thrive-purple-500",
     },
     {
       value: "800+",
       label: "Children Educated",
-      icon: <GraduationCap className="w-5 h-5 text-thrive-gold-400 butterfly-hover" />,
+      detail: "Tuition & scholastic kit sponsorships",
+      dotColor: "bg-thrive-teal-600",
     },
   ];
 
   return (
     <section className="relative z-20 -mt-10 sm:-mt-12 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div className="bg-thrive-cream border border-gray-200 rounded-2xl py-4 px-6 sm:px-10">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 divide-y md:divide-y-0 md:divide-x divide-gray-200">
+      <div className="bg-thrive-cream border border-thrive-border rounded-2xl py-6 px-6 sm:px-10 shadow-lg">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 divide-y md:divide-y-0 md:divide-x divide-thrive-border">
           {stats.map((stat, idx) => (
             <div
               key={stat.label}
-              className={`group flex items-center gap-3.5 cursor-default transition-all ${idx > 0 ? "pt-4 md:pt-0 md:pl-6" : ""}`}
+              className={`flex flex-col justify-center text-center md:text-left ${
+                idx > 0 ? "pt-5 md:pt-0 md:pl-8" : ""
+              }`}
             >
-              <div className="w-10 h-10 rounded-xl bg-thrive-purple-900 flex items-center justify-center shrink-0 border border-thrive-purple-800 transition-transform duration-300 group-hover:scale-110">
-                {stat.icon}
-              </div>
-              <div>
-                <span className="font-serif text-sm font-bold text-thrive-purple-900 block leading-tight transition-colors group-hover:text-thrive-purple-700">
-                  {stat.value} {stat.label}
+              <div className="flex items-center justify-center md:justify-start gap-2 mb-1">
+                <span className={`w-2 h-2 rounded-full ${stat.dotColor}`} aria-hidden="true" />
+                <span className="font-serif text-2xl sm:text-3xl font-bold text-thrive-purple-900 tracking-tight">
+                  {stat.value}
                 </span>
               </div>
+              <span className="text-xs font-bold uppercase tracking-wider text-thrive-ink-800">
+                {stat.label}
+              </span>
+              <span className="text-[11px] text-thrive-ink-600 mt-0.5">
+                {stat.detail}
+              </span>
             </div>
           ))}
         </div>

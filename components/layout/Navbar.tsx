@@ -2,9 +2,11 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { siteConfig } from "@/content/site.config";
-import { ChevronDown, Menu, X } from "lucide-react";
+import { siteImages } from "@/content/images.config";
+import { IconChevronDown, IconMenu, IconClose } from "@/components/shared/Icons";
 import { cn } from "@/lib/utils";
 import { DonateModal } from "../shared/DonateModal";
 
@@ -69,33 +71,40 @@ export function Navbar() {
       <header
         ref={navRef}
         className={cn(
-          "fixed top-0 left-0 right-0 z-40 transition-colors duration-200",
+          "fixed top-0 left-0 right-0 z-40 transition-all duration-300",
           isLightNav
-            ? "bg-white text-thrive-purple-900 border-b border-gray-200 py-3.5"
-            : "bg-transparent text-white py-5 border-b border-white/10"
+            ? "bg-white/95 backdrop-blur-md text-thrive-purple-900 border-b border-thrive-border shadow-xs py-3"
+            : "bg-transparent text-white py-4 sm:py-5 border-b border-white/10"
         )}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
-          {/* Brand Logo */}
-          <Link href="/" className="flex items-center gap-2 group">
-            <span
-              className={cn(
-                "font-serif text-2xl sm:text-3xl font-bold tracking-tight transition-colors",
-                isLightNav ? "text-thrive-purple-900" : "text-white"
-              )}
-            >
-              THRIVE
-            </span>
-            <span
-              className={cn(
-                "text-[10px] tracking-widest uppercase font-bold px-2 py-0.5 rounded-full transition-colors",
-                isLightNav
-                  ? "bg-gray-100 text-thrive-purple-900 border border-gray-200"
-                  : "bg-white/20 text-white"
-              )}
-            >
-              Initiative
-            </span>
+          {/* Brand Logo with New Official Asset */}
+          <Link
+            href="/"
+            className={cn(
+              "flex items-center gap-3 group transition-transform duration-200 hover:scale-[1.02]",
+              !isLightNav && "bg-white/95 px-3 py-1.5 rounded-2xl shadow-sm border border-white/20"
+            )}
+            aria-label="THRIVE Initiative Home"
+          >
+            <div className="relative w-8 h-8 sm:w-9 sm:h-9 shrink-0">
+              <Image
+                src={siteImages.logo.emblem}
+                alt="THRIVE Emblem"
+                fill
+                sizes="36px"
+                className="object-contain"
+                priority
+              />
+            </div>
+            <div className="flex flex-col">
+              <span className="font-serif text-lg sm:text-xl font-bold tracking-tight text-thrive-purple-900 leading-none">
+                THRIVE
+              </span>
+              <span className="text-[9px] tracking-widest uppercase font-semibold text-thrive-gold-600 leading-tight">
+                Initiative
+              </span>
+            </div>
           </Link>
 
           {/* Desktop Navigation Links */}
@@ -116,22 +125,19 @@ export function Navbar() {
                       aria-expanded={isOpen}
                       aria-haspopup="true"
                       className={cn(
-                        "flex items-center gap-1 px-3.5 py-2 rounded-full text-sm font-medium transition-colors",
+                        "flex items-center gap-1.5 px-3.5 py-2 rounded-full text-xs font-semibold uppercase tracking-wider transition-colors",
                         isLightNav
                           ? isActive
-                            ? "text-thrive-purple-900 font-semibold bg-gray-100"
-                            : "text-gray-700 hover:text-thrive-purple-900 hover:bg-gray-50"
+                            ? "text-thrive-purple-900 bg-thrive-purple-100"
+                            : "text-thrive-ink-800 hover:text-thrive-purple-900 hover:bg-thrive-cream"
                           : isActive
-                          ? "text-white font-semibold bg-white/20"
+                          ? "text-white bg-white/20"
                           : "text-white/90 hover:text-white hover:bg-white/10"
                       )}
                     >
                       <span>{item.label}</span>
-                      <ChevronDown
-                        className={cn(
-                          "w-3.5 h-3.5 transition-transform duration-200",
-                          isOpen && "rotate-180"
-                        )}
+                      <IconChevronDown
+                        className={cn("w-3.5 h-3.5", isOpen && "rotate-180")}
                       />
                     </button>
 
@@ -139,7 +145,7 @@ export function Navbar() {
                     {isOpen && (
                       <div
                         role="menu"
-                        className="absolute top-full left-0 mt-2 w-72 bg-white text-thrive-purple-900 border border-gray-200 rounded-2xl p-2 z-50 shadow-xs"
+                        className="absolute top-full left-0 mt-2 w-72 bg-white text-thrive-purple-900 border border-thrive-border rounded-2xl p-2.5 z-50 shadow-xl"
                       >
                         {item.children?.map((sub) => (
                           <Link
@@ -150,13 +156,15 @@ export function Navbar() {
                             className={cn(
                               "block p-2.5 rounded-xl transition-colors text-left",
                               pathname === sub.href
-                                ? "bg-gray-100 text-thrive-purple-900 font-bold"
-                                : "text-gray-700 hover:bg-gray-50 hover:text-thrive-purple-900"
+                                ? "bg-thrive-purple-50 text-thrive-purple-900 font-bold"
+                                : "text-thrive-ink-800 hover:bg-thrive-cream hover:text-thrive-purple-900"
                             )}
                           >
-                            <div className="text-sm font-semibold">{sub.label}</div>
+                            <div className="text-xs font-bold uppercase tracking-wider">
+                              {sub.label}
+                            </div>
                             {sub.description && (
-                              <div className="text-xs text-gray-500 line-clamp-1 mt-0.5">
+                              <div className="text-[11px] text-thrive-ink-600 line-clamp-1 mt-0.5">
                                 {sub.description}
                               </div>
                             )}
@@ -173,13 +181,13 @@ export function Navbar() {
                   key={item.href}
                   href={item.href}
                   className={cn(
-                    "px-3.5 py-2 rounded-full text-sm font-medium transition-colors",
+                    "px-3.5 py-2 rounded-full text-xs font-semibold uppercase tracking-wider transition-colors",
                     isLightNav
                       ? isActive
-                        ? "text-thrive-purple-900 font-semibold bg-gray-100"
-                        : "text-gray-700 hover:text-thrive-purple-900 hover:bg-gray-50"
+                        ? "text-thrive-purple-900 bg-thrive-purple-100"
+                        : "text-thrive-ink-800 hover:text-thrive-purple-900 hover:bg-thrive-cream"
                       : isActive
-                      ? "text-white font-semibold bg-white/20"
+                      ? "text-white bg-white/20"
                       : "text-white/90 hover:text-white hover:bg-white/10"
                   )}
                 >
@@ -193,7 +201,7 @@ export function Navbar() {
           <div className="hidden md:flex items-center gap-3">
             <button
               onClick={() => setDonateModalOpen(true)}
-              className="px-6 py-2.5 rounded-full bg-thrive-gold-600 hover:bg-thrive-gold-500 text-thrive-purple-900 font-bold text-xs uppercase tracking-wider transition-all"
+              className="px-6 py-2.5 rounded-full bg-thrive-gold-600 hover:bg-thrive-gold-500 text-thrive-purple-900 font-bold text-xs uppercase tracking-wider shadow-sm transition-all hover:shadow-md active:scale-95"
             >
               Donate
             </button>
@@ -201,7 +209,7 @@ export function Navbar() {
             <Link
               href="/get-involved/volunteer"
               className={cn(
-                "px-5 py-2 rounded-full font-semibold text-xs uppercase tracking-wider transition-all border",
+                "px-5 py-2 rounded-full font-bold text-xs uppercase tracking-wider transition-all border",
                 isLightNav
                   ? "border-thrive-purple-900 text-thrive-purple-900 hover:bg-thrive-purple-900 hover:text-white"
                   : "border-white text-white hover:bg-white hover:text-thrive-purple-900"
@@ -215,7 +223,7 @@ export function Navbar() {
           <div className="flex items-center gap-2 lg:hidden">
             <button
               onClick={() => setDonateModalOpen(true)}
-              className="px-3.5 py-1.5 rounded-full bg-thrive-gold-600 text-thrive-purple-900 font-bold text-xs"
+              className="px-4 py-1.5 rounded-full bg-thrive-gold-600 text-thrive-purple-900 font-bold text-xs uppercase tracking-wider shadow-sm"
             >
               Donate
             </button>
@@ -225,24 +233,24 @@ export function Navbar() {
               className={cn(
                 "p-2 rounded-xl border transition-colors",
                 isLightNav
-                  ? "border-gray-200 text-thrive-purple-900 bg-white"
+                  ? "border-thrive-border text-thrive-purple-900 bg-white"
                   : "border-white/20 text-white bg-white/10"
               )}
-              aria-label="Toggle navigation"
+              aria-label="Toggle navigation menu"
             >
-              {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+              {mobileMenuOpen ? <IconClose size={20} /> : <IconMenu size={20} />}
             </button>
           </div>
         </div>
 
         {/* Mobile Navigation Drawer */}
         {mobileMenuOpen && (
-          <div className="lg:hidden bg-white text-thrive-purple-900 border-t border-gray-200 px-5 py-6 space-y-4 max-h-[85vh] overflow-y-auto">
+          <div className="lg:hidden bg-white text-thrive-purple-900 border-t border-thrive-border px-5 py-6 space-y-4 max-h-[85vh] overflow-y-auto shadow-2xl">
             <nav className="flex flex-col space-y-1">
               {siteConfig.nav.map((item) => {
                 const hasChildren = item.children && item.children.length > 0;
                 return (
-                  <div key={item.label} className="border-b border-gray-100 pb-2">
+                  <div key={item.label} className="border-b border-thrive-border-light pb-2">
                     {hasChildren ? (
                       <div>
                         <div className="px-3 py-2 text-xs uppercase font-bold tracking-wider text-thrive-purple-900">
@@ -254,10 +262,10 @@ export function Navbar() {
                               key={sub.href}
                               href={sub.href}
                               className={cn(
-                                "block px-3 py-2 rounded-xl text-sm font-medium",
+                                "block px-3 py-2 rounded-xl text-xs font-semibold uppercase tracking-wider",
                                 pathname === sub.href
-                                  ? "bg-gray-100 text-thrive-purple-900 font-bold"
-                                  : "text-gray-700 hover:bg-gray-50"
+                                  ? "bg-thrive-purple-50 text-thrive-purple-900"
+                                  : "text-thrive-ink-800 hover:bg-thrive-cream"
                               )}
                             >
                               {sub.label}
@@ -269,10 +277,10 @@ export function Navbar() {
                       <Link
                         href={item.href}
                         className={cn(
-                          "block px-3 py-2.5 rounded-xl text-sm font-medium",
+                          "block px-3 py-2.5 rounded-xl text-xs font-semibold uppercase tracking-wider",
                           pathname === item.href
-                            ? "bg-gray-100 text-thrive-purple-900 font-bold"
-                            : "text-gray-700 hover:bg-gray-50"
+                            ? "bg-thrive-purple-50 text-thrive-purple-900"
+                            : "text-thrive-ink-800 hover:bg-thrive-cream"
                         )}
                       >
                         {item.label}
@@ -289,13 +297,13 @@ export function Navbar() {
                   setMobileMenuOpen(false);
                   setDonateModalOpen(true);
                 }}
-                className="w-full py-3 rounded-full bg-thrive-gold-600 text-thrive-purple-900 font-bold text-center text-sm"
+                className="w-full py-3 rounded-full bg-thrive-gold-600 text-thrive-purple-900 font-bold text-center text-xs uppercase tracking-wider shadow-sm"
               >
                 Donate
               </button>
               <Link
                 href="/get-involved/volunteer"
-                className="w-full py-3 rounded-full bg-white border border-thrive-purple-900 text-thrive-purple-900 font-semibold text-center text-sm"
+                className="w-full py-3 rounded-full bg-white border-2 border-thrive-purple-900 text-thrive-purple-900 font-bold text-center text-xs uppercase tracking-wider"
               >
                 Become a Volunteer
               </Link>
