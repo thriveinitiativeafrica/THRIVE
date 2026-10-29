@@ -37,9 +37,10 @@ brain/
 scratch/
 *.pdf
 
-# Markdown files (Ignore all PRDs and notes, except README.md)
+# Markdown files (Allow README.md and documentation folder)
 *.md
 !README.md
+!docs/**
 
 # Operating System
 .DS_Store
