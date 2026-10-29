@@ -15,7 +15,7 @@ export const siteImages = {
   hero: {
     woman: {
       src: "/images/hero-woman.webp",
-      alt: "Smiling African woman leader in Lagos community",
+      alt: "Smiling Nigerian woman community leader",
       width: 600,
       height: 600,
     },
@@ -27,7 +27,7 @@ export const siteImages = {
     },
     centerChildren: {
       src: "/images/hero-children-center.webp",
-      alt: "Smiling Nigerian children during school outreach in Lagos",
+      alt: "Smiling Nigerian children during a school outreach",
       width: 600,
       height: 600,
     },

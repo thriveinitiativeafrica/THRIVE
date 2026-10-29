@@ -7,10 +7,10 @@ import { getAllPosts } from "@/db";
 export const metadata: Metadata = {
   title: "Blog",
   description:
-    "Read the latest field dispatches, community reports, and project turnaround updates from THRIVE Initiative in Lagos, Nigeria.",
+    "Read the latest field dispatches, community reports, and project turnaround updates from THRIVE Initiative in Abuja, Nigeria.",
 };
 
-export const revalidate = 60; // ISR revalidation
+export const dynamic = "force-dynamic";
 
 export default async function BlogIndexPage() {
   const publishedPosts = await getAllPosts({ status: "published" });
@@ -28,8 +28,8 @@ export default async function BlogIndexPage() {
         <h1 className="text-4xl sm:text-5xl lg:text-6xl font-medium tracking-tight text-[#2E1650] max-w-3xl leading-[1.1]">
           Field dispatches and community updates
         </h1>
-        <p className="text-base sm:text-lg text-gray-700 max-w-2xl font-normal leading-relaxed">
-          Stories and verified milestones from our clean water, child literacy, and women empowerment initiatives in Nigeria.
+        <p className="text-base sm:text-lg text-[#2E1650]/75 max-w-2xl font-normal leading-relaxed">
+          Stories and verified milestones from our child education, women empowerment, and community development initiatives in Abuja, Nigeria.
         </p>
       </section>
 
@@ -55,6 +55,7 @@ export default async function BlogIndexPage() {
                       src={post.cover_image_url}
                       alt={post.cover_image_alt || post.title}
                       fill
+                      unoptimized={post.cover_image_url.startsWith("data:")}
                       className="object-cover"
                       sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                     />
@@ -84,9 +85,9 @@ export default async function BlogIndexPage() {
                   <div className="pt-2">
                     <Link
                       href={`/blog/${post.slug}`}
-                      className="text-xs sm:text-sm font-medium text-[#2E1650] hover:underline underline-offset-4"
+                      className="inline-block px-5 py-2 rounded-full border border-[#2E1650]/25 text-xs font-medium text-[#2E1650] hover:bg-[#2E1650] hover:text-white transition-colors"
                     >
-                      Read full story
+                      Read Full Story
                     </Link>
                   </div>
                 </div>

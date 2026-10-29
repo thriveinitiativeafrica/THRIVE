@@ -13,27 +13,27 @@ const faqs: FaqItem[] = [
   {
     question: "How are donations deployed across community programs?",
     answer:
-      "Donations support direct program costs including clean water boreholes, school learning materials, and women vocational workshops in Lagos State. For specific financial allocations or institutional funding questions, please reach out through our Contact page.",
+      "Donations directly fund grassroots interventions including women empowerment workshops, school learning materials, skills acquisition clinics, and community health outreach across Abuja.",
   },
   {
     question: "How can I volunteer with THRIVE Initiative?",
     answer:
-      "We welcome volunteers who can support field outreach, educational clinics, and community logistics in Lagos. You can apply through our volunteer link or message our coordinator through the Contact page.",
+      "We welcome passionate volunteers in Abuja and across Nigeria to support field outreach, mentorship, education programs, and media advocacy. Visit our Contact page or click Get Involved to join.",
   },
   {
-    question: "Can our company or foundation partner with THRIVE?",
+    question: "Can our organization or foundation partner with THRIVE?",
     answer:
-      "Yes. We collaborate with corporate CSR departments, academic institutions, and non-profit trusts on community development initiatives. To submit a partnership inquiry, please connect with us via our Contact page.",
+      "Yes. We collaborate with corporate CSR teams, civil society organizations, schools, and international development partners on sustainable community programs.",
   },
   {
     question: "How can I follow project milestones and field updates?",
     answer:
-      "You can subscribe to our newsletter in the footer, follow our official social channels, or check our Blog for dispatches on current community initiatives.",
+      "Subscribe to our newsletter in the footer, follow our social channels, or read our Blog for field dispatches and impact reports from our programs.",
   },
   {
-    question: "Where is THRIVE Initiative registered and located?",
+    question: "Where is THRIVE Initiative based?",
     answer:
-      "THRIVE Initiative is an officially registered Nigerian non-governmental organization operating from Victoria Island, Lagos, Nigeria.",
+      "THRIVE Initiative is a registered Nigerian non-governmental organization headquartered in Abuja, Nigeria, working directly with underserved communities.",
   },
 ];
 
@@ -45,56 +45,67 @@ export function HomeFaq() {
   }
 
   return (
-    <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
-      <div className="space-y-2">
-        <div className="flex items-center gap-2">
-          <span className="w-2 h-2 rounded-full bg-[#D4A017]" />
-          <span className="text-xs uppercase tracking-wider font-semibold text-[#2E1650]">
-            Frequently Asked Questions
-          </span>
+    <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-start">
+        {/* Left Column: Label + Big Heading + Subtext (PureFlow style) */}
+        <div className="lg:col-span-5 space-y-4">
+          <div className="flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-[#D4A017]" />
+            <span className="text-xs uppercase tracking-wider font-semibold text-[#2E1650]">
+              FAQs
+            </span>
+          </div>
+          <h2 className="text-3xl sm:text-4xl lg:text-[44px] font-medium tracking-tight text-[#2E1650] leading-[1.1]">
+            Frequently Asked Questions?
+          </h2>
+          <p className="text-sm sm:text-base text-[#2E1650]/70 leading-relaxed pt-1 max-w-sm">
+            Everything you need to know about our mission, community programs, and how your support creates lasting impact in Abuja.
+          </p>
+          <div className="pt-2">
+            <Link
+              href="/contact"
+              className="inline-block px-6 py-2.5 rounded-full border border-[#2E1650]/25 text-xs sm:text-sm font-medium text-[#2E1650] hover:bg-[#2E1650] hover:text-white transition-colors"
+            >
+              Ask a Question
+            </Link>
+          </div>
         </div>
-        <h2 className="text-3xl sm:text-4xl font-medium text-[#2E1650]">
-          Questions about our mission and work
-        </h2>
-      </div>
 
-      <div className="divide-y divide-gray-200 border-y border-gray-200">
-        {faqs.map((item, idx) => {
-          const isOpen = openIndex === idx;
-          return (
-            <div key={item.question} className="py-6">
-              <button
-                type="button"
-                onClick={() => toggleIndex(idx)}
-                className="w-full flex items-center justify-between text-left gap-4"
-                aria-expanded={isOpen}
+        {/* Right Column: Individual White Rounded Accordion Cards (PureFlow style) */}
+        <div className="lg:col-span-7 space-y-3.5">
+          {faqs.map((item, idx) => {
+            const isOpen = openIndex === idx;
+            return (
+              <div
+                key={item.question}
+                className="bg-white border border-[#2E1650]/10 rounded-2xl px-6 py-5 transition-colors hover:border-[#2E1650]/25"
               >
-                <span className="text-base sm:text-lg font-medium text-[#2E1650]">
-                  {item.question}
-                </span>
-                <IconChevronDown
-                  className={`w-5 h-5 text-gray-500 transition-transform duration-200 shrink-0 ${
-                    isOpen ? "rotate-180" : ""
-                  }`}
-                />
-              </button>
-              {isOpen && (
-                <div className="pt-3 pr-8">
-                  <p className="text-sm sm:text-base text-gray-600 leading-relaxed font-normal">
-                    {item.answer}
-                  </p>
-                </div>
-              )}
-            </div>
-          );
-        })}
-      </div>
-
-      <div className="pt-2 text-xs sm:text-sm text-gray-500">
-        Have a question not covered above?{" "}
-        <Link href="/contact" className="text-[#2E1650] font-medium hover:underline underline-offset-4">
-          Contact our team directly.
-        </Link>
+                <button
+                  type="button"
+                  onClick={() => toggleIndex(idx)}
+                  className="w-full flex items-center justify-between text-left gap-4 cursor-pointer"
+                  aria-expanded={isOpen}
+                >
+                  <span className="text-sm sm:text-base font-medium text-[#2E1650]">
+                    {item.question}
+                  </span>
+                  <IconChevronDown
+                    className={`w-4 h-4 text-[#2E1650]/60 transition-transform duration-200 shrink-0 ${
+                      isOpen ? "rotate-180 text-[#D4A017]" : ""
+                    }`}
+                  />
+                </button>
+                {isOpen && (
+                  <div className="pt-3 pr-6">
+                    <p className="text-xs sm:text-sm text-[#2E1650]/75 leading-relaxed font-normal">
+                      {item.answer}
+                    </p>
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
       </div>
     </section>
   );

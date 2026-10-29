@@ -51,10 +51,10 @@ export default function ContactPage() {
           </span>
         </div>
         <h1 className="text-4xl sm:text-5xl lg:text-6xl font-medium tracking-tight text-[#2E1650] max-w-3xl leading-[1.1]">
-          Get in touch with our team in Lagos
+          Get in touch with our team in Abuja
         </h1>
         <p className="text-base sm:text-lg text-gray-700 max-w-2xl font-normal leading-relaxed">
-          Reach out with questions about our community programs, donations, or volunteering opportunities across Lagos State.
+          Reach out with questions about our community programs, donations, or volunteering opportunities across Abuja.
         </p>
       </section>
 

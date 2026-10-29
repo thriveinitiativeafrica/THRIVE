@@ -1,7 +1,7 @@
 import fs from "fs";
 import path from "path";
-import { neon } from "@neondatabase/serverless";
-import { drizzle } from "drizzle-orm/neon-http";
+import postgres from "postgres";
+import { drizzle } from "drizzle-orm/postgres-js";
 import { eq, desc } from "drizzle-orm";
 import { posts, contactMessages, newsletterSubscribers, type PostRecord } from "./schema";
 
@@ -36,14 +36,21 @@ function persistLocalStore(data: PostRecord[]) {
   }
 }
 
-function getDb() {
+// Works with any standard Postgres URL: Supabase, Neon, Railway, Render, Aiven, etc.
+// prepare:false keeps it compatible with Supabase's transaction pooler (port 6543).
+type Db = ReturnType<typeof drizzle>;
+const globalForDb = globalThis as unknown as { thriveDb?: Db };
+
+function getDb(): Db | null {
   const dbUrl = process.env.DATABASE_URL;
   if (!dbUrl) return null;
+  if (globalForDb.thriveDb) return globalForDb.thriveDb;
   try {
-    const sql = neon(dbUrl);
-    return drizzle(sql, { schema: { posts, contactMessages, newsletterSubscribers } });
+    const client = postgres(dbUrl, { prepare: false, max: 3, ssl: "require" });
+    globalForDb.thriveDb = drizzle(client, { schema: { posts, contactMessages, newsletterSubscribers } });
+    return globalForDb.thriveDb;
   } catch (err) {
-    console.warn("Could not connect to Neon Postgres, falling back to local store:", err);
+    console.warn("Could not connect to Postgres, falling back to local store:", err);
     return null;
   }
 }
@@ -85,7 +92,7 @@ export async function getAllPosts(options?: {
       }
       return filtered;
     } catch (err) {
-      console.warn("Error querying posts from Neon Postgres, using local store:", err);
+      console.warn("Error querying posts from Postgres, using local store:", err);
     }
   }
 
@@ -129,7 +136,7 @@ export async function getPostBySlug(slug: string): Promise<PostRecord | null> {
         };
       }
     } catch (err) {
-      console.warn("Error querying post from Neon Postgres, using local store:", err);
+      console.warn("Error querying post from Postgres, using local store:", err);
     }
   }
 
@@ -198,7 +205,7 @@ export async function savePost(data: Partial<PostRecord> & { title: string; slug
         });
       }
     } catch (err) {
-      console.warn("Could not save post to Neon Postgres, saving to local store:", err);
+      console.warn("Could not save post to Postgres, saving to local store:", err);
     }
   }
 
@@ -221,7 +228,7 @@ export async function deletePost(id: string): Promise<boolean> {
     try {
       await db.delete(posts).where(eq(posts.id, id));
     } catch (err) {
-      console.warn("Could not delete post from Neon Postgres:", err);
+      console.warn("Could not delete post from Postgres:", err);
     }
   }
 
@@ -238,7 +245,7 @@ export async function saveContactMessage(name: string, email: string, message: s
       await db.insert(contactMessages).values({ name, email, message });
       return;
     } catch (err) {
-      console.warn("Could not save contact message to Neon Postgres, saving to memory:", err);
+      console.warn("Could not save contact message to Postgres, saving to memory:", err);
     }
   }
   inMemoryContacts.push({
@@ -257,7 +264,7 @@ export async function saveNewsletterSubscriber(email: string): Promise<void> {
       await db.insert(newsletterSubscribers).values({ email });
       return;
     } catch (err) {
-      console.warn("Could not save subscriber to Neon Postgres, saving to memory:", err);
+      console.warn("Could not save subscriber to Postgres, saving to memory:", err);
     }
   }
   if (!inMemoryNewsletters.some((n) => n.email.toLowerCase() === email.toLowerCase())) {

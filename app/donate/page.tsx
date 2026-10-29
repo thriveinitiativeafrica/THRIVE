@@ -30,7 +30,7 @@ export default function DonatePage() {
           Support sustainable community programs
         </h1>
         <p className="text-base sm:text-lg text-gray-700 max-w-2xl font-normal leading-relaxed">
-          Your donation funds direct community interventions across clean water, child literacy, and women economic empowerment in Lagos State.
+          Your donation funds direct community interventions across clean water, child literacy, and women economic empowerment in Abuja.
         </p>
       </section>
 

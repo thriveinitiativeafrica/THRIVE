@@ -11,15 +11,15 @@ export const siteConfig = {
   tagline: "Empowering People. Uplifting Communities. Building a Better Future.",
   secondaryTagline: "Empowering People. Transforming Communities.",
   description:
-    "THRIVE Initiative is a Nigerian nonprofit organization dedicated to women empowerment, child education, skills acquisition, advocacy, social inclusion, and sustainable community development in Lagos, Nigeria.",
+    "THRIVE Initiative is a Nigerian nonprofit organization dedicated to women empowerment, child education, skills acquisition, advocacy, social inclusion, and sustainable community development in Abuja, Nigeria.",
   url: "https://www.thriveinitiativeafrica.com",
   ogImage: "/og-default.png",
   contact: {
-    email: "contact@thriveinitiativeafrica.com",
-    supportEmail: "support@thriveinitiativeafrica.com",
+    email: "hello@thriveinitiativeafrica.com",
+    supportEmail: "hello@thriveinitiativeafrica.com",
     phone: "+234 812 345 6789",
     altPhone: "+234 803 987 6543",
-    address: "14 Impact Crescent, Victoria Island, Lagos, Nigeria",
+    address: "Abuja, Federal Capital Territory, Nigeria",
     operatingHours: "Monday to Friday: 8:00 AM to 5:00 PM WAT",
   },
   social: {

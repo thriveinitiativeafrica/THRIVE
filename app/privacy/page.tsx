@@ -46,7 +46,7 @@ export default function PrivacyPage() {
         <section className="space-y-2">
           <h2 className="text-lg font-medium text-[#2E1650]">5. Contact Regarding Your Data</h2>
           <p>
-            To request review, correction, or deletion of your personal data, please contact our data coordinator at <strong>contact@thriveinitiativeafrica.com</strong>.
+            To request review, correction, or deletion of your personal data, please contact our data coordinator at <strong>hello@thriveinitiativeafrica.com</strong>.
           </p>
         </section>
       </div>

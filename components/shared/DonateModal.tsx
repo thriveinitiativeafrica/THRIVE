@@ -107,10 +107,10 @@ export function DonateModal() {
                 </span>
               </div>
               <h2 id="donate-modal-title" className="text-2xl font-medium text-[#2E1650]">
-                Support Grassroots Programs in Lagos
+                Support Grassroots Programs in Abuja
               </h2>
               <p className="text-xs text-gray-600 mt-1">
-                Your contribution directly funds community water boreholes, school learning kits, and women vocational grants in Lagos, Nigeria.
+                Your contribution directly funds community water boreholes, school learning kits, and women vocational grants in Abuja, Nigeria.
               </p>
             </div>
 

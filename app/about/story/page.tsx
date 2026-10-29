@@ -7,7 +7,7 @@ import { openDonateModal } from "@/components/shared/DonateModal";
 export const metadata: Metadata = {
   title: "Our Story & Values",
   description:
-    "Learn about THRIVE Initiative, our founding mission, grassroots methodology, and core values driving community development across Lagos, Nigeria.",
+    "Learn about THRIVE Initiative, our founding mission, grassroots methodology, and core values driving community development in Abuja, Nigeria.",
 };
 
 export default function StoryPage() {
@@ -48,7 +48,7 @@ export default function StoryPage() {
           Dedicated to sustainable grassroots progress in Nigeria.
         </h1>
         <p className="text-base sm:text-lg text-gray-700 max-w-2xl font-normal leading-relaxed">
-          THRIVE Initiative was founded to bridge the critical gap in basic infrastructure, youth literacy, and women economic empowerment across underserved communities in Lagos State.
+          THRIVE Initiative was founded to bridge the critical gap in basic infrastructure, youth literacy, and women economic empowerment across underserved communities in Abuja.
         </p>
       </section>
 
@@ -57,7 +57,7 @@ export default function StoryPage() {
         <div className="relative w-full h-[360px] sm:h-[480px] lg:h-[540px] rounded-3xl overflow-hidden bg-gray-100">
           <Image
             src="/images/who-we-are.webp"
-            alt="THRIVE Initiative community members and field organizers in Lagos"
+            alt="THRIVE Initiative community members and field organizers in Abuja"
             fill
             priority
             className="object-cover"

@@ -7,7 +7,7 @@ import { programsData } from "@/content/programs";
 export const metadata: Metadata = {
   title: "Our Programs",
   description:
-    "Explore THRIVE Initiative core intervention areas across clean water, child education, women empowerment, skills acquisition, and community outreach in Lagos, Nigeria.",
+    "Explore THRIVE Initiative core intervention areas across clean water, child education, women empowerment, skills acquisition, and community outreach in Abuja, Nigeria.",
 };
 
 export default function ProgramsIndexPage() {
@@ -25,7 +25,7 @@ export default function ProgramsIndexPage() {
           Integrated community programs designed for lasting progress.
         </h1>
         <p className="text-base sm:text-lg text-gray-700 max-w-2xl font-normal leading-relaxed">
-          We implement practical, community-owned interventions addressing basic needs, foundational education, and economic independence across Lagos State.
+          We implement practical, community-owned interventions addressing basic needs, foundational education, and economic independence across Abuja.
         </p>
       </section>
 

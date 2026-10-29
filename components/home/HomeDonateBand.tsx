@@ -4,98 +4,123 @@ import React, { useState } from "react";
 import Image from "next/image";
 import { openDonateModal } from "@/components/shared/DonateModal";
 
+const PRESET_AMOUNTS = [5000, 10000, 25000, 50000, 100000];
+
 export function HomeDonateBand() {
   const [frequency, setFrequency] = useState<"once" | "monthly">("once");
-  const [selectedAmount, setSelectedAmount] = useState<number>(10000);
+  const [selectedAmount, setSelectedAmount] = useState<number | null>(10000);
 
   function handleDonateClick() {
-    openDonateModal(selectedAmount);
+    openDonateModal(selectedAmount ?? undefined);
   }
 
   return (
     <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div className="bg-white rounded-3xl border border-gray-200 overflow-hidden grid grid-cols-1 lg:grid-cols-12 shadow-sm">
-        {/* Left Form (7 cols) */}
-        <div className="lg:col-span-7 p-6 sm:p-12 flex flex-col justify-between space-y-8">
-          <div className="space-y-4">
-            <div className="flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-[#D4A017]" />
-              <span className="text-xs uppercase tracking-wider font-semibold text-[#2E1650]">
-                Make an Impact
-              </span>
-            </div>
-            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-medium text-[#2E1650] leading-tight">
-              Support sustainable community initiatives
+      <div className="bg-white rounded-3xl border border-[#2E1650]/10 overflow-hidden grid grid-cols-1 lg:grid-cols-12 shadow-sm">
+        {/* Left Form (7 cols - PureFlow layout) */}
+        <div className="lg:col-span-7 p-7 sm:p-12 lg:p-14 flex flex-col justify-between">
+          <div className="space-y-6">
+            <h2 className="text-3xl sm:text-4xl lg:text-[42px] font-medium tracking-tight text-[#2E1650] leading-[1.12]">
+              Every Contribution Powers Real Grassroots Impact
             </h2>
-            <p className="text-xs sm:text-sm text-gray-600 leading-relaxed font-normal">
-              Your contribution enables direct grassroots programs in clean water infrastructure, youth literacy, and women economic independence in Lagos communities.
-            </p>
+
+            {/* Subtitle + Give Once / Monthly Toggle on the same row */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <p className="text-xs sm:text-sm text-[#2E1650]/75 leading-relaxed max-w-xs">
+                Empower women, educate children, and build resilient communities in Abuja.
+              </p>
+
+              <div className="flex items-center gap-2 shrink-0">
+                <button
+                  type="button"
+                  onClick={() => setFrequency("once")}
+                  className={`px-5 py-2.5 rounded-full text-xs font-semibold transition-colors cursor-pointer ${
+                    frequency === "once"
+                      ? "bg-[#D4A017] text-[#2E1650]"
+                      : "bg-white border border-[#2E1650]/20 text-[#2E1650] hover:bg-[#FAF6EC]"
+                  }`}
+                >
+                  Give Once
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setFrequency("monthly")}
+                  className={`px-5 py-2.5 rounded-full text-xs font-semibold transition-colors cursor-pointer ${
+                    frequency === "monthly"
+                      ? "bg-[#D4A017] text-[#2E1650]"
+                      : "bg-white border border-[#2E1650]/20 text-[#2E1650] hover:bg-[#FAF6EC]"
+                  }`}
+                >
+                  Monthly
+                </button>
+              </div>
+            </div>
           </div>
 
-          <div className="space-y-5">
-            {/* Once vs Monthly Toggle */}
-            <div className="flex p-1 bg-[#FAF6EC] rounded-full border border-gray-200 max-w-xs">
-              <button
-                type="button"
-                onClick={() => setFrequency("once")}
-                className={`flex-1 py-2 text-xs font-medium rounded-full transition-colors ${
-                  frequency === "once" ? "bg-[#2E1650] text-white" : "text-gray-600"
-                }`}
-              >
-                Give Once
-              </button>
-              <button
-                type="button"
-                onClick={() => setFrequency("monthly")}
-                className={`flex-1 py-2 text-xs font-medium rounded-full transition-colors ${
-                  frequency === "monthly" ? "bg-[#2E1650] text-white" : "text-gray-600"
-                }`}
-              >
-                Give Monthly
-              </button>
-            </div>
+          <hr className="border-[#2E1650]/10 my-7" />
 
-            {/* Amount Buttons */}
-            <div className="grid grid-cols-3 sm:grid-cols-5 gap-2">
-              {[5000, 10000, 25000, 50000, 100000].map((amt) => {
+          {/* Choose an Amount (PureFlow 2x3 pill grid) */}
+          <div className="space-y-5">
+            <p className="text-sm sm:text-base font-medium text-[#2E1650]">
+              Choose an Amount
+            </p>
+
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+              {PRESET_AMOUNTS.map((amt) => {
                 const isSelected = selectedAmount === amt;
                 return (
                   <button
                     key={amt}
                     type="button"
                     onClick={() => setSelectedAmount(amt)}
-                    className={`py-3 px-2 rounded-2xl text-xs font-medium border text-center transition-colors ${
+                    className={`py-3.5 px-4 rounded-full text-xs sm:text-sm font-medium border text-center transition-colors cursor-pointer ${
                       isSelected
-                        ? "border-[#2E1650] bg-[#FAF6EC] text-[#2E1650] font-semibold"
-                        : "border-gray-200 hover:border-gray-300 text-gray-700"
+                        ? "border-[#2E1650] bg-[#2E1650] text-white font-semibold"
+                        : "border-[#2E1650]/20 hover:border-[#2E1650] text-[#2E1650] bg-white"
                     }`}
                   >
                     ₦{amt.toLocaleString()}
                   </button>
                 );
               })}
+              <button
+                type="button"
+                onClick={() => {
+                  setSelectedAmount(null);
+                  openDonateModal();
+                }}
+                className={`py-3.5 px-4 rounded-full text-xs sm:text-sm font-medium border text-center transition-colors cursor-pointer ${
+                  selectedAmount === null
+                    ? "border-[#2E1650] bg-[#2E1650] text-white font-semibold"
+                    : "border-[#2E1650]/20 hover:border-[#2E1650] text-[#2E1650] bg-white"
+                }`}
+              >
+                Other amount
+              </button>
             </div>
 
-            <div>
+            <div className="pt-2">
               <button
                 type="button"
                 onClick={handleDonateClick}
-                className="w-full sm:w-auto px-8 py-3.5 bg-[#D4A017] hover:bg-[#B88912] text-[#2E1650] font-medium rounded-full text-sm transition-colors"
+                className="w-full py-4 bg-[#D4A017] hover:bg-[#B88912] text-[#2E1650] font-semibold rounded-full text-sm transition-colors cursor-pointer"
               >
-                Donate ₦{selectedAmount.toLocaleString()} {frequency === "monthly" ? "/ month" : ""}
+                {selectedAmount
+                  ? `Donate ₦${selectedAmount.toLocaleString()}${frequency === "monthly" ? " / month" : ""}`
+                  : "Donate Now"}
               </button>
             </div>
           </div>
         </div>
 
-        {/* Right Photo (5 cols) */}
-        <div className="lg:col-span-5 relative min-h-[300px] lg:min-h-full bg-gray-100">
+        {/* Right Photo (5 cols - flush full height) */}
+        <div className="lg:col-span-5 relative min-h-[340px] lg:min-h-full bg-gray-100">
           <Image
             src="/images/impact-water.webp"
-            alt="Children and community members in a Lagos settlement at a clean water point"
+            alt="Community outreach and clean water access in Abuja, Nigeria"
             fill
             className="object-cover"
-            sizes="(max-width: 1024px) 100vw, 40vw"
+            sizes="(max-width: 1024px) 100vw, 42vw"
           />
         </div>
       </div>

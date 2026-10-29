@@ -11,14 +11,7 @@ interface Props {
   params: Promise<{ slug: string }>;
 }
 
-export const revalidate = 60; // ISR revalidation
-
-export async function generateStaticParams() {
-  const published = await getAllPosts({ status: "published" });
-  return published.map((p) => ({
-    slug: p.slug,
-  }));
-}
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
@@ -28,7 +21,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || siteConfig.url;
   const title = post.seo_title || post.title;
   const description = post.seo_description || post.excerpt;
-  const ogImageUrl = post.cover_image_url || `${baseUrl}/og-default.png`;
+  const ogImageUrl =
+    post.cover_image_url && !post.cover_image_url.startsWith("data:")
+      ? post.cover_image_url
+      : `${baseUrl}/og-default.png`;
 
   return {
     title,
@@ -78,7 +74,10 @@ export default async function BlogPostPage({ params }: Props) {
     "@type": "Article",
     headline: post.title,
     description: post.excerpt,
-    image: post.cover_image_url || `${baseUrl}/og-default.png`,
+    image:
+      post.cover_image_url && !post.cover_image_url.startsWith("data:")
+        ? post.cover_image_url
+        : `${baseUrl}/og-default.png`,
     datePublished: post.published_at || post.created_at,
     dateModified: post.updated_at || post.created_at,
     author: {
@@ -147,6 +146,7 @@ export default async function BlogPostPage({ params }: Props) {
               alt={post.cover_image_alt || post.title}
               fill
               priority
+              unoptimized={post.cover_image_url.startsWith("data:")}
               className="object-cover"
               sizes="(max-width: 1200px) 100vw, 1200px"
             />
@@ -164,7 +164,7 @@ export default async function BlogPostPage({ params }: Props) {
           dangerouslySetInnerHTML={{ __html: cleanBodyHtml }}
         />
 
-        {/* Plain Text Share Links (No Arrow Icons) */}
+        {/* Share Links */}
         <div className="pt-12 mt-12 border-t border-gray-200 flex flex-col sm:flex-row sm:items-center justify-between gap-4 text-xs">
           <span className="font-semibold text-[#2E1650] uppercase tracking-wider">
             Share this article:
@@ -223,6 +223,7 @@ export default async function BlogPostPage({ params }: Props) {
                       src={p.cover_image_url}
                       alt={p.cover_image_alt || p.title}
                       fill
+                      unoptimized={p.cover_image_url.startsWith("data:")}
                       className="object-cover"
                     />
                   </div>

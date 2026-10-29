@@ -30,7 +30,7 @@ export const metadata: Metadata = {
     "Clean Water Boreholes",
     "Skills Acquisition",
     "Community Outreach",
-    "Grassroots NGO Lagos",
+    "Grassroots NGO Abuja",
     "SDG 5 Gender Equality",
     "Sustainable Development Goals",
   ],
@@ -94,8 +94,8 @@ export default function RootLayout({
     address: {
       "@type": "PostalAddress",
       streetAddress: siteConfig.contact.address,
-      addressLocality: "Victoria Island",
-      addressRegion: "Lagos",
+      addressLocality: "Abuja",
+      addressRegion: "FCT",
       addressCountry: "NG",
     },
     contactPoint: {

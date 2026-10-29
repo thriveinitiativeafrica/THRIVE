@@ -159,7 +159,7 @@ export default async function ProgramDetailPage({ params }: Props) {
           <div className="space-y-2 max-w-xl">
             <h2 className="text-2xl sm:text-3xl font-medium text-white">Support this program</h2>
             <p className="text-xs sm:text-sm text-white/80 leading-relaxed font-normal">
-              Your contribution or institutional grant accelerates these verified community projects across Lagos State.
+              Your contribution or institutional grant accelerates these verified community projects across Abuja.
             </p>
           </div>
           <div className="flex items-center gap-4 shrink-0">

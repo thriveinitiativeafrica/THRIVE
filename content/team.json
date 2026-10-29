@@ -1,1 +1,70 @@
-[]
+[
+  {
+    "name": "Eseoghene Awhatorhe",
+    "role": "Founder",
+    "photo": "/images/team/portrait-ese.webp",
+    "flyer": "/images/team/ese.jpeg",
+    "bio": "THRIVE Initiative was founded on the belief that Africa's youth, women, and children are powerful agents of change, and by investing in their growth, we contribute to a more inclusive, educated, and sustainable future."
+  },
+  {
+    "name": "Awhatorhe Damilola",
+    "role": "Co-Founder",
+    "photo": "/images/team/portrait-dami.webp",
+    "flyer": "/images/team/dami.jpg",
+    "bio": "We hope to give people the opportunities they lack. As the popular saying goes, it is best to teach a man how to fish rather than just giving them the fish. This is one way we can help people in the community."
+  },
+  {
+    "name": "Aisha Abdulaziz",
+    "role": "Director of Programs and Projects",
+    "photo": "/images/team/portrait-aisha.webp",
+    "flyer": "/images/team/aisha.jpeg",
+    "bio": "I really connect with the idea of empowering people and building inclusion, creating spaces where people grow together. Excited to learn, contribute, and be part of this movement."
+  },
+  {
+    "name": "Ogenemene Okpukpu Jerry",
+    "role": "Director of Women Empowerment & Gender Programs",
+    "photo": "/images/team/portrait-okpukpu.webp",
+    "flyer": "/images/team/okpukpu.jpeg",
+    "bio": "I am a firm believer in gender equity and equality and also in children's education. Joining THRIVE gives me an opportunity to advocate for these beliefs."
+  },
+  {
+    "name": "Kuatsea Shagbaor Joseph",
+    "role": "Director of Advocacy, Policy and Social Inclusion",
+    "photo": "/images/team/portrait-joseph.webp",
+    "flyer": "/images/team/k-joseph.jpeg",
+    "bio": "I am intentional about making a difference in the society, especially among women and children who have been underrepresented."
+  },
+  {
+    "name": "Saramo Gesi-ere Eneruvie",
+    "role": "Director of Volunteers and Membership Engagement",
+    "photo": "/images/team/portrait-gesi-ere.webp",
+    "flyer": "/images/team/gesi-ere.jpeg",
+    "bio": "I would love to help women and children in underserved communities."
+  },
+  {
+    "name": "Ademola Favour Tofunmi",
+    "role": "Director of Finance & Resource Management",
+    "photo": "/images/team/portrait-favour.webp",
+    "flyer": "/images/team/favour.jpeg",
+    "bio": "I am interested in THRIVE because I love making impacts, no matter how little, in the lives of persons I come in contact with."
+  },
+  {
+    "name": "Opara David Robert",
+    "role": "Director of Communication and Public Relations",
+    "photo": "/images/team/portrait-david.webp",
+    "flyer": "/images/team/david.jpeg",
+    "bio": "I look forward to solving the problem of bringing opportunities, encouragement, and exposure to the younger generation, particularly in skill development and capacity building."
+  },
+  {
+    "name": "Safeeyarh",
+    "role": "Director of Communication and Public Relations",
+    "photo": "/images/team/portrait-safeeyarh.webp",
+    "flyer": "/images/team/safeeyar.jpeg",
+    "bio": "THRIVE is an opportunity to do more than talk about these issues. It is a chance to learn, contribute, and be part of creating a community where women and children are seen, heard, supported, and empowered."
+  },
+  {
+    "name": "Omobolaji Durojaiye",
+    "role": "Director of Digital Media & Content",
+    "bio": "Committed to amplifying community impact and telling authentic stories of resilience and growth across Nigeria through digital media and creative storytelling."
+  }
+]
