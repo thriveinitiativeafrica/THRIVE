@@ -3,7 +3,13 @@ import path from "path";
 import postgres from "postgres";
 import { drizzle } from "drizzle-orm/postgres-js";
 import { eq, desc } from "drizzle-orm";
-import { posts, contactMessages, newsletterSubscribers, type PostRecord } from "./schema";
+import {
+  posts,
+  contactMessages,
+  newsletterSubscribers,
+  type PostRecord,
+  type CoverImageItem,
+} from "./schema";
 
 const STORE_PATH = path.join(process.cwd(), "content", "posts-store.json");
 
@@ -11,11 +17,41 @@ let postsCache: PostRecord[] | null = null;
 const inMemoryContacts: { id: number; name: string; email: string; message: string; created_at: string }[] = [];
 const inMemoryNewsletters: { id: number; email: string; created_at: string }[] = [];
 
+function parseCoverImages(
+  rawJson: string | null | undefined,
+  fallbackUrl?: string | null,
+  fallbackAlt?: string | null
+): CoverImageItem[] {
+  if (rawJson) {
+    try {
+      const parsed = JSON.parse(rawJson);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        return parsed.filter((item) => item && typeof item.url === "string" && item.url.trim() !== "");
+      }
+    } catch {
+      // ignore invalid JSON
+    }
+  }
+  if (fallbackUrl) {
+    return [{ url: fallbackUrl, alt: fallbackAlt || "" }];
+  }
+  return [];
+}
+
 function getLocalStore(): PostRecord[] {
   try {
     if (fs.existsSync(STORE_PATH)) {
       const data = fs.readFileSync(STORE_PATH, "utf-8");
-      return JSON.parse(data);
+      const list: PostRecord[] = JSON.parse(data);
+      return list.map((p) => ({
+        ...p,
+        cover_images:
+          p.cover_images && p.cover_images.length > 0
+            ? p.cover_images
+            : p.cover_image_url
+              ? [{ url: p.cover_image_url, alt: p.cover_image_alt || "" }]
+              : [],
+      }));
     }
   } catch (err) {
     console.error("Error reading local posts store:", err);
@@ -36,8 +72,6 @@ function persistLocalStore(data: PostRecord[]) {
   }
 }
 
-// Works with any standard Postgres URL: Supabase, Neon, Railway, Render, Aiven, etc.
-// prepare:false keeps it compatible with Supabase's transaction pooler (port 6543).
 type Db = ReturnType<typeof drizzle>;
 const globalForDb = globalThis as unknown as {
   thriveDb?: Db;
@@ -73,6 +107,7 @@ async function ensureTables(): Promise<void> {
         body TEXT NOT NULL,
         cover_image_url TEXT,
         cover_image_alt TEXT,
+        cover_images TEXT,
         author TEXT NOT NULL,
         status TEXT NOT NULL DEFAULT 'draft',
         published_at TIMESTAMP,
@@ -81,6 +116,9 @@ async function ensureTables(): Promise<void> {
         seo_title TEXT,
         seo_description TEXT
       );
+    `;
+    await sql`
+      ALTER TABLE posts ADD COLUMN IF NOT EXISTS cover_images TEXT;
     `;
     await sql`
       CREATE TABLE IF NOT EXISTS contact_messages (
@@ -117,22 +155,26 @@ export async function getAllPosts(options?: {
       await ensureTables();
       const query = db.select().from(posts);
       const results = await query.orderBy(desc(posts.createdAt));
-      let filtered = results.map((r) => ({
-        id: r.id,
-        title: r.title,
-        slug: r.slug,
-        excerpt: r.excerpt,
-        body: r.body,
-        cover_image_url: r.coverImageUrl,
-        cover_image_alt: r.coverImageAlt,
-        author: r.author,
-        status: (r.status === "published" ? "published" : "draft") as "published" | "draft",
-        published_at: r.publishedAt ? r.publishedAt.toISOString() : null,
-        created_at: r.createdAt ? r.createdAt.toISOString() : new Date().toISOString(),
-        updated_at: r.updatedAt ? r.updatedAt.toISOString() : new Date().toISOString(),
-        seo_title: r.seoTitle,
-        seo_description: r.seoDescription,
-      }));
+      let filtered = results.map((r) => {
+        const imgs = parseCoverImages(r.coverImages, r.coverImageUrl, r.coverImageAlt);
+        return {
+          id: r.id,
+          title: r.title,
+          slug: r.slug,
+          excerpt: r.excerpt,
+          body: r.body,
+          cover_image_url: imgs[0]?.url || r.coverImageUrl || null,
+          cover_image_alt: imgs[0]?.alt || r.coverImageAlt || null,
+          cover_images: imgs,
+          author: r.author,
+          status: (r.status === "published" ? "published" : "draft") as "published" | "draft",
+          published_at: r.publishedAt ? r.publishedAt.toISOString() : null,
+          created_at: r.createdAt ? r.createdAt.toISOString() : new Date().toISOString(),
+          updated_at: r.updatedAt ? r.updatedAt.toISOString() : new Date().toISOString(),
+          seo_title: r.seoTitle,
+          seo_description: r.seoDescription,
+        };
+      });
 
       if (statusFilter !== "all") {
         filtered = filtered.filter((p) => p.status === statusFilter);
@@ -169,14 +211,16 @@ export async function getPostBySlug(slug: string): Promise<PostRecord | null> {
       const results = await db.select().from(posts).where(eq(posts.slug, slug)).limit(1);
       if (results.length > 0) {
         const r = results[0];
+        const imgs = parseCoverImages(r.coverImages, r.coverImageUrl, r.coverImageAlt);
         return {
           id: r.id,
           title: r.title,
           slug: r.slug,
           excerpt: r.excerpt,
           body: r.body,
-          cover_image_url: r.coverImageUrl,
-          cover_image_alt: r.coverImageAlt,
+          cover_image_url: imgs[0]?.url || r.coverImageUrl || null,
+          cover_image_alt: imgs[0]?.alt || r.coverImageAlt || null,
+          cover_images: imgs,
           author: r.author,
           status: (r.status === "published" ? "published" : "draft") as "published" | "draft",
           published_at: r.publishedAt ? r.publishedAt.toISOString() : null,
@@ -203,14 +247,28 @@ export async function savePost(
   const status = data.status || "draft";
   const publishedAt = status === "published" ? (data.published_at || now) : null;
 
+  // Normalize cover_images array and primary cover_image_url
+  let coverImages: CoverImageItem[] = Array.isArray(data.cover_images)
+    ? data.cover_images.filter((item) => item && typeof item.url === "string" && item.url.trim() !== "")
+    : [];
+
+  if (coverImages.length === 0 && data.cover_image_url) {
+    coverImages = [{ url: data.cover_image_url, alt: data.cover_image_alt || data.title }];
+  }
+
+  const primaryUrl = coverImages[0]?.url || data.cover_image_url || null;
+  const primaryAlt = coverImages[0]?.alt || data.cover_image_alt || null;
+  const coverImagesJson = coverImages.length > 0 ? JSON.stringify(coverImages) : null;
+
   const postRecord: PostRecord = {
     id,
     title: data.title,
     slug: data.slug,
     excerpt: data.excerpt,
     body: data.body,
-    cover_image_url: data.cover_image_url || null,
-    cover_image_alt: data.cover_image_alt || null,
+    cover_image_url: primaryUrl,
+    cover_image_alt: primaryAlt,
+    cover_images: coverImages,
     author: data.author,
     status,
     published_at: publishedAt,
@@ -235,6 +293,7 @@ export async function savePost(
             body: postRecord.body,
             coverImageUrl: postRecord.cover_image_url,
             coverImageAlt: postRecord.cover_image_alt,
+            coverImages: coverImagesJson,
             author: postRecord.author,
             status: postRecord.status,
             publishedAt: publishedAt ? new Date(publishedAt) : null,
@@ -252,6 +311,7 @@ export async function savePost(
           body: postRecord.body,
           coverImageUrl: postRecord.cover_image_url,
           coverImageAlt: postRecord.cover_image_alt,
+          coverImages: coverImagesJson,
           author: postRecord.author,
           status: postRecord.status,
           publishedAt: publishedAt ? new Date(publishedAt) : null,

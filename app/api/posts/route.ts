@@ -44,9 +44,6 @@ export async function POST(req: NextRequest) {
     if (!body.title || !body.excerpt || !body.body) {
       return NextResponse.json({ error: "Title, excerpt and body are required." }, { status: 400 });
     }
-    if (body.cover_image_url && !body.cover_image_alt) {
-      return NextResponse.json({ error: "Cover image alt text is required." }, { status: 400 });
-    }
 
     const slug =
       body.slug ||
@@ -62,7 +59,8 @@ export async function POST(req: NextRequest) {
       excerpt: body.excerpt,
       body: sanitizeHtml(body.body),
       cover_image_url: body.cover_image_url,
-      cover_image_alt: body.cover_image_alt,
+      cover_image_alt: body.cover_image_alt || body.title,
+      cover_images: Array.isArray(body.cover_images) ? body.cover_images : undefined,
       author: body.author || "THRIVE Initiative",
       status: body.status === "published" ? "published" : "draft",
       published_at: body.published_at,

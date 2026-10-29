@@ -1,5 +1,10 @@
 import { pgTable, text, timestamp, varchar, serial } from "drizzle-orm/pg-core";
 
+export interface CoverImageItem {
+  url: string;
+  alt?: string;
+}
+
 export const posts = pgTable("posts", {
   id: varchar("id", { length: 64 }).primaryKey(),
   title: text("title").notNull(),
@@ -8,6 +13,7 @@ export const posts = pgTable("posts", {
   body: text("body").notNull(),
   coverImageUrl: text("cover_image_url"),
   coverImageAlt: text("cover_image_alt"),
+  coverImages: text("cover_images"), // JSON string of CoverImageItem[]
   author: varchar("author", { length: 128 }).notNull(),
   status: varchar("status", { length: 32 }).notNull().default("draft"),
   publishedAt: timestamp("published_at"),
@@ -46,6 +52,7 @@ export interface PostRecord {
   body: string;
   cover_image_url?: string | null;
   cover_image_alt?: string | null;
+  cover_images?: CoverImageItem[];
   author: string;
   status: "draft" | "published";
   published_at?: string | null;

@@ -5,13 +5,13 @@ import path from "path";
 import sharp from "sharp";
 import { verifyToken } from "@/lib/auth";
 
-// Image upload for the blog admin. Provider order:
-// 1. Supabase Storage (SUPABASE_URL + SUPABASE_SERVICE_ROLE_KEY), auto-creates public bucket if needed.
-// 2. Cloudinary (CLOUDINARY_CLOUD_NAME + CLOUDINARY_API_KEY + CLOUDINARY_API_SECRET), signed server side.
-// 3. Optimized WebP data URL on serverless (Vercel) or local disk in local dev.
+// Image upload for the blog admin.
+// Automatically compresses images into high-quality WebP (up to 1600px) so 1 GB of free
+// Supabase Storage holds ~8,000–10,000 images instead of ~250 raw camera photos.
 
 function safeName(name: string) {
-  return `${Date.now()}-${name.replace(/[^a-zA-Z0-9.-]/g, "_")}`;
+  const base = name.replace(/\.[^.]+$/, "").replace(/[^a-zA-Z0-9.-]/g, "_");
+  return `${Date.now()}-${base}.webp`;
 }
 
 async function uploadToSupabase(
@@ -34,7 +34,6 @@ async function uploadToSupabase(
     body: new Uint8Array(buffer),
   });
 
-  // If the bucket does not exist yet, auto-create it as a public bucket and retry!
   if (!res.ok) {
     await fetch(`${supabaseUrl}/storage/v1/bucket`, {
       method: "POST",
@@ -81,7 +80,20 @@ export async function POST(req: NextRequest) {
     }
 
     const rawBuffer = Buffer.from(await file.arrayBuffer());
-    const fileName = safeName(file.name);
+    let uploadBuffer: Buffer = rawBuffer;
+    let mimeType = file.type;
+    let fileName = `${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.-]/g, "_")}`;
+
+    try {
+      uploadBuffer = await sharp(rawBuffer)
+        .resize(1600, 1600, { fit: "inside", withoutEnlargement: true })
+        .webp({ quality: 86 })
+        .toBuffer();
+      mimeType = "image/webp";
+      fileName = safeName(file.name);
+    } catch {
+      // fallback to rawBuffer if sharp cannot process
+    }
 
     // 1. Supabase Storage
     const supabaseUrl = process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -94,13 +106,13 @@ export async function POST(req: NextRequest) {
         supabaseKey,
         bucket,
         objectPath,
-        file.type,
-        rawBuffer
+        mimeType,
+        uploadBuffer
       );
       if (res.ok) {
         return NextResponse.json({
           url: `${supabaseUrl}/storage/v1/object/public/${bucket}/${objectPath}`,
-          alt: alt || file.name,
+          alt: alt || file.name.replace(/\.[^.]+$/, ""),
         });
       }
       console.error("Supabase upload failed, falling back:", await res.text());
@@ -118,7 +130,7 @@ export async function POST(req: NextRequest) {
         .digest("hex");
 
       const uploadFormData = new FormData();
-      uploadFormData.append("file", new Blob([rawBuffer], { type: file.type }), file.name);
+      uploadFormData.append("file", new Blob([ new Uint8Array(uploadBuffer) ], { type: mimeType }), fileName);
       uploadFormData.append("api_key", apiKey);
       uploadFormData.append("timestamp", timestamp.toString());
       uploadFormData.append("signature", signature);
@@ -134,33 +146,19 @@ export async function POST(req: NextRequest) {
       console.error("Cloudinary upload failed, falling back:", await res.text());
     }
 
-    // 3. Optimize image with sharp so inline base64 or local file is compact and fast
-    let optimizedBuffer: Buffer = rawBuffer;
-    let mimeType = file.type;
-    try {
-      optimizedBuffer = await sharp(rawBuffer)
-        .resize(1200, 900, { fit: "inside", withoutEnlargement: true })
-        .webp({ quality: 82 })
-        .toBuffer();
-      mimeType = "image/webp";
-    } catch {
-      // keep rawBuffer if sharp fails
-    }
-
-    // On Vercel serverless, public/ is read-only, so return compact data URL directly
+    // 3. Fallback: Inline data URL on Vercel or local disk in dev
     if (process.env.VERCEL) {
-      const dataUrl = `data:${mimeType};base64,${optimizedBuffer.toString("base64")}`;
+      const dataUrl = `data:${mimeType};base64,${uploadBuffer.toString("base64")}`;
       return NextResponse.json({ url: dataUrl, alt: alt || file.name });
     }
 
     try {
       const uploadDir = path.join(process.cwd(), "public", "uploads");
       if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, { recursive: true });
-      const outName = mimeType === "image/webp" ? fileName.replace(/\.[^.]+$/, ".webp") : fileName;
-      fs.writeFileSync(path.join(uploadDir, outName), optimizedBuffer);
-      return NextResponse.json({ url: `/uploads/${outName}`, alt: alt || file.name });
+      fs.writeFileSync(path.join(uploadDir, fileName), uploadBuffer);
+      return NextResponse.json({ url: `/uploads/${fileName}`, alt: alt || file.name });
     } catch {
-      const dataUrl = `data:${mimeType};base64,${optimizedBuffer.toString("base64")}`;
+      const dataUrl = `data:${mimeType};base64,${uploadBuffer.toString("base64")}`;
       return NextResponse.json({ url: dataUrl, alt: alt || file.name });
     }
   } catch (err: unknown) {

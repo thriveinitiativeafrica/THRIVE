@@ -6,6 +6,7 @@ import { notFound } from "next/navigation";
 import { getPostBySlug, getAllPosts } from "@/db";
 import { siteConfig } from "@/content/site.config";
 import { sanitizeHtml } from "@/lib/sanitize";
+import { CoverImageCarousel } from "@/components/blog/CoverImageCarousel";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -68,6 +69,13 @@ export default async function BlogPostPage({ params }: Props) {
   const cleanBodyHtml = sanitizeHtml(post.body);
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || siteConfig.url;
   const postUrl = `${baseUrl}/blog/${post.slug}`;
+
+  const slides =
+    post.cover_images && post.cover_images.length > 0
+      ? post.cover_images
+      : post.cover_image_url
+        ? [{ url: post.cover_image_url, alt: post.cover_image_alt || post.title }]
+        : [];
 
   const articleJsonLd = {
     "@context": "https://schema.org",
@@ -137,30 +145,30 @@ export default async function BlogPostPage({ params }: Props) {
         </div>
       </header>
 
-      {/* Cover Image */}
-      {post.cover_image_url && (
+      {/* Cover Image or Multi-Image Carousel */}
+      {slides.length > 0 && (
         <section className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="relative w-full h-[360px] sm:h-[480px] lg:h-[540px] rounded-3xl overflow-hidden bg-gray-100">
-            <Image
-              src={post.cover_image_url}
-              alt={post.cover_image_alt || post.title}
-              fill
-              priority
-              unoptimized={post.cover_image_url.startsWith("data:")}
-              className="object-cover"
-              sizes="(max-width: 1200px) 100vw, 1200px"
-            />
-          </div>
-          {post.cover_image_alt && (
-            <p className="text-xs text-gray-500 mt-2 text-center">{post.cover_image_alt}</p>
-          )}
+          <CoverImageCarousel slides={slides} fallbackTitle={post.title} />
         </section>
       )}
 
-      {/* Body Content */}
+      {/* Body Content with Rich Editorial Styling */}
       <section className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
         <div
-          className="prose prose-lg max-w-none text-[#2E1650] text-base sm:text-lg leading-relaxed font-normal space-y-6"
+          className="max-w-none text-[#2E1650] text-base sm:text-lg leading-relaxed font-normal space-y-4
+            [&_h1]:text-3xl [&_h1]:sm:text-4xl [&_h1]:font-semibold [&_h1]:tracking-tight [&_h1]:mt-10 [&_h1]:mb-4 [&_h1]:leading-tight
+            [&_h2]:text-2xl [&_h2]:sm:text-3xl [&_h2]:font-semibold [&_h2]:tracking-tight [&_h2]:mt-9 [&_h2]:mb-3 [&_h2]:leading-snug
+            [&_h3]:text-xl [&_h3]:sm:text-2xl [&_h3]:font-semibold [&_h3]:tracking-tight [&_h3]:mt-7 [&_h3]:mb-2.5
+            [&_h4]:text-lg [&_h4]:font-semibold [&_h4]:mt-6 [&_h4]:mb-2
+            [&_p]:mb-5 [&_p]:leading-[1.75]
+            [&_ul]:list-disc [&_ul]:pl-6 [&_ul]:mb-5 [&_ul]:space-y-2
+            [&_ol]:list-decimal [&_ol]:pl-6 [&_ol]:mb-5 [&_ol]:space-y-2
+            [&_li]:leading-relaxed
+            [&_blockquote]:border-l-4 [&_blockquote]:border-[#D4A017] [&_blockquote]:bg-white [&_blockquote]:px-6 [&_blockquote]:py-4 [&_blockquote]:rounded-r-2xl [&_blockquote]:italic [&_blockquote]:my-6 [&_blockquote]:text-[#2E1650]/90
+            [&_a]:text-[#B88912] [&_a]:font-medium [&_a]:underline [&_a]:underline-offset-4 hover:[&_a]:text-[#2E1650]
+            [&_hr]:border-gray-200 [&_hr]:my-8
+            [&_figure]:my-8
+            [&_img]:rounded-2xl [&_img]:max-w-full [&_img]:h-auto [&_img]:my-6"
           dangerouslySetInnerHTML={{ __html: cleanBodyHtml }}
         />
 

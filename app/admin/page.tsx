@@ -4,6 +4,12 @@ import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { IconCheck, IconClose, IconPlus, IconUpload } from "@/components/shared/Icons";
 import { sanitizeHtml } from "@/lib/sanitize";
+import { RichTextEditor } from "@/components/admin/RichTextEditor";
+
+export interface CoverImageItem {
+  url: string;
+  alt?: string;
+}
 
 interface PostItem {
   id: string;
@@ -13,6 +19,7 @@ interface PostItem {
   body: string;
   cover_image_url?: string | null;
   cover_image_alt?: string | null;
+  cover_images?: CoverImageItem[];
   author: string;
   status: "draft" | "published";
   created_at: string;
@@ -34,6 +41,7 @@ export default function AdminPage() {
   const [uploadingCover, setUploadingCover] = useState(false);
   const [uploadingInline, setUploadingInline] = useState(false);
   const [saveMessage, setSaveMessage] = useState("");
+  const [manualCoverUrl, setManualCoverUrl] = useState("");
 
   // Inline image insertion state
   const [showInlineModal, setShowInlineModal] = useState(false);
@@ -111,14 +119,29 @@ export default function AdminPage() {
       status: "draft",
       cover_image_url: "",
       cover_image_alt: "",
+      cover_images: [],
       seo_title: "",
       seo_description: "",
     });
+    setManualCoverUrl("");
     setSaveMessage("");
   }
 
   function editPost(p: PostItem) {
-    setActivePost({ ...p });
+    const existingCovers: CoverImageItem[] =
+      p.cover_images && p.cover_images.length > 0
+        ? p.cover_images
+        : p.cover_image_url
+          ? [{ url: p.cover_image_url, alt: p.cover_image_alt || p.title }]
+          : [];
+
+    setActivePost({
+      ...p,
+      cover_images: existingCovers,
+      cover_image_url: existingCovers[0]?.url || p.cover_image_url || "",
+      cover_image_alt: existingCovers[0]?.alt || p.cover_image_alt || "",
+    });
+    setManualCoverUrl("");
     setSaveMessage("");
   }
 
@@ -135,36 +158,96 @@ export default function AdminPage() {
     }
   }
 
+  function updateCoverImagesList(nextList: CoverImageItem[]) {
+    setActivePost((prev) => ({
+      ...prev,
+      cover_images: nextList,
+      cover_image_url: nextList[0]?.url || "",
+      cover_image_alt: nextList[0]?.alt || prev?.cover_image_alt || prev?.title || "",
+    }));
+  }
+
   async function handleCoverUpload(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0];
-    if (!file) return;
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
     setUploadingCover(true);
 
-    try {
-      const fd = new FormData();
-      fd.append("file", file);
-      fd.append("alt", activePost?.cover_image_alt || file.name);
+    const uploadedItems: CoverImageItem[] = [];
 
-      const res = await fetch("/api/upload", {
-        method: "POST",
-        body: fd,
-      });
-      const data = await res.json();
-      if (res.ok && data.url) {
-        setActivePost((prev) => ({
-          ...prev,
-          cover_image_url: data.url,
-          cover_image_alt: prev?.cover_image_alt || data.alt,
-        }));
-      } else {
-        alert(data.error || "Upload failed");
+    try {
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        const fd = new FormData();
+        fd.append("file", file);
+        fd.append(
+          "alt",
+          activePost?.cover_image_alt ||
+            activePost?.title ||
+            file.name.replace(/\.[^.]+$/, "")
+        );
+
+        const res = await fetch("/api/upload", {
+          method: "POST",
+          body: fd,
+        });
+        const data = await res.json();
+        if (res.ok && data.url) {
+          uploadedItems.push({
+            url: data.url,
+            alt:
+              activePost?.cover_image_alt ||
+              activePost?.title ||
+              data.alt ||
+              file.name.replace(/\.[^.]+$/, ""),
+          });
+        } else {
+          alert(data.error || `Failed to upload ${file.name}`);
+        }
+      }
+
+      if (uploadedItems.length > 0) {
+        const currentList = activePost?.cover_images || [];
+        updateCoverImagesList([...currentList, ...uploadedItems]);
       }
     } catch (err) {
       console.error("Upload error:", err);
-      alert("Error uploading cover image");
+      alert("Error uploading cover image(s)");
     } finally {
       setUploadingCover(false);
+      e.target.value = "";
     }
+  }
+
+  function handleAddManualCoverUrl() {
+    const trimmed = manualCoverUrl.trim();
+    if (!trimmed) return;
+    const currentList = activePost?.cover_images || [];
+    updateCoverImagesList([
+      ...currentList,
+      { url: trimmed, alt: activePost?.cover_image_alt || activePost?.title || "" },
+    ]);
+    setManualCoverUrl("");
+  }
+
+  function makePrimaryCover(idx: number) {
+    const currentList = [...(activePost?.cover_images || [])];
+    if (idx <= 0 || idx >= currentList.length) return;
+    const [selected] = currentList.splice(idx, 1);
+    currentList.unshift(selected);
+    updateCoverImagesList(currentList);
+  }
+
+  function removeCoverAt(idx: number) {
+    const currentList = [...(activePost?.cover_images || [])];
+    currentList.splice(idx, 1);
+    updateCoverImagesList(currentList);
+  }
+
+  function updateCoverAlt(idx: number, newAlt: string) {
+    const currentList = [...(activePost?.cover_images || [])];
+    if (!currentList[idx]) return;
+    currentList[idx] = { ...currentList[idx], alt: newAlt };
+    updateCoverImagesList(currentList);
   }
 
   async function handleInlineUpload(e: React.ChangeEvent<HTMLInputElement>) {
@@ -195,7 +278,7 @@ export default function AdminPage() {
 
   function insertInlineImage() {
     if (!inlineUrl) return;
-    const figureHtml = `\n<figure class="my-8">\n  <img src="${inlineUrl}" alt="${inlineAlt.replace(/"/g, "&quot;")}" class="rounded-2xl w-full object-cover" />\n  ${inlineCaption ? `<figcaption class="text-xs text-gray-500 mt-2 text-center">${inlineCaption}</figcaption>` : ""}\n</figure>\n`;
+    const figureHtml = `<figure><img src="${inlineUrl}" alt="${(inlineAlt || activePost?.title || "Article image").replace(/"/g, "&quot;")}" />${inlineCaption ? `<figcaption>${inlineCaption}</figcaption>` : ""}</figure><p></p>`;
     setActivePost((prev) => ({
       ...prev,
       body: (prev?.body || "") + figureHtml,
@@ -206,38 +289,32 @@ export default function AdminPage() {
     setInlineCaption("");
   }
 
-  function appendFormatting(tagStart: string, tagEnd: string = "") {
-    if (!tagEnd) {
-      setActivePost((prev) => ({
-        ...prev,
-        body: (prev?.body || "") + tagStart,
-      }));
-      return;
-    }
-    setActivePost((prev) => ({
-      ...prev,
-      body: (prev?.body || "") + `${tagStart}Text${tagEnd}`,
-    }));
-  }
-
   async function handleSavePost(e: React.FormEvent) {
     e.preventDefault();
-    if (!activePost?.title || !activePost?.excerpt || !activePost?.body) {
-      alert("Title, excerpt, and article body are required.");
+    const plainTextBody = (activePost?.body || "").replace(/<[^>]*>/g, "").trim();
+    if (!activePost?.title || !activePost?.excerpt || !plainTextBody) {
+      alert("Title, summary excerpt, and article content are required.");
       return;
     }
-    if (activePost.cover_image_url && !activePost.cover_image_alt) {
-      alert("Alt text is required for the cover image.");
-      return;
-    }
+
+    const coverList = activePost.cover_images || [];
+    const primaryUrl = coverList[0]?.url || activePost.cover_image_url || "";
+    const primaryAlt =
+      coverList[0]?.alt || activePost.cover_image_alt || activePost.title || "";
 
     setSaving(true);
     setSaveMessage("");
 
-    const cleanBody = sanitizeHtml(activePost.body);
+    const cleanBody = sanitizeHtml(activePost.body || "");
     const postPayload = {
       ...activePost,
       body: cleanBody,
+      cover_image_url: primaryUrl || null,
+      cover_image_alt: primaryAlt || null,
+      cover_images: coverList.map((item) => ({
+        url: item.url,
+        alt: item.alt || primaryAlt || activePost.title || "",
+      })),
       slug:
         activePost.slug ||
         activePost.title
@@ -254,7 +331,7 @@ export default function AdminPage() {
       });
       const data = await res.json();
       if (res.ok) {
-        setSaveMessage("Post saved successfully.");
+        setSaveMessage("Post saved and published successfully!");
         loadPosts();
         setActivePost(data.post);
       } else {
@@ -327,8 +404,10 @@ export default function AdminPage() {
     );
   }
 
+  const coverImagesList = activePost?.cover_images || [];
+
   return (
-    <div className="min-h-screen bg-[#FAF6EC] text-[#2E1650] pt-24 pb-20 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-[#FAF6EC] text-[#2E1650] pt-10 pb-20 px-4 sm:px-6 lg:px-8">
       <div className="max-w-6xl mx-auto space-y-8">
         {/* Top Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-gray-200">
@@ -339,19 +418,19 @@ export default function AdminPage() {
                 THRIVE Content Management
               </span>
             </div>
-            <h1 className="text-3xl font-medium">Stories & Blog Administration</h1>
+            <h1 className="text-3xl font-medium">Stories &amp; Blog Administration</h1>
           </div>
           <div className="flex items-center gap-3">
             <button
               onClick={startNewPost}
-              className="px-5 py-2.5 bg-[#D4A017] hover:bg-[#B88912] text-[#2E1650] text-sm font-medium rounded-full flex items-center gap-1.5 transition-colors"
+              className="px-5 py-2.5 bg-[#D4A017] hover:bg-[#B88912] text-[#2E1650] text-sm font-semibold rounded-full flex items-center gap-1.5 transition-colors cursor-pointer"
             >
               <IconPlus className="w-4 h-4" />
               <span>Create New Story</span>
             </button>
             <button
               onClick={handleLogout}
-              className="px-4 py-2.5 border border-gray-300 hover:border-[#2E1650] text-xs font-medium rounded-full transition-colors"
+              className="px-4 py-2.5 border border-gray-300 hover:border-[#2E1650] text-xs font-medium rounded-full transition-colors cursor-pointer"
             >
               Log Out
             </button>
@@ -362,20 +441,25 @@ export default function AdminPage() {
         {activePost ? (
           <div className="bg-white rounded-3xl border border-gray-200 p-6 sm:p-10 shadow-sm space-y-6">
             <div className="flex items-center justify-between pb-4 border-b border-gray-100">
-              <h2 className="text-xl font-medium text-[#2E1650]">
-                {activePost.id ? "Edit Story" : "New Story"}
-              </h2>
+              <div>
+                <h2 className="text-xl font-medium text-[#2E1650]">
+                  {activePost.id ? "Edit Story" : "New Story"}
+                </h2>
+                <p className="text-xs text-gray-500 mt-0.5">
+                  Write directly or copy-paste from Google Docs. Upload one or multiple cover images for a carousel.
+                </p>
+              </div>
               <button
                 type="button"
                 onClick={() => setActivePost(null)}
-                className="p-2 text-gray-400 hover:text-gray-700 rounded-full"
+                className="p-2 text-gray-400 hover:text-gray-700 rounded-full cursor-pointer"
               >
                 <IconClose className="w-5 h-5" />
               </button>
             </div>
 
             {saveMessage && (
-              <div className="p-3 rounded-2xl bg-green-50 border border-green-200 text-xs text-green-800 flex items-center gap-2">
+              <div className="p-3.5 rounded-2xl bg-green-50 border border-green-200 text-xs text-green-800 flex items-center gap-2">
                 <IconCheck className="w-4 h-4 text-green-700" />
                 <span>{saveMessage}</span>
               </div>
@@ -395,14 +479,15 @@ export default function AdminPage() {
                         ...prev,
                         title: t,
                         slug:
-                          prev?.slug ||
-                          t
-                            .toLowerCase()
-                            .replace(/[^a-z0-9]+/g, "-")
-                            .replace(/(^-|-$)+/g, ""),
+                          prev?.id
+                            ? prev.slug
+                            : t
+                                .toLowerCase()
+                                .replace(/[^a-z0-9]+/g, "-")
+                                .replace(/(^-|-$)+/g, ""),
                       }));
                     }}
-                    placeholder="e.g. Clean Water Restores Classroom Attendance in Olomowewe"
+                    placeholder="e.g. Breast Cancer Awareness & Early Screening Drive in Abuja"
                     className="w-full px-4 py-2.5 rounded-2xl border border-gray-200 text-sm focus:outline-none focus:border-[#2E1650]"
                   />
                 </div>
@@ -414,8 +499,8 @@ export default function AdminPage() {
                     required
                     value={activePost.slug || ""}
                     onChange={(e) => setActivePost({ ...activePost, slug: e.target.value })}
-                    placeholder="e.g. clean-water-restores-classroom-attendance"
-                    className="w-full px-4 py-2.5 rounded-2xl border border-gray-200 text-sm font-mono text-xs focus:outline-none focus:border-[#2E1650]"
+                    placeholder="e.g. breast-cancer-awareness-abuja"
+                    className="w-full px-4 py-2.5 rounded-2xl border border-gray-200 font-mono text-xs focus:outline-none focus:border-[#2E1650]"
                   />
                 </div>
               </div>
@@ -427,28 +512,32 @@ export default function AdminPage() {
                   rows={2}
                   value={activePost.excerpt || ""}
                   onChange={(e) => setActivePost({ ...activePost, excerpt: e.target.value })}
-                  placeholder="One or two sentences summarizing the field dispatch or turnaround."
+                  placeholder="One or two sentences summarizing the story (shown on the blog cards)."
                   className="w-full px-4 py-2.5 rounded-2xl border border-gray-200 text-sm focus:outline-none focus:border-[#2E1650]"
                 />
               </div>
 
-              {/* Cover Image */}
-              <div className="p-4 rounded-2xl bg-[#FAF6EC] border border-gray-200 space-y-3">
-                <label className="block text-xs font-semibold">Cover Image (Cloudinary or Upload)</label>
-                <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
-                  <input
-                    type="text"
-                    value={activePost.cover_image_url || ""}
-                    onChange={(e) => setActivePost({ ...activePost, cover_image_url: e.target.value })}
-                    placeholder="Image URL or upload file"
-                    className="flex-1 px-4 py-2 rounded-xl border border-gray-200 text-xs bg-white"
-                  />
-                  <label className="px-4 py-2 bg-white border border-gray-300 hover:border-[#2E1650] rounded-full text-xs font-medium cursor-pointer transition-colors flex items-center gap-1.5 shrink-0">
+              {/* Multi-Cover Image Gallery & Carousel Manager */}
+              <div className="p-5 rounded-2xl bg-[#FAF6EC] border border-gray-200 space-y-4">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                  <div>
+                    <label className="block text-xs font-semibold text-[#2E1650]">
+                      Cover Images (Single Display + Article Carousel)
+                    </label>
+                    <p className="text-[11px] text-gray-600 mt-0.5">
+                      Upload one or multiple images. The <strong>first image</strong> is displayed on the Blog card, and all images become an interactive carousel inside the article.
+                    </p>
+                  </div>
+
+                  <label className="px-4 py-2.5 bg-[#2E1650] hover:bg-[#381A5F] text-white rounded-full text-xs font-medium cursor-pointer transition-colors flex items-center gap-1.5 shrink-0 self-start sm:self-auto">
                     <IconUpload className="w-3.5 h-3.5" />
-                    <span>{uploadingCover ? "Uploading..." : "Upload File"}</span>
+                    <span>
+                      {uploadingCover ? "Uploading..." : "+ Upload Cover Image(s)"}
+                    </span>
                     <input
                       type="file"
                       accept="image/*"
+                      multiple
                       onChange={handleCoverUpload}
                       disabled={uploadingCover}
                       className="hidden"
@@ -456,94 +545,127 @@ export default function AdminPage() {
                   </label>
                 </div>
 
+                {/* Optional paste image URL */}
+                <div className="flex flex-col sm:flex-row gap-2">
+                  <input
+                    type="text"
+                    value={manualCoverUrl}
+                    onChange={(e) => setManualCoverUrl(e.target.value)}
+                    placeholder="Or paste an image URL here and click Add URL..."
+                    className="flex-1 px-4 py-2 rounded-xl border border-gray-200 text-xs bg-white focus:outline-none focus:border-[#2E1650]"
+                  />
+                  <button
+                    type="button"
+                    onClick={handleAddManualCoverUrl}
+                    disabled={!manualCoverUrl.trim()}
+                    className="px-4 py-2 bg-white border border-gray-300 hover:border-[#2E1650] rounded-xl text-xs font-medium disabled:opacity-40 cursor-pointer"
+                  >
+                    + Add URL
+                  </button>
+                </div>
+
+                {/* Default Alt Text / Caption */}
                 <div>
-                  <label className="block text-xs font-semibold mb-1">Cover Image Alt Text (Required) *</label>
+                  <label className="block text-xs font-semibold mb-1">
+                    Cover Image Description / Alt Text
+                  </label>
                   <input
                     type="text"
                     value={activePost.cover_image_alt || ""}
-                    onChange={(e) => setActivePost({ ...activePost, cover_image_alt: e.target.value })}
-                    placeholder="Descriptive alt text for accessibility"
-                    className="w-full px-4 py-2 rounded-xl border border-gray-200 text-xs bg-white"
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      setActivePost((prev) => {
+                        const updatedList = [...(prev?.cover_images || [])];
+                        if (updatedList[0]) {
+                          updatedList[0] = { ...updatedList[0], alt: val };
+                        }
+                        return {
+                          ...prev,
+                          cover_image_alt: val,
+                          cover_images: updatedList,
+                        };
+                      });
+                    }}
+                    placeholder="e.g. Breast Cancer Awareness Outreach Flyer"
+                    className="w-full px-4 py-2 rounded-xl border border-gray-200 text-xs bg-white focus:outline-none focus:border-[#2E1650]"
                   />
                 </div>
 
-                {activePost.cover_image_url && (
-                  <div className="mt-2 relative w-32 h-20 rounded-xl overflow-hidden border border-gray-200">
-                    <Image
-                      src={activePost.cover_image_url}
-                      alt={activePost.cover_image_alt || "Cover preview"}
-                      fill
-                      className="object-cover"
-                    />
+                {/* Uploaded Cover Images Grid */}
+                {coverImagesList.length > 0 && (
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 pt-2">
+                    {coverImagesList.map((img, idx) => (
+                      <div
+                        key={`${img.url}-${idx}`}
+                        className={`bg-white rounded-2xl border p-2.5 space-y-2 relative ${
+                          idx === 0
+                            ? "border-[#D4A017] ring-2 ring-[#D4A017]/30"
+                            : "border-gray-200"
+                        }`}
+                      >
+                        <div className="relative w-full h-28 rounded-xl overflow-hidden bg-gray-100">
+                          <Image
+                            src={img.url}
+                            alt={img.alt || `Slide ${idx + 1}`}
+                            fill
+                            unoptimized={img.url.startsWith("data:")}
+                            className="object-cover"
+                            sizes="200px"
+                          />
+                          <span
+                            className={`absolute top-2 left-2 px-2 py-0.5 rounded-full text-[10px] font-semibold ${
+                              idx === 0
+                                ? "bg-[#D4A017] text-[#2E1650]"
+                                : "bg-[#2E1650]/85 text-white"
+                            }`}
+                          >
+                            {idx === 0 ? "Primary Cover" : `Slide #${idx + 1}`}
+                          </span>
+                          <button
+                            type="button"
+                            onClick={() => removeCoverAt(idx)}
+                            title="Remove this image"
+                            className="absolute top-2 right-2 w-6 h-6 rounded-full bg-black/70 hover:bg-red-600 text-white flex items-center justify-center text-xs cursor-pointer"
+                          >
+                            ×
+                          </button>
+                        </div>
+
+                        <input
+                          type="text"
+                          value={img.alt || ""}
+                          onChange={(e) => updateCoverAlt(idx, e.target.value)}
+                          placeholder={`Caption for slide #${idx + 1}`}
+                          className="w-full px-2.5 py-1 rounded-lg border border-gray-200 text-[11px]"
+                        />
+
+                        {idx > 0 && (
+                          <button
+                            type="button"
+                            onClick={() => makePrimaryCover(idx)}
+                            className="w-full py-1 rounded-lg bg-[#FAF6EC] hover:bg-[#D4A017]/25 text-[11px] font-medium text-[#2E1650] transition-colors cursor-pointer"
+                          >
+                            Set as Primary Cover
+                          </button>
+                        )}
+                      </div>
+                    ))}
                   </div>
                 )}
               </div>
 
-              {/* Rich Body Toolbar and Editor */}
+              {/* Visual Rich Text Editor */}
               <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <label className="block text-xs font-semibold">Article Content (HTML/Markdown) *</label>
-                  <div className="flex items-center gap-1.5 flex-wrap">
-                    <button
-                      type="button"
-                      onClick={() => appendFormatting("<h2>", "</h2>")}
-                      className="px-2.5 py-1 text-xs border border-gray-200 rounded-lg bg-gray-50 hover:bg-gray-100"
-                    >
-                      H2
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => appendFormatting("<h3>", "</h3>")}
-                      className="px-2.5 py-1 text-xs border border-gray-200 rounded-lg bg-gray-50 hover:bg-gray-100"
-                    >
-                      H3
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => appendFormatting("<strong>", "</strong>")}
-                      className="px-2.5 py-1 text-xs font-bold border border-gray-200 rounded-lg bg-gray-50 hover:bg-gray-100"
-                    >
-                      B
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => appendFormatting("<em>", "</em>")}
-                      className="px-2.5 py-1 text-xs italic border border-gray-200 rounded-lg bg-gray-50 hover:bg-gray-100"
-                    >
-                      I
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => appendFormatting('<blockquote class="border-l-2 border-[#2E1650] pl-4 italic my-4">\n  ', "\n</blockquote>")}
-                      className="px-2.5 py-1 text-xs border border-gray-200 rounded-lg bg-gray-50 hover:bg-gray-100"
-                    >
-                      Quote
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => appendFormatting("<p>", "</p>")}
-                      className="px-2.5 py-1 text-xs border border-gray-200 rounded-lg bg-gray-50 hover:bg-gray-100"
-                    >
-                      Paragraph
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setShowInlineModal(true)}
-                      className="px-3 py-1 text-xs bg-[#2E1650] text-white rounded-lg hover:bg-[#381A5F] flex items-center gap-1"
-                    >
-                      <IconPlus className="w-3 h-3" />
-                      <span>Add Inline Image</span>
-                    </button>
-                  </div>
-                </div>
-
-                <textarea
-                  required
-                  rows={12}
+                <label className="block text-xs font-semibold">
+                  Article Content *{" "}
+                  <span className="font-normal text-gray-500">
+                    (Write naturally or copy &amp; paste directly from Google Docs)
+                  </span>
+                </label>
+                <RichTextEditor
                   value={activePost.body || ""}
-                  onChange={(e) => setActivePost({ ...activePost, body: e.target.value })}
-                  placeholder="<p>Write your article text here. You can use standard HTML formatting or the buttons above.</p>"
-                  className="w-full p-4 rounded-2xl border border-gray-200 font-mono text-xs leading-relaxed focus:outline-none focus:border-[#2E1650]"
+                  onChange={(html) => setActivePost((prev) => ({ ...prev, body: html }))}
+                  onRequestInlineImage={() => setShowInlineModal(true)}
                 />
               </div>
 
@@ -605,14 +727,14 @@ export default function AdminPage() {
                 <button
                   type="button"
                   onClick={() => setActivePost(null)}
-                  className="px-5 py-2.5 border border-gray-300 rounded-full text-xs font-medium hover:border-gray-500"
+                  className="px-5 py-2.5 border border-gray-300 rounded-full text-xs font-medium hover:border-gray-500 cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={saving}
-                  className="px-6 py-2.5 bg-[#D4A017] hover:bg-[#B88912] text-[#2E1650] font-medium rounded-full text-sm transition-colors disabled:opacity-50"
+                  className="px-7 py-2.5 bg-[#D4A017] hover:bg-[#B88912] text-[#2E1650] font-semibold rounded-full text-sm transition-colors disabled:opacity-50 cursor-pointer"
                 >
                   {saving ? "Saving Post..." : "Save Post"}
                 </button>
@@ -624,7 +746,7 @@ export default function AdminPage() {
           <div className="bg-white rounded-3xl border border-gray-200 overflow-hidden shadow-sm">
             <div className="p-6 border-b border-gray-100 flex items-center justify-between">
               <div>
-                <h2 className="text-xl font-medium">All Dispatches & Articles</h2>
+                <h2 className="text-xl font-medium">All Dispatches &amp; Articles</h2>
                 <p className="text-xs text-gray-500 mt-0.5">
                   Showing {posts.length} {posts.length === 1 ? "story" : "stories"} in the repository.
                 </p>
@@ -645,50 +767,58 @@ export default function AdminPage() {
               </div>
             ) : (
               <div className="divide-y divide-gray-100">
-                {posts.map((p) => (
-                  <div
-                    key={p.id}
-                    className="p-5 sm:p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:bg-gray-50 transition-colors"
-                  >
-                    <div className="space-y-1">
-                      <div className="flex items-center gap-2">
-                        <span
-                          className={`text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full ${
-                            p.status === "published"
-                              ? "bg-green-100 text-green-800"
-                              : "bg-gray-200 text-gray-700"
-                          }`}
-                        >
-                          {p.status}
-                        </span>
-                        <span className="text-xs text-gray-400">
-                          {new Date(p.created_at).toLocaleDateString("en-NG", {
-                            year: "numeric",
-                            month: "short",
-                            day: "numeric",
-                          })}
-                        </span>
+                {posts.map((p) => {
+                  const slideCount = p.cover_images?.length || (p.cover_image_url ? 1 : 0);
+                  return (
+                    <div
+                      key={p.id}
+                      className="p-5 sm:p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:bg-gray-50 transition-colors"
+                    >
+                      <div className="space-y-1">
+                        <div className="flex items-center gap-2">
+                          <span
+                            className={`text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full ${
+                              p.status === "published"
+                                ? "bg-green-100 text-green-800"
+                                : "bg-gray-200 text-gray-700"
+                            }`}
+                          >
+                            {p.status}
+                          </span>
+                          {slideCount > 1 && (
+                            <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-[#FAF6EC] border border-[#D4A017]/40 text-[#2E1650]">
+                              {slideCount} cover slides
+                            </span>
+                          )}
+                          <span className="text-xs text-gray-400">
+                            {new Date(p.created_at).toLocaleDateString("en-NG", {
+                              year: "numeric",
+                              month: "short",
+                              day: "numeric",
+                            })}
+                          </span>
+                        </div>
+                        <h3 className="font-medium text-base text-[#2E1650]">{p.title}</h3>
+                        <p className="text-xs text-gray-500 line-clamp-1">{p.excerpt}</p>
                       </div>
-                      <h3 className="font-medium text-base text-[#2E1650]">{p.title}</h3>
-                      <p className="text-xs text-gray-500 line-clamp-1">{p.excerpt}</p>
-                    </div>
 
-                    <div className="flex items-center gap-2 self-end sm:self-center">
-                      <button
-                        onClick={() => editPost(p)}
-                        className="px-3.5 py-1.5 border border-gray-300 hover:border-[#2E1650] text-xs rounded-full transition-colors"
-                      >
-                        Edit
-                      </button>
-                      <button
-                        onClick={() => deletePostItem(p.id)}
-                        className="px-3.5 py-1.5 border border-red-200 text-red-600 hover:bg-red-50 text-xs rounded-full transition-colors"
-                      >
-                        Delete
-                      </button>
+                      <div className="flex items-center gap-2 self-end sm:self-center">
+                        <button
+                          onClick={() => editPost(p)}
+                          className="px-3.5 py-1.5 border border-gray-300 hover:border-[#2E1650] text-xs rounded-full transition-colors cursor-pointer"
+                        >
+                          Edit
+                        </button>
+                        <button
+                          onClick={() => deletePostItem(p.id)}
+                          className="px-3.5 py-1.5 border border-red-200 text-red-600 hover:bg-red-50 text-xs rounded-full transition-colors cursor-pointer"
+                        >
+                          Delete
+                        </button>
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             )}
           </div>
@@ -699,7 +829,7 @@ export default function AdminPage() {
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40">
             <div className="bg-white rounded-3xl p-6 sm:p-8 max-w-lg w-full space-y-4">
               <div className="flex items-center justify-between border-b border-gray-100 pb-3">
-                <h3 className="font-medium text-lg">Insert Inline Image</h3>
+                <h3 className="font-medium text-lg">Insert Image into Article</h3>
                 <button
                   onClick={() => setShowInlineModal(false)}
                   className="text-gray-400 hover:text-gray-700"
@@ -709,7 +839,7 @@ export default function AdminPage() {
               </div>
 
               <div>
-                <label className="block text-xs font-semibold mb-1">Image File Upload</label>
+                <label className="block text-xs font-semibold mb-1">Upload Image File</label>
                 <input
                   type="file"
                   accept="image/*"
@@ -732,12 +862,12 @@ export default function AdminPage() {
               </div>
 
               <div>
-                <label className="block text-xs font-semibold mb-1">Alt Text (Required) *</label>
+                <label className="block text-xs font-semibold mb-1">Alt Text / Description</label>
                 <input
                   type="text"
                   value={inlineAlt}
                   onChange={(e) => setInlineAlt(e.target.value)}
-                  placeholder="Description of the image for accessibility"
+                  placeholder="Description of the image"
                   className="w-full px-3 py-2 rounded-xl border border-gray-200 text-xs"
                 />
               </div>
@@ -748,7 +878,7 @@ export default function AdminPage() {
                   type="text"
                   value={inlineCaption}
                   onChange={(e) => setInlineCaption(e.target.value)}
-                  placeholder="e.g. Community members at the newly installed borehole in Ikorodu"
+                  placeholder="e.g. Community members at our Abuja outreach"
                   className="w-full px-3 py-2 rounded-xl border border-gray-200 text-xs"
                 />
               </div>
@@ -765,7 +895,7 @@ export default function AdminPage() {
                   type="button"
                   onClick={insertInlineImage}
                   disabled={!inlineUrl}
-                  className="px-4 py-2 bg-[#D4A017] text-[#2E1650] text-xs font-medium rounded-full disabled:opacity-50"
+                  className="px-4 py-2 bg-[#D4A017] text-[#2E1650] text-xs font-semibold rounded-full disabled:opacity-50"
                 >
                   Insert Image
                 </button>
