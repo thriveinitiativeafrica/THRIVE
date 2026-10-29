@@ -32,15 +32,6 @@ function getTeamMembers(): TeamMember[] {
   return [];
 }
 
-function getInitials(name: string) {
-  return name
-    .split(" ")
-    .filter(Boolean)
-    .slice(0, 2)
-    .map((part) => part[0]?.toUpperCase())
-    .join("");
-}
-
 export default function TeamPage() {
   const team = getTeamMembers();
 
@@ -78,7 +69,7 @@ export default function TeamPage() {
             >
               <div>
                 {member.photo ? (
-                  <div className="relative w-full h-80 bg-[#5C165E] overflow-hidden">
+                  <div className="relative w-full h-80 bg-black overflow-hidden">
                     <Image
                       src={member.photo}
                       alt={`${member.name} — ${member.role}`}
@@ -93,13 +84,12 @@ export default function TeamPage() {
                     </div>
                   </div>
                 ) : (
-                  <div className="relative w-full h-80 bg-[#2E1650] flex flex-col items-center justify-center p-6 text-center">
-                    <div className="w-24 h-24 rounded-full bg-[#D4A017]/15 border-2 border-[#D4A017] flex items-center justify-center text-3xl font-semibold text-[#D4A017] tracking-tight">
-                      {getInitials(member.name)}
+                  <div className="relative w-full h-80 bg-black overflow-hidden">
+                    <div className="absolute top-4 left-4">
+                      <span className="inline-block px-3.5 py-1 rounded-full bg-[#2E1650]/85 backdrop-blur-sm text-[#D4A017] text-[11px] font-semibold uppercase tracking-wider">
+                        {member.role}
+                      </span>
                     </div>
-                    <span className="mt-4 inline-block px-3.5 py-1 rounded-full bg-white/10 text-[#D4A017] text-[11px] font-semibold uppercase tracking-wider">
-                      {member.role}
-                    </span>
                   </div>
                 )}
 

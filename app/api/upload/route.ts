@@ -6,12 +6,59 @@ import sharp from "sharp";
 import { verifyToken } from "@/lib/auth";
 
 // Image upload for the blog admin. Provider order:
-// 1. Supabase Storage (SUPABASE_URL + SUPABASE_SERVICE_ROLE_KEY), same account as the database.
+// 1. Supabase Storage (SUPABASE_URL + SUPABASE_SERVICE_ROLE_KEY), auto-creates public bucket if needed.
 // 2. Cloudinary (CLOUDINARY_CLOUD_NAME + CLOUDINARY_API_KEY + CLOUDINARY_API_SECRET), signed server side.
 // 3. Optimized WebP data URL on serverless (Vercel) or local disk in local dev.
 
 function safeName(name: string) {
   return `${Date.now()}-${name.replace(/[^a-zA-Z0-9.-]/g, "_")}`;
+}
+
+async function uploadToSupabase(
+  supabaseUrl: string,
+  supabaseKey: string,
+  bucket: string,
+  objectPath: string,
+  contentType: string,
+  buffer: Buffer
+) {
+  const uploadUrl = `${supabaseUrl}/storage/v1/object/${bucket}/${objectPath}`;
+  let res = await fetch(uploadUrl, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${supabaseKey}`,
+      apikey: supabaseKey,
+      "Content-Type": contentType,
+      "x-upsert": "true",
+    },
+    body: new Uint8Array(buffer),
+  });
+
+  // If the bucket does not exist yet, auto-create it as a public bucket and retry!
+  if (!res.ok) {
+    await fetch(`${supabaseUrl}/storage/v1/bucket`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${supabaseKey}`,
+        apikey: supabaseKey,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ id: bucket, name: bucket, public: true }),
+    }).catch(() => {});
+
+    res = await fetch(uploadUrl, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${supabaseKey}`,
+        apikey: supabaseKey,
+        "Content-Type": contentType,
+        "x-upsert": "true",
+      },
+      body: new Uint8Array(buffer),
+    });
+  }
+
+  return res;
 }
 
 export async function POST(req: NextRequest) {
@@ -42,16 +89,14 @@ export async function POST(req: NextRequest) {
     if (supabaseUrl && supabaseKey) {
       const bucket = process.env.SUPABASE_STORAGE_BUCKET || "blog-images";
       const objectPath = `posts/${fileName}`;
-      const res = await fetch(`${supabaseUrl}/storage/v1/object/${bucket}/${objectPath}`, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${supabaseKey}`,
-          apikey: supabaseKey,
-          "Content-Type": file.type,
-          "x-upsert": "true",
-        },
-        body: rawBuffer,
-      });
+      const res = await uploadToSupabase(
+        supabaseUrl,
+        supabaseKey,
+        bucket,
+        objectPath,
+        file.type,
+        rawBuffer
+      );
       if (res.ok) {
         return NextResponse.json({
           url: `${supabaseUrl}/storage/v1/object/public/${bucket}/${objectPath}`,

@@ -39,7 +39,11 @@ function persistLocalStore(data: PostRecord[]) {
 // Works with any standard Postgres URL: Supabase, Neon, Railway, Render, Aiven, etc.
 // prepare:false keeps it compatible with Supabase's transaction pooler (port 6543).
 type Db = ReturnType<typeof drizzle>;
-const globalForDb = globalThis as unknown as { thriveDb?: Db };
+const globalForDb = globalThis as unknown as {
+  thriveDb?: Db;
+  thriveSql?: ReturnType<typeof postgres>;
+  thriveSchemaReady?: boolean;
+};
 
 function getDb(): Db | null {
   const dbUrl = process.env.DATABASE_URL;
@@ -47,11 +51,56 @@ function getDb(): Db | null {
   if (globalForDb.thriveDb) return globalForDb.thriveDb;
   try {
     const client = postgres(dbUrl, { prepare: false, max: 3, ssl: "require" });
+    globalForDb.thriveSql = client;
     globalForDb.thriveDb = drizzle(client, { schema: { posts, contactMessages, newsletterSubscribers } });
     return globalForDb.thriveDb;
   } catch (err) {
     console.warn("Could not connect to Postgres, falling back to local store:", err);
     return null;
+  }
+}
+
+async function ensureTables(): Promise<void> {
+  if (globalForDb.thriveSchemaReady || !globalForDb.thriveSql) return;
+  try {
+    const sql = globalForDb.thriveSql;
+    await sql`
+      CREATE TABLE IF NOT EXISTS posts (
+        id TEXT PRIMARY KEY,
+        title TEXT NOT NULL,
+        slug TEXT NOT NULL UNIQUE,
+        excerpt TEXT NOT NULL,
+        body TEXT NOT NULL,
+        cover_image_url TEXT,
+        cover_image_alt TEXT,
+        author TEXT NOT NULL,
+        status TEXT NOT NULL DEFAULT 'draft',
+        published_at TIMESTAMP,
+        created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+        updated_at TIMESTAMP NOT NULL DEFAULT NOW(),
+        seo_title TEXT,
+        seo_description TEXT
+      );
+    `;
+    await sql`
+      CREATE TABLE IF NOT EXISTS contact_messages (
+        id SERIAL PRIMARY KEY,
+        name TEXT NOT NULL,
+        email TEXT NOT NULL,
+        message TEXT NOT NULL,
+        created_at TIMESTAMP NOT NULL DEFAULT NOW()
+      );
+    `;
+    await sql`
+      CREATE TABLE IF NOT EXISTS newsletter_subscribers (
+        id SERIAL PRIMARY KEY,
+        email TEXT NOT NULL UNIQUE,
+        created_at TIMESTAMP NOT NULL DEFAULT NOW()
+      );
+    `;
+    globalForDb.thriveSchemaReady = true;
+  } catch (err) {
+    console.warn("Auto-table initialization skipped:", err);
   }
 }
 
@@ -65,7 +114,8 @@ export async function getAllPosts(options?: {
 
   if (db) {
     try {
-      let query = db.select().from(posts);
+      await ensureTables();
+      const query = db.select().from(posts);
       const results = await query.orderBy(desc(posts.createdAt));
       let filtered = results.map((r) => ({
         id: r.id,
@@ -115,6 +165,7 @@ export async function getPostBySlug(slug: string): Promise<PostRecord | null> {
   const db = getDb();
   if (db) {
     try {
+      await ensureTables();
       const results = await db.select().from(posts).where(eq(posts.slug, slug)).limit(1);
       if (results.length > 0) {
         const r = results[0];
@@ -144,7 +195,9 @@ export async function getPostBySlug(slug: string): Promise<PostRecord | null> {
   return all.find((p) => p.slug === slug) || null;
 }
 
-export async function savePost(data: Partial<PostRecord> & { title: string; slug: string; excerpt: string; body: string; author: string }): Promise<PostRecord> {
+export async function savePost(
+  data: Partial<PostRecord> & { title: string; slug: string; excerpt: string; body: string; author: string }
+): Promise<PostRecord> {
   const now = new Date().toISOString();
   const id = data.id || `post-${Date.now()}`;
   const status = data.status || "draft";
@@ -170,22 +223,26 @@ export async function savePost(data: Partial<PostRecord> & { title: string; slug
   const db = getDb();
   if (db) {
     try {
+      await ensureTables();
       const existing = await db.select().from(posts).where(eq(posts.id, id)).limit(1);
       if (existing.length > 0) {
-        await db.update(posts).set({
-          title: postRecord.title,
-          slug: postRecord.slug,
-          excerpt: postRecord.excerpt,
-          body: postRecord.body,
-          coverImageUrl: postRecord.cover_image_url,
-          coverImageAlt: postRecord.cover_image_alt,
-          author: postRecord.author,
-          status: postRecord.status,
-          publishedAt: publishedAt ? new Date(publishedAt) : null,
-          updatedAt: new Date(),
-          seoTitle: postRecord.seo_title,
-          seoDescription: postRecord.seo_description,
-        }).where(eq(posts.id, id));
+        await db
+          .update(posts)
+          .set({
+            title: postRecord.title,
+            slug: postRecord.slug,
+            excerpt: postRecord.excerpt,
+            body: postRecord.body,
+            coverImageUrl: postRecord.cover_image_url,
+            coverImageAlt: postRecord.cover_image_alt,
+            author: postRecord.author,
+            status: postRecord.status,
+            publishedAt: publishedAt ? new Date(publishedAt) : null,
+            updatedAt: new Date(),
+            seoTitle: postRecord.seo_title,
+            seoDescription: postRecord.seo_description,
+          })
+          .where(eq(posts.id, id));
       } else {
         await db.insert(posts).values({
           id: postRecord.id,
@@ -226,6 +283,7 @@ export async function deletePost(id: string): Promise<boolean> {
   const db = getDb();
   if (db) {
     try {
+      await ensureTables();
       await db.delete(posts).where(eq(posts.id, id));
     } catch (err) {
       console.warn("Could not delete post from Postgres:", err);
@@ -242,6 +300,7 @@ export async function saveContactMessage(name: string, email: string, message: s
   const db = getDb();
   if (db) {
     try {
+      await ensureTables();
       await db.insert(contactMessages).values({ name, email, message });
       return;
     } catch (err) {
@@ -261,6 +320,7 @@ export async function saveNewsletterSubscriber(email: string): Promise<void> {
   const db = getDb();
   if (db) {
     try {
+      await ensureTables();
       await db.insert(newsletterSubscribers).values({ email });
       return;
     } catch (err) {
