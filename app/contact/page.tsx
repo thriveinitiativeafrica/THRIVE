@@ -138,6 +138,31 @@ export default function ContactPage() {
                 We collaborate with corporate social responsibility (CSR) initiatives, institutional foundations, and grassroots development groups to implement sustainable community programs. To propose an alliance, sponsor an outreach project, or review our accountability frameworks, please email <strong>{siteConfig.contact.email}</strong> or use this contact form.
               </p>
             </div>
+
+            {/* Volunteer Application Card */}
+            <div className="bg-[#2E1650] text-white rounded-3xl p-8 space-y-4">
+              <div className="flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-[#D4A017]" />
+                <span className="text-[11px] uppercase tracking-wider font-semibold text-[#D4A017]">
+                  Volunteer Application
+                </span>
+              </div>
+              <h2 className="text-xl font-medium text-white">Join the THRIVE Volunteer Movement</h2>
+              <p className="text-xs sm:text-sm text-white/80 leading-relaxed font-normal">
+                Want to mentor youth, support women empowerment, or participate in grassroots field missions across Africa? Submit your application directly through our official volunteer form.
+              </p>
+              <div className="pt-1">
+                <a
+                  href="https://forms.gle/nPNYHSViBTPUryRB6"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#D4A017] hover:bg-[#b88912] text-[#2E1650] text-xs font-semibold transition-colors"
+                >
+                  <span>Open Volunteer Application Form</span>
+                  <span>→</span>
+                </a>
+              </div>
+            </div>
           </div>
 
           {/* Right Form (7 cols) */}

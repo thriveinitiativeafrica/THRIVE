@@ -219,6 +219,17 @@ export function Footer() {
                   Contact
                 </Link>
               </li>
+              <li>
+                <a
+                  href="https://forms.gle/nPNYHSViBTPUryRB6"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-[#D4A017] transition-colors flex items-center gap-1.5"
+                >
+                  <span>Volunteer Form</span>
+                  <span className="text-xs text-[#D4A017]">↗</span>
+                </a>
+              </li>
             </ul>
           </div>
 

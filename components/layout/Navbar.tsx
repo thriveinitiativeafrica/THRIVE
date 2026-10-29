@@ -67,9 +67,9 @@ export function Navbar() {
     setProgramsDropdownOpen(false);
   }, [pathname]);
 
-  const volunteerFormUrl = process.env.NEXT_PUBLIC_VOLUNTEER_FORM_URL;
+  const volunteerFormUrl = process.env.NEXT_PUBLIC_VOLUNTEER_FORM_URL || "https://forms.gle/nPNYHSViBTPUryRB6";
   const getInvolvedHref = volunteerFormUrl || "/contact";
-  const getInvolvedExternal = Boolean(volunteerFormUrl);
+  const getInvolvedExternal = true;
 
   return (
     <header className="sticky top-4 z-50 px-3 sm:px-6 lg:px-8">

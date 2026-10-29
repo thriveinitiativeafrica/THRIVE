@@ -66,8 +66,8 @@ export const siteConfig = {
     },
     {
       label: "Get Involved",
-      href: process.env.NEXT_PUBLIC_VOLUNTEER_FORM_URL || "/contact",
-      isExternal: Boolean(process.env.NEXT_PUBLIC_VOLUNTEER_FORM_URL),
+      href: process.env.NEXT_PUBLIC_VOLUNTEER_FORM_URL || "https://forms.gle/nPNYHSViBTPUryRB6",
+      isExternal: true,
     },
     { label: "Blog", href: "/blog" },
     { label: "Contact", href: "/contact" },

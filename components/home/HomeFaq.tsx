@@ -18,7 +18,7 @@ const faqs: FaqItem[] = [
   {
     question: "How can I volunteer with THRIVE Initiative?",
     answer:
-      "We welcome passionate volunteers in Abuja, across Nigeria, and throughout Africa to support field outreach, mentorship, education clinics, and digital media advocacy. Visit our Contact page or click Get Involved to apply.",
+      "We welcome passionate volunteers in Abuja, across Nigeria, and throughout Africa to support field outreach, mentorship, education clinics, and digital media advocacy. Click Get Involved in the top menu or submit our official volunteer application form online.",
   },
   {
     question: "Can our organization or foundation partner with THRIVE?",
