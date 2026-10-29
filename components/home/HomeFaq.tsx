@@ -13,27 +13,27 @@ const faqs: FaqItem[] = [
   {
     question: "How are donations deployed across community programs?",
     answer:
-      "Donations directly fund grassroots interventions including women empowerment workshops, school learning materials, skills acquisition clinics, and community health outreach across Abuja.",
+      "Donations directly fund grassroots interventions including women empowerment workshops, school learning materials, skills acquisition clinics, and community health outreach across underserved communities in Africa.",
   },
   {
     question: "How can I volunteer with THRIVE Initiative?",
     answer:
-      "We welcome passionate volunteers in Abuja and across Nigeria to support field outreach, mentorship, education programs, and media advocacy. Visit our Contact page or click Get Involved to join.",
+      "We welcome passionate volunteers in Abuja, across Nigeria, and throughout Africa to support field outreach, mentorship, education clinics, and digital media advocacy. Visit our Contact page or click Get Involved to apply.",
   },
   {
     question: "Can our organization or foundation partner with THRIVE?",
     answer:
-      "Yes. We collaborate with corporate CSR teams, civil society organizations, schools, and international development partners on sustainable community programs.",
+      "Yes. We collaborate with corporate CSR teams, civic foundations, schools, and international development agencies on sustainable community development across Africa.",
   },
   {
     question: "How can I follow project milestones and field updates?",
     answer:
-      "Subscribe to our newsletter in the footer, follow our social channels, or read our Blog for field dispatches and impact reports from our programs.",
+      "Subscribe to our newsletter in the footer, follow our official Instagram (@thriveinitiativeng), or read our Blog for field dispatches and impact reports from our programs.",
   },
   {
-    question: "Where is THRIVE Initiative based?",
+    question: "Where is THRIVE Initiative located and registered?",
     answer:
-      "THRIVE Initiative is a registered Nigerian non-governmental organization headquartered in Abuja, Nigeria, working directly with underserved communities.",
+      "THRIVE Initiative is an African non-governmental organization headquartered in Abuja, Nigeria, dedicated to empowering communities and transforming lives across the African continent.",
   },
 ];
 
@@ -59,7 +59,7 @@ export function HomeFaq() {
             Frequently Asked Questions?
           </h2>
           <p className="text-sm sm:text-base text-[#2E1650]/70 leading-relaxed pt-1 max-w-sm">
-            Everything you need to know about our mission, community programs, and how your support creates lasting impact in Abuja.
+            Everything you need to know about our mission, community programs, and how your support creates lasting impact across Africa.
           </p>
           <div className="pt-2">
             <Link

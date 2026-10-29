@@ -23,7 +23,7 @@ export const programsData: Program[] = [
     slug: "women-empowerment",
     title: "Women Empowerment & Gender Programs",
     shortTitle: "Women Empowerment",
-    subtitle: "Championing female leadership, economic independence, and community mentorship in Abuja.",
+    subtitle: "Championing female leadership, economic independence, and community mentorship across Africa.",
     badge: "SDG 5: Gender Equality",
     sdgNumber: 5,
     sdgLabel: "Gender Equality",
@@ -50,7 +50,7 @@ export const programsData: Program[] = [
       {
         title: "SheThrives Micro-Grants",
         description: "Seed capital and business mentorship for mothers starting artisanal and market businesses.",
-        targetBeneficiaries: "Low-income mothers across underserved wards in Abuja",
+        targetBeneficiaries: "Low-income mothers across underserved communities",
         status: "Ongoing",
       },
     ],

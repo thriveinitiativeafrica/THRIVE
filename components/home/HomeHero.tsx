@@ -8,10 +8,10 @@ export function HomeHero() {
   return (
     <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-3">
       <div className="relative w-full min-h-[520px] sm:min-h-[600px] lg:min-h-[650px] rounded-3xl overflow-hidden flex items-end p-5 sm:p-10 lg:p-12">
-        {/* Full Width Rounded Authentic Nigerian Photo */}
+        {/* Full Width Rounded Authentic Community Photo */}
         <Image
           src="/images/hero-children-center.webp"
-          alt="Nigerian children and community members at a THRIVE Initiative outreach in Abuja"
+          alt="Children and community members at a THRIVE Initiative community outreach in Africa"
           fill
           priority
           className="object-cover"
@@ -27,7 +27,7 @@ export function HomeHero() {
             Together, We Can Change Lives
           </h1>
           <p className="text-sm sm:text-base text-white/85 leading-relaxed font-normal max-w-md">
-            We partner with underserved communities in Abuja, Nigeria to expand access to women empowerment, quality child education, and sustainable livelihoods.
+            We partner with underserved communities across Africa to expand access to women empowerment, quality child education, and sustainable livelihoods.
           </p>
           <div className="pt-1">
             <button

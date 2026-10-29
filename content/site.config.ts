@@ -11,7 +11,7 @@ export const siteConfig = {
   tagline: "Empowering People. Uplifting Communities. Building a Better Future.",
   secondaryTagline: "Empowering People. Transforming Communities.",
   description:
-    "THRIVE Initiative is a Nigerian nonprofit organization dedicated to women empowerment, child education, skills acquisition, advocacy, social inclusion, and sustainable community development in Abuja, Nigeria.",
+    "THRIVE Initiative is an African nonprofit organization dedicated to women empowerment, child education, skills acquisition, advocacy, social inclusion, and sustainable grassroots development across Africa, headquartered in Abuja, Nigeria.",
   url: "https://www.thriveinitiativeafrica.com",
   ogImage: "/og-default.png",
   contact: {

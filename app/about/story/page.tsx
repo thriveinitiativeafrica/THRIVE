@@ -7,7 +7,7 @@ import { openDonateModal } from "@/components/shared/DonateModal";
 export const metadata: Metadata = {
   title: "Our Story & Values",
   description:
-    "Learn about THRIVE Initiative, our founding mission, grassroots methodology, and core values driving community development in Abuja, Nigeria.",
+    "Learn about THRIVE Initiative, our founding mission, grassroots methodology, and core values driving community development across Africa.",
 };
 
 export default function StoryPage() {
@@ -45,10 +45,10 @@ export default function StoryPage() {
           </span>
         </div>
         <h1 className="text-4xl sm:text-5xl lg:text-6xl font-medium tracking-tight text-[#2E1650] max-w-3xl leading-[1.1]">
-          Dedicated to sustainable grassroots progress in Nigeria.
+          Dedicated to sustainable grassroots progress across Africa.
         </h1>
         <p className="text-base sm:text-lg text-gray-700 max-w-2xl font-normal leading-relaxed">
-          THRIVE Initiative was founded to bridge the critical gap in basic infrastructure, youth literacy, and women economic empowerment across underserved communities in Abuja.
+          THRIVE Initiative was founded to bridge critical gaps in basic infrastructure, youth literacy, and women economic empowerment across underserved African communities, with foundational roots in Abuja.
         </p>
       </section>
 
@@ -57,7 +57,7 @@ export default function StoryPage() {
         <div className="relative w-full h-[360px] sm:h-[480px] lg:h-[540px] rounded-3xl overflow-hidden bg-gray-100">
           <Image
             src="/images/who-we-are.webp"
-            alt="THRIVE Initiative community members and field organizers in Abuja"
+            alt="THRIVE Initiative community members and field organizers"
             fill
             priority
             className="object-cover"
@@ -78,7 +78,7 @@ export default function StoryPage() {
           <div className="bg-white rounded-3xl p-8 sm:p-10 border border-gray-200/90 space-y-4">
             <h2 className="text-2xl font-medium text-[#2E1650]">Our Vision</h2>
             <p className="text-sm sm:text-base text-gray-600 leading-relaxed font-normal">
-              A self-reliant Nigeria where every child has access to quality education, every household enjoys clean potable water, and women have the resources to build sustainable enterprises.
+              A self-reliant Africa where every child has access to quality education, every household enjoys clean potable water, and women have the resources to build sustainable enterprises.
             </p>
           </div>
         </div>

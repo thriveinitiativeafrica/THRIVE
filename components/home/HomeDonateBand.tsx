@@ -27,7 +27,7 @@ export function HomeDonateBand() {
             {/* Subtitle + Give Once / Monthly Toggle on the same row */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <p className="text-xs sm:text-sm text-[#2E1650]/75 leading-relaxed max-w-xs">
-                Empower women, educate children, and build resilient communities in Abuja.
+                Empower women, educate children, and build resilient communities across Africa.
               </p>
 
               <div className="flex items-center gap-2 shrink-0">
@@ -117,7 +117,7 @@ export function HomeDonateBand() {
         <div className="lg:col-span-5 relative min-h-[340px] lg:min-h-full bg-gray-100">
           <Image
             src="/images/impact-water.webp"
-            alt="Community outreach and clean water access in Abuja, Nigeria"
+            alt="Community development and outreach across Africa by THRIVE Initiative"
             fill
             className="object-cover"
             sizes="(max-width: 1024px) 100vw, 42vw"

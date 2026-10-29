@@ -124,7 +124,7 @@ export function Footer() {
               />
             </Link>
             <p className="text-sm text-white/80 leading-relaxed max-w-sm">
-              THRIVE Initiative is a registered Nigerian non-profit organization dedicated to empowering women, children, and youth across underserved communities in Abuja, Nigeria.
+              THRIVE Initiative is an African non-profit organization dedicated to empowering women, children, and youth across underserved communities throughout Africa, headquartered in Abuja, Nigeria.
             </p>
             <div className="text-xs text-white/75 space-y-1.5">
               <p>{siteConfig.contact.address}</p>

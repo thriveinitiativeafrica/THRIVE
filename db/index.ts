@@ -9,13 +9,13 @@ import {
   newsletterSubscribers,
   type PostRecord,
   type CoverImageItem,
+  type ContactMessage,
 } from "./schema";
 
 const STORE_PATH = path.join(process.cwd(), "content", "posts-store.json");
+const CONTACTS_STORE_PATH = path.join(process.cwd(), "content", "contacts-store.json");
 
 let postsCache: PostRecord[] | null = null;
-const inMemoryContacts: { id: number; name: string; email: string; message: string; created_at: string }[] = [];
-const inMemoryNewsletters: { id: number; email: string; created_at: string }[] = [];
 
 function parseCoverImages(
   rawJson: string | null | undefined,
@@ -72,6 +72,37 @@ function persistLocalStore(data: PostRecord[]) {
   }
 }
 
+export interface ContactRecord {
+  id: number;
+  name: string;
+  email: string;
+  subject?: string | null;
+  message: string;
+  created_at: string;
+}
+
+function getLocalContacts(): ContactRecord[] {
+  try {
+    if (fs.existsSync(CONTACTS_STORE_PATH)) {
+      const data = fs.readFileSync(CONTACTS_STORE_PATH, "utf-8");
+      return JSON.parse(data);
+    }
+  } catch {
+    // ignore
+  }
+  return [];
+}
+
+function persistLocalContacts(data: ContactRecord[]) {
+  try {
+    const dir = path.dirname(CONTACTS_STORE_PATH);
+    if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+    fs.writeFileSync(CONTACTS_STORE_PATH, JSON.stringify(data, null, 2), "utf-8");
+  } catch (err) {
+    console.warn("Could not write contacts to local store:", err);
+  }
+}
+
 type Db = ReturnType<typeof drizzle>;
 const globalForDb = globalThis as unknown as {
   thriveDb?: Db;
@@ -117,18 +148,18 @@ async function ensureTables(): Promise<void> {
         seo_description TEXT
       );
     `;
-    await sql`
-      ALTER TABLE posts ADD COLUMN IF NOT EXISTS cover_images TEXT;
-    `;
+    await sql`ALTER TABLE posts ADD COLUMN IF NOT EXISTS cover_images TEXT;`;
     await sql`
       CREATE TABLE IF NOT EXISTS contact_messages (
         id SERIAL PRIMARY KEY,
         name TEXT NOT NULL,
         email TEXT NOT NULL,
+        subject TEXT,
         message TEXT NOT NULL,
         created_at TIMESTAMP NOT NULL DEFAULT NOW()
       );
     `;
+    await sql`ALTER TABLE contact_messages ADD COLUMN IF NOT EXISTS subject TEXT;`;
     await sql`
       CREATE TABLE IF NOT EXISTS newsletter_subscribers (
         id SERIAL PRIMARY KEY,
@@ -247,7 +278,6 @@ export async function savePost(
   const status = data.status || "draft";
   const publishedAt = status === "published" ? (data.published_at || now) : null;
 
-  // Normalize cover_images array and primary cover_image_url
   let coverImages: CoverImageItem[] = Array.isArray(data.cover_images)
     ? data.cover_images.filter((item) => item && typeof item.url === "string" && item.url.trim() !== "")
     : [];
@@ -326,7 +356,6 @@ export async function savePost(
     }
   }
 
-  // Also persist to local store
   const current = getLocalStore();
   const idx = current.findIndex((p) => p.id === id);
   if (idx >= 0) {
@@ -356,24 +385,78 @@ export async function deletePost(id: string): Promise<boolean> {
   return true;
 }
 
-export async function saveContactMessage(name: string, email: string, message: string): Promise<void> {
+export async function saveContactMessage(
+  name: string,
+  email: string,
+  message: string,
+  subject?: string | null
+): Promise<ContactRecord> {
+  const now = new Date().toISOString();
+  let insertedId = Date.now();
+
   const db = getDb();
   if (db) {
     try {
       await ensureTables();
-      await db.insert(contactMessages).values({ name, email, message });
-      return;
+      const res = await db
+        .insert(contactMessages)
+        .values({ name, email, message, subject: subject || null })
+        .returning({ id: contactMessages.id });
+      if (res && res[0]?.id) insertedId = res[0].id;
     } catch (err) {
-      console.warn("Could not save contact message to Postgres, saving to memory:", err);
+      console.warn("Could not save contact message to Postgres, saving to local store:", err);
     }
   }
-  inMemoryContacts.push({
-    id: inMemoryContacts.length + 1,
+
+  const record: ContactRecord = {
+    id: insertedId,
     name,
     email,
+    subject: subject || null,
     message,
-    created_at: new Date().toISOString(),
-  });
+    created_at: now,
+  };
+
+  const localList = getLocalContacts();
+  localList.unshift(record);
+  persistLocalContacts(localList);
+  return record;
+}
+
+export async function getAllContactMessages(): Promise<ContactRecord[]> {
+  const db = getDb();
+  if (db) {
+    try {
+      await ensureTables();
+      const res = await db.select().from(contactMessages).orderBy(desc(contactMessages.createdAt));
+      return res.map((r) => ({
+        id: r.id,
+        name: r.name,
+        email: r.email,
+        subject: r.subject || null,
+        message: r.message,
+        created_at: r.createdAt ? r.createdAt.toISOString() : new Date().toISOString(),
+      }));
+    } catch (err) {
+      console.warn("Error querying contact messages from Postgres, using local store:", err);
+    }
+  }
+  return getLocalContacts();
+}
+
+export async function deleteContactMessage(id: number): Promise<boolean> {
+  const db = getDb();
+  if (db) {
+    try {
+      await ensureTables();
+      await db.delete(contactMessages).where(eq(contactMessages.id, id));
+    } catch (err) {
+      console.warn("Could not delete contact message from Postgres:", err);
+    }
+  }
+  const localList = getLocalContacts().filter((m) => m.id !== id);
+  persistLocalContacts(localList);
+  return true;
 }
 
 export async function saveNewsletterSubscriber(email: string): Promise<void> {
@@ -384,14 +467,7 @@ export async function saveNewsletterSubscriber(email: string): Promise<void> {
       await db.insert(newsletterSubscribers).values({ email });
       return;
     } catch (err) {
-      console.warn("Could not save subscriber to Postgres, saving to memory:", err);
+      console.warn("Could not save subscriber to Postgres:", err);
     }
-  }
-  if (!inMemoryNewsletters.some((n) => n.email.toLowerCase() === email.toLowerCase())) {
-    inMemoryNewsletters.push({
-      id: inMemoryNewsletters.length + 1,
-      email,
-      created_at: new Date().toISOString(),
-    });
   }
 }

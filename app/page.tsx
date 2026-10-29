@@ -30,12 +30,12 @@ export default async function HomePage() {
               </span>
             </div>
             <h2 className="text-3xl sm:text-4xl lg:text-[42px] font-medium tracking-tight text-[#2E1650] leading-[1.12]">
-              Grassroots development rooted in Abuja.
+              Grassroots community development across Africa.
             </h2>
           </div>
           <div className="lg:col-span-7 space-y-7">
             <p className="text-xl sm:text-2xl text-[#2E1650] leading-[1.45] font-normal tracking-tight">
-              Together, we empower women, children, and youth across underserved Nigerian communities. By combining quality education, vocational skills, health outreach, and advocacy, we help families build lasting self-reliance and dignity.
+              Together, we empower women, children, and youth across underserved African communities. Headquartered in Abuja, Nigeria and expanding outward across the continent, we combine quality education, vocational skills, health outreach, and advocacy to help families build lasting self-reliance and dignity.
             </p>
             <div>
               <Link
@@ -54,7 +54,7 @@ export default async function HomePage() {
         <div className="relative w-full h-[340px] sm:h-[480px] lg:h-[540px] rounded-3xl overflow-hidden bg-gray-200">
           <Image
             src="/images/who-we-are.webp"
-            alt="Community members and volunteers gathered at a THRIVE outreach center in Abuja"
+            alt="Community members and volunteers gathered at a THRIVE outreach initiative"
             fill
             className="object-cover"
             sizes="(max-width: 1200px) 100vw, 1200px"
@@ -139,7 +139,7 @@ export default async function HomePage() {
             </div>
             <div className="lg:col-span-5">
               <p className="text-sm sm:text-base text-[#2E1650]/85 leading-relaxed">
-                Every program we run in Abuja is designed with local leaders to ensure resources reach the women, children, and youth who need them most.
+                Every program we run across African communities is designed with local leaders to ensure resources reach the women, children, and youth who need them most.
               </p>
             </div>
           </div>
@@ -179,7 +179,7 @@ export default async function HomePage() {
             <div className="relative w-full h-[360px] sm:h-[440px] rounded-2xl overflow-hidden bg-gray-200">
               <Image
                 src="/images/gallery-2.webp"
-                alt="THRIVE Initiative field coordinators working with community members in Abuja"
+                alt="THRIVE Initiative field coordinators working with community members"
                 fill
                 className="object-cover"
                 sizes="(max-width: 1024px) 100vw, 50vw"
@@ -194,10 +194,10 @@ export default async function HomePage() {
               </span>
             </div>
             <h2 className="text-3xl sm:text-4xl lg:text-[42px] font-medium tracking-tight text-[#2E1650] leading-[1.12]">
-              Building Community Systems That Last for Generations.
+              Building African Community Systems That Last for Generations.
             </h2>
             <p className="text-sm sm:text-base text-[#2E1650]/75 leading-relaxed">
-              We do more than provide temporary relief. THRIVE Initiative equips women with business skills, keeps children in school with mentorship and learning supplies, and advocates for inclusive community policies across Nigeria.
+              We do more than provide temporary relief. Headquartered in Abuja, THRIVE Initiative equips women with business skills, keeps children in school with mentorship and learning supplies, and advocates for inclusive community policies across Africa.
             </p>
             <div className="pt-2 flex flex-wrap items-center gap-3">
               <Link

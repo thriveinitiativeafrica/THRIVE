@@ -8,7 +8,7 @@ import path from "path";
 export const metadata: Metadata = {
   title: "About the Team",
   description:
-    "Meet the leadership, program directors, and dedicated executives driving THRIVE Initiative across Abuja, Nigeria.",
+    "Meet the leadership, program directors, and dedicated executives driving THRIVE Initiative across Africa.",
 };
 
 interface TeamMember {
@@ -53,7 +53,7 @@ export default function TeamPage() {
           </div>
           <div className="lg:col-span-5">
             <p className="text-base sm:text-lg text-[#2E1650]/75 font-normal leading-relaxed">
-              Based in Abuja, Nigeria, our founders and directors work directly with local communities to advance women empowerment, child education, skills acquisition, and social inclusion.
+              Headquartered in Abuja, Nigeria, our founders and directors lead initiatives across the continent to advance women empowerment, child education, skills acquisition, and social inclusion.
             </p>
           </div>
         </div>
@@ -72,7 +72,7 @@ export default function TeamPage() {
                   <div className="relative w-full h-80 bg-black overflow-hidden">
                     <Image
                       src={member.photo}
-                      alt={`${member.name} — ${member.role}`}
+                      alt={`${member.name}, ${member.role}`}
                       fill
                       sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                       className="object-cover object-top"
