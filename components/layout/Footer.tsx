@@ -128,7 +128,7 @@ export function Footer() {
             </p>
             <div className="text-xs text-white/75 space-y-1.5">
               <p>{siteConfig.contact.address}</p>
-              <p>{siteConfig.contact.phone}</p>
+              <p>{siteConfig.contact.phone} • {siteConfig.contact.altPhone}</p>
               <p>
                 <a
                   href={`mailto:${siteConfig.contact.email}`}
@@ -328,7 +328,7 @@ export function Footer() {
           </div>
         </div>
 
-        {/* Bottom Bar */}
+        {/* Bottom Bar without Admin Login */}
         <div className="pt-6 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-white/60">
           <p>© 2026 THRIVE Initiative Africa. All rights reserved.</p>
           <div className="flex items-center gap-6">
@@ -337,9 +337,6 @@ export function Footer() {
             </Link>
             <Link href="/terms" className="hover:text-white transition-colors">
               Terms of Service
-            </Link>
-            <Link href="/admin" className="hover:text-white transition-colors">
-              Admin Login
             </Link>
           </div>
         </div>

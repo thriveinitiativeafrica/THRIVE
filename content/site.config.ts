@@ -17,15 +17,15 @@ export const siteConfig = {
   contact: {
     email: "hello@thriveinitiativeafrica.com",
     supportEmail: "hello@thriveinitiativeafrica.com",
-    phone: "+234 812 345 6789",
-    altPhone: "+234 803 987 6543",
+    phone: "+234 706 413 5356",
+    altPhone: "+234 813 365 5222",
     address: "Abuja, Federal Capital Territory, Nigeria",
     operatingHours: "Monday to Friday: 8:00 AM to 5:00 PM WAT",
   },
   social: {
     facebook: "https://facebook.com/thriveinitiative",
     twitter: "https://twitter.com/thrive_org",
-    instagram: "https://instagram.com/thrive_initiative",
+    instagram: "https://www.instagram.com/thriveinitiativeng/",
     linkedin: "https://linkedin.com/company/thrive-initiative",
     youtube: "https://youtube.com/@thriveinitiative",
   },
