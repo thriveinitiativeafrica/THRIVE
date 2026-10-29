@@ -11,11 +11,11 @@ export const siteConfig = {
   secondaryTagline: "Empowering People. Transforming Communities.",
   description:
     "THRIVE Initiative is a Nigerian nonprofit organization dedicated to women empowerment, child education, skills acquisition, advocacy, social inclusion, and sustainable community development.",
-  url: "https://thriveinitiative.org",
+  url: "https://www.thriveinitiativeafrica.com",
   ogImage: "/og-default.png",
   contact: {
-    email: "contact@thriveinitiative.org",
-    supportEmail: "support@thriveinitiative.org",
+    email: "contact@thriveinitiativeafrica.com",
+    supportEmail: "support@thriveinitiativeafrica.com",
     phone: "+234 812 345 6789",
     altPhone: "+234 803 987 6543",
     address: "14 Impact Crescent, Victoria Island, Lagos, Nigeria",
